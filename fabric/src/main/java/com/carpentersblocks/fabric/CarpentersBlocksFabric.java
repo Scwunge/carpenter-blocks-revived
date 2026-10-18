@@ -26,6 +26,7 @@ public class CarpentersBlocksFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         Platform.set(new FabricPlatform());
+        com.carpentersblocks.fabric.config.FabricConfig.load();
         ModContent.registerBlocks((id, block) -> Registry.register(BuiltInRegistries.BLOCK, id, block));
         ModContent.registerItems((id, item) -> Registry.register(BuiltInRegistries.ITEM, id, item));
         ModContent.registerBlockEntities(
