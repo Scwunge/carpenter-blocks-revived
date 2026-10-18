@@ -2,7 +2,8 @@
 
 import gzip
 import struct
-from pathlib import Path
+
+from .common import DATA, MOD
 
 DATA_VERSION = 3955  # Minecraft 1.21.1
 
@@ -45,7 +46,7 @@ def air_structure(sx: int, sy: int, sz: int) -> dict:
     }
 
 
-def generate(data: Path) -> None:
-    out = data / "carpentersblocks/structure/empty.nbt"
+def generate() -> None:
+    out = DATA / f"{MOD}/structure/empty.nbt"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_bytes(nbt_file(air_structure(3, 3, 3)))

@@ -5,8 +5,8 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.level.block.Blocks;
 
 import com.carpentersblocks.block.CarpentersBlockBlock;
-import com.carpentersblocks.blockentity.CarpentersBlockEntity;
-import com.carpentersblocks.blockentity.CoverData;
+import com.carpentersblocks.block.coverable.CoverData;
+import com.carpentersblocks.block.coverable.CoverableBlockEntity;
 import com.carpentersblocks.registry.ModContent;
 import com.carpentersblocks.test.CBGameTest;
 
@@ -20,9 +20,10 @@ public class CarpentersBlockTests {
         helper.setBlock(POS, ModContent.CARPENTERS_BLOCK);
         helper.assertBlockProperty(POS, CarpentersBlockBlock.SOLID, false);
 
-        CarpentersBlockEntity entity = helper.getBlockEntity(POS);
+        CoverableBlockEntity entity = helper.getBlockEntity(POS);
         entity.setCover(CoverData.BASE, Blocks.STONE.defaultBlockState());
 
         helper.assertBlockProperty(POS, CarpentersBlockBlock.SOLID, true);
         helper.succeed();
-    }}
+    }
+}
