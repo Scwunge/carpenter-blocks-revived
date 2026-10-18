@@ -11,11 +11,15 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.client.CoverTint;
+import com.carpentersblocks.client.SlopeSelectClient;
 import com.carpentersblocks.client.frame.ClientFrames;
 import com.carpentersblocks.client.frame.SlopeItemModel;
 import com.carpentersblocks.registry.ModContent;
@@ -29,6 +33,15 @@ public final class CarpentersBlocksNeoForgeClient {
         modBus.addListener((FMLClientSetupEvent event) -> ClientFrames.registerAll());
         modBus.addListener(CarpentersBlocksNeoForgeClient::wrapModels);
         modBus.addListener(CarpentersBlocksNeoForgeClient::registerColors);
+        SlopeSelectClient.sender = PacketDistributor::sendToServer;
+        NeoForge.EVENT_BUS.addListener(CarpentersBlocksNeoForgeClient::onScroll);
+    }
+
+    /** Slope select: scrolling while sneaking with a slope in hand changes its kind instead of the hotbar slot. */
+    private static void onScroll(InputEvent.MouseScrollingEvent event) {
+        if (SlopeSelectClient.onScroll(event.getScrollDeltaY())) {
+            event.setCanceled(true);
+        }
     }
 
     /** Wraps every block-state model of the coverable blocks; item models only where built in code. */

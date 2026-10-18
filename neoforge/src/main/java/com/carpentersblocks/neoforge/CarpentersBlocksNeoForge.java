@@ -16,8 +16,10 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
+import com.carpentersblocks.network.SlopeSelectPayload;
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.block.coverable.CoverableBlock;
 import com.carpentersblocks.neoforge.client.CarpentersBlocksNeoForgeClient;
@@ -31,6 +33,7 @@ public class CarpentersBlocksNeoForge {
         Platform.set(new NeoForgePlatform());
         com.carpentersblocks.neoforge.config.NeoForgeConfig.load();
         modBus.addListener(CarpentersBlocksNeoForge::register);
+        modBus.addListener(CarpentersBlocksNeoForge::registerPayloads);
         NeoForge.EVENT_BUS.addListener(CarpentersBlocksNeoForge::onRightClickBlock);
         NeoForge.EVENT_BUS.addListener(CarpentersBlocksNeoForge::onLeftClickBlock);
         if (dist.isClient()) {
@@ -62,6 +65,11 @@ public class CarpentersBlocksNeoForge {
                 && block.attack(state, event.getLevel(), event.getPos(), player, event.getFace())) {
             event.setCanceled(true);
         }
+    }
+
+    private static void registerPayloads(RegisterPayloadHandlersEvent event) {
+        event.registrar("1").playToServer(SlopeSelectPayload.TYPE, SlopeSelectPayload.STREAM_CODEC,
+                (payload, context) -> SlopeSelectPayload.handle(payload, context.player()));
     }
 
     private static void register(RegisterEvent event) {

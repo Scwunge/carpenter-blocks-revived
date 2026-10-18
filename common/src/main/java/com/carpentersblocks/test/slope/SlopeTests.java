@@ -23,6 +23,7 @@ import com.carpentersblocks.block.slope.CarpentersSlopeBlock;
 import com.carpentersblocks.block.slope.Slope;
 import com.carpentersblocks.block.slope.SlopeItem;
 import com.carpentersblocks.block.slope.SlopeKind;
+import com.carpentersblocks.network.SlopeSelectPayload;
 import com.carpentersblocks.registry.ModContent;
 import com.carpentersblocks.registry.SlopeContent;
 import com.carpentersblocks.test.CBGameTest;
@@ -234,6 +235,26 @@ public class SlopeTests {
             ItemStack picked = SlopeContent.CARPENTERS_SLOPE.getCloneItemStack(level, pos, level.getBlockState(pos));
             check(helper, SlopeItem.kind(picked) == expected, slope + " must pick a " + expected);
         }
+        helper.succeed();
+    }
+
+    @CBGameTest
+    public void slopeSelectCyclesTheHeldKind(GameTestHelper helper) {
+        Player player = player(helper, GameType.SURVIVAL, Direction.SOUTH, slopeItem(SlopeKind.WEDGE));
+        player.getInventory().setItem(1, new ItemStack(Blocks.STONE));
+        int slot = player.getInventory().selected;
+
+        SlopeSelectPayload.handle(new SlopeSelectPayload(slot, true), player);
+        check(helper, SlopeItem.kind(player.getMainHandItem()) == SlopeKind.OBLIQUE_INTERIOR, "scroll up: next kind");
+        SlopeSelectPayload.handle(new SlopeSelectPayload(slot, false), player);
+        SlopeSelectPayload.handle(new SlopeSelectPayload(slot, false), player);
+        check(helper, SlopeItem.kind(player.getMainHandItem()) == SlopeKind.PRISM_WEDGE, "scroll down wraps around");
+
+        SlopeSelectPayload.handle(new SlopeSelectPayload(1, true), player);
+        check(helper, player.getInventory().getItem(1).getComponentsPatch().isEmpty(), "other items are left alone");
+        SlopeSelectPayload.handle(new SlopeSelectPayload(40, true), player);
+        SlopeSelectPayload.handle(new SlopeSelectPayload(-1, true), player);
+        check(helper, SlopeItem.kind(player.getMainHandItem()) == SlopeKind.PRISM_WEDGE, "bad slots are ignored");
         helper.succeed();
     }
 }
