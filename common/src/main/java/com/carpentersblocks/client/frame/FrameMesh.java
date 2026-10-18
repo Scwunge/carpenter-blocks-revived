@@ -42,6 +42,23 @@ public final class FrameMesh {
 
     private final List<Quad> unculled = new ArrayList<>();
     private final Map<Direction, List<Quad>> culled = new EnumMap<>(Direction.class);
+    private final float raise;
+
+    public FrameMesh() {
+        this(0);
+    }
+
+    private FrameMesh(float raise) {
+        this.raise = raise;
+    }
+
+    /**
+     * A mesh drawn one block above its own position, as the rail slope fill is: nothing is culled, faces on the bottom
+     * (resting on the block itself) are dropped, and UVs come from the unraised positions.
+     */
+    public static FrameMesh raised() {
+        return new FrameMesh(1);
+    }
 
     /** The quads culled against {@code cullFace}, or the unculled ones for {@code null}. */
     public List<Quad> quads(@Nullable Direction cullFace) {
@@ -108,7 +125,10 @@ public final class FrameMesh {
             sloped = null;
             vertices = vanillaOrder(vertices, axis);
             if (onBoundary(vertices, axis)) {
-                cullFace = axis;
+                if (raise != 0 && axis == Direction.DOWN) {
+                    return this;
+                }
+                cullFace = raise == 0 ? axis : null;
             }
         } else if (Math.abs(normal.y) > EPSILON) {
             face = normal.y > 0 ? Direction.UP : Direction.DOWN;
@@ -131,13 +151,14 @@ public final class FrameMesh {
             Vector3f b = vertices.get(start);
             Vector3f c = vertices.get(start + 1);
             Vector3f d = start + 2 < vertices.size() ? vertices.get(start + 2) : c;
-            target.add(new Quad(bake(new Vector3f[] { a, b, c, d }, normal, face, projection, atlasSprite), sloped));
+            target.add(new Quad(bake(new Vector3f[] { a, b, c, d }, normal, face, projection, atlasSprite, raise),
+                    sloped));
         }
         return this;
     }
 
     private static BakedQuad bake(Vector3f[] corners, Vector3f normal, Direction face, Direction projection,
-            TextureAtlasSprite sprite) {
+            TextureAtlasSprite sprite, float raise) {
         int[] data = new int[32];
         int packedNormal = (((byte) Math.round(normal.x * 127)) & 0xFF)
                 | ((((byte) Math.round(normal.y * 127)) & 0xFF) << 8)
@@ -147,7 +168,7 @@ public final class FrameMesh {
             float[] uv = project(p, projection);
             int offset = i * 8;
             data[offset] = Float.floatToRawIntBits(p.x);
-            data[offset + 1] = Float.floatToRawIntBits(p.y);
+            data[offset + 1] = Float.floatToRawIntBits(p.y + raise);
             data[offset + 2] = Float.floatToRawIntBits(p.z);
             data[offset + 3] = -1;
             data[offset + 4] = Float.floatToRawIntBits(sprite.getU0() + (sprite.getU1() - sprite.getU0()) * uv[0]);

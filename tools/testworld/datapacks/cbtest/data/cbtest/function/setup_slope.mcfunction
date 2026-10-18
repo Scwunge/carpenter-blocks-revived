@@ -31,5 +31,14 @@ execute at @s run setblock ~4 ~ ~15 carpentersblocks:carpenters_slope[slope=wedg
 execute at @s run setblock ~6 ~ ~15 carpentersblocks:carpenters_slope[slope=wedge_int_pos_se]{Covers:[{Slot:6b,State:{Name:"minecraft:glass"}}]}
 execute at @s run setblock ~7 ~ ~15 carpentersblocks:carpenters_slope[slope=wedge_ext_pos_sw]{Covers:[{Slot:6b,State:{Name:"minecraft:mossy_cobblestone"}}]}
 execute at @s run setblock ~9 ~ ~15 carpentersblocks:carpenters_slope[slope=wedge_pos_e]{Covers:[{Slot:6b,State:{Name:"minecraft:furnace",Properties:{facing:"north",lit:"false"}}}]}
+# Rail slope fill, row z+16: stone-covered blocks under rails rising east (x-9) and west (x-5)
+execute at @s run setblock ~-9 ~ ~16 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:stone"}}]}
+execute at @s run setblock ~-8 ~ ~16 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:stone"}}]}
+execute at @s run setblock ~-8 ~1 ~16 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:stone"}}]}
+execute at @s run setblock ~-9 ~1 ~16 minecraft:rail[shape=ascending_east]
+execute at @s run setblock ~-5 ~ ~16 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:oak_planks"}}]}
+execute at @s run setblock ~-6 ~ ~16 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:oak_planks"}}]}
+execute at @s run setblock ~-6 ~1 ~16 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:oak_planks"}}]}
+execute at @s run setblock ~-5 ~1 ~16 minecraft:powered_rail[shape=ascending_west]
 give @s carpentersblocks:carpenters_slope[carpentersblocks:slope_kind="wedge"] 64
 give @s carpentersblocks:carpenters_slope[carpentersblocks:slope_kind="prism"] 64
