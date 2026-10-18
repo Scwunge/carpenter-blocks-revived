@@ -10,7 +10,8 @@
   "environment": "*",
   "entrypoints": {
     "main": ["com.carpentersblocks.fabric.CarpentersBlocksFabric"],
-    "client": ["com.carpentersblocks.fabric.client.CarpentersBlocksFabricClient"]
+    "client": ["com.carpentersblocks.fabric.client.CarpentersBlocksFabricClient"],
+    "fabric-gametest": ["com.carpentersblocks.test.CBGameTests"]
   },
   "mixins": ["carpentersblocks.mixins.json"],
   "depends": {

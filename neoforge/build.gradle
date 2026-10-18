@@ -31,6 +31,16 @@ loom {
         server {
             property 'unprotect.target', 'none'
         }
+        // Headless GameTest server: runs every carpentersblocks test, then exits with the number of failed tests
+        gameTestServer {
+            server()
+            name 'GameTest Server'
+            runDir 'build/gametest'
+            property 'neoforge.enableGameTest', 'true'
+            property 'neoforge.gameTestServer', 'true'
+            property 'unprotect.target', 'none'
+            property 'neoforge.enabledGameTestNamespaces', 'carpentersblocks'
+        }
     }
 }
 

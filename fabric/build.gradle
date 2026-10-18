@@ -7,6 +7,19 @@ architectury {
     fabric()
 }
 
+loom {
+    runs {
+        // Headless GameTest server: runs every carpentersblocks test, then exits with the number of failed tests
+        gameTestServer {
+            server()
+            name 'GameTest Server'
+            runDir 'build/gametest'
+            property 'fabric-api.gametest'
+            property 'fabric-api.gametest.report-file', "${project.layout.buildDirectory.get()}/gametest/report.xml"
+        }
+    }
+}
+
 configurations {
     common {
         canBeResolved = true
