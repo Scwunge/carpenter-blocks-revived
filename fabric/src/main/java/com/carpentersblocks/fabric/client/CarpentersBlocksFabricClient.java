@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
 import com.carpentersblocks.client.CoverTint;
+import com.carpentersblocks.client.frame.ClientFrames;
 import com.carpentersblocks.registry.ModContent;
 
 public class CarpentersBlocksFabricClient implements ClientModInitializer {
@@ -20,6 +21,7 @@ public class CarpentersBlocksFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         List<Block> blocks = ModContent.coverableBlocks();
+        ClientFrames.registerAll();
         ColorProviderRegistry.BLOCK.register(CoverTint.INSTANCE, blocks.toArray(Block[]::new));
 
         // Wrap every block-state model of the coverable blocks; item models stay as baked

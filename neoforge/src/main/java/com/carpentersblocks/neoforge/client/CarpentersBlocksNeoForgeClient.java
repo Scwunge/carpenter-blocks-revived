@@ -8,10 +8,12 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 
 import com.carpentersblocks.client.CoverTint;
+import com.carpentersblocks.client.frame.ClientFrames;
 import com.carpentersblocks.registry.ModContent;
 
 public final class CarpentersBlocksNeoForgeClient {
@@ -19,6 +21,8 @@ public final class CarpentersBlocksNeoForgeClient {
     private CarpentersBlocksNeoForgeClient() {}
 
     public static void init(IEventBus modBus) {
+        // Blocks exist only after registration, so code-built frames are registered at client setup
+        modBus.addListener((FMLClientSetupEvent event) -> ClientFrames.registerAll());
         modBus.addListener(CarpentersBlocksNeoForgeClient::wrapModels);
         modBus.addListener(CarpentersBlocksNeoForgeClient::registerColors);
     }

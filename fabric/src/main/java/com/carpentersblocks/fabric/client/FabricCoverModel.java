@@ -1,5 +1,6 @@
 package com.carpentersblocks.fabric.client;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
@@ -22,6 +23,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import com.carpentersblocks.block.coverable.CoverData;
 import com.carpentersblocks.block.coverable.CoverableBlockEntity;
 import com.carpentersblocks.client.CoverQuads;
+import com.carpentersblocks.client.frame.FrameBuilder;
+import com.carpentersblocks.client.frame.FrameMesh;
+import com.carpentersblocks.client.frame.FrameModels;
 
 /** Fabric Renderer API model that draws the frame re-textured with its covers. */
 public class FabricCoverModel extends ForwardingBakedModel {
@@ -30,6 +34,7 @@ public class FabricCoverModel extends ForwardingBakedModel {
             Direction.SOUTH, Direction.WEST, Direction.EAST };
 
     private final Map<BlendMode, RenderMaterial> materials = new ConcurrentHashMap<>();
+    private final FrameModels.Cache frames = new FrameModels.Cache();
 
     public FabricCoverModel(BakedModel frame) {
         this.wrapped = frame;
@@ -49,9 +54,15 @@ public class FabricCoverModel extends ForwardingBakedModel {
         RandomSource random = randomSupplier.get();
         QuadEmitter emitter = context.getEmitter();
 
+        FrameBuilder builder = FrameModels.builder(state.getBlock());
+        FrameMesh mesh = builder == null ? null : frames.mesh(builder, state, builder.renderKey(level, pos, state));
+
         for (Direction cullFace : CULL_FACES) {
-            for (CoverQuads.Part part : CoverQuads.build(wrapped, state, cullFace, data, random,
-                    ItemBlockRenderTypes::getChunkRenderType)) {
+            List<CoverQuads.Part> parts = mesh == null
+                    ? CoverQuads.build(wrapped, state, cullFace, data, random, ItemBlockRenderTypes::getChunkRenderType)
+                    : CoverQuads.build(mesh.quads(cullFace), cullFace, data, random,
+                            ItemBlockRenderTypes::getChunkRenderType);
+            for (CoverQuads.Part part : parts) {
                 emitter.fromVanilla(part.quad(), material(BlendMode.fromRenderLayer(part.layer())), cullFace);
                 emitter.emit();
             }

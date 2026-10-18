@@ -11,16 +11,24 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.IronBarsBlock;
+import net.minecraft.world.level.block.SnowyDirtBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.block.coverable.ChiselDesigns;
 import com.carpentersblocks.block.coverable.CoverData;
 import com.carpentersblocks.block.coverable.Overlay;
+import com.carpentersblocks.client.frame.FrameMesh;
 
 /**
  * Builds the quads of a coverable block, shared by both loaders' model wrappers.
@@ -42,6 +50,10 @@ public final class CoverQuads {
     /** Chisel designs are drawn see-through over the cover, as on the original's alpha pass. */
     public static final RenderType DESIGN_LAYER = RenderType.translucent();
 
+    /** Covers that show their top on upward slopes, like grass; anything extending SnowyDirtBlock counts too. */
+    public static final TagKey<Block> SLOPE_TOP_COVERS = TagKey.create(Registries.BLOCK,
+            CarpentersBlocks.id("slope_top_covers"));
+
     private static final long SEED = 42L;
 
     private CoverQuads() {}
@@ -54,17 +66,27 @@ public final class CoverQuads {
     public static List<Part> build(BakedModel frame, BlockState state, @Nullable Direction cullFace,
             @Nullable CoverData data, RandomSource random, Function<BlockState, RenderType> layerOf) {
         random.setSeed(SEED);
-        List<BakedQuad> frameQuads = frame.getQuads(state, cullFace, random);
+        List<FrameMesh.Quad> frameQuads = new ArrayList<>();
+        for (BakedQuad quad : frame.getQuads(state, cullFace, random)) {
+            frameQuads.add(new FrameMesh.Quad(quad, null));
+        }
+        return build(frameQuads, cullFace, data, random, layerOf);
+    }
+
+    /** Quads for one cull face of a code-built frame (see {@link FrameMesh}). */
+    public static List<Part> build(List<FrameMesh.Quad> frameQuads, @Nullable Direction cullFace,
+            @Nullable CoverData data, RandomSource random, Function<BlockState, RenderType> layerOf) {
         if (data == null || data.isEmpty()) {
             List<Part> parts = new ArrayList<>(frameQuads.size());
-            for (BakedQuad frameQuad : frameQuads) {
-                parts.add(new Part(frameQuad, cullFace, FRAME_LAYER));
+            for (FrameMesh.Quad frameQuad : frameQuads) {
+                parts.add(new Part(frameQuad.quad(), cullFace, FRAME_LAYER));
             }
             return parts;
         }
 
         List<Part> parts = new ArrayList<>(frameQuads.size() * 2);
-        for (BakedQuad frameQuad : frameQuads) {
+        for (FrameMesh.Quad meshQuad : frameQuads) {
+            BakedQuad frameQuad = meshQuad.quad();
             Direction face = frameQuad.getDirection();
             int slot = data.slotFor(face);
             BlockState cover = data.cover(slot);
@@ -75,7 +97,8 @@ public final class CoverQuads {
                 parts.add(new Part(dyed ? retexture(frameQuad, frameQuad.getSprite(), CoverTint.dye(slot)) : frameQuad,
                         cullFace, FRAME_LAYER));
             } else {
-                addCover(parts, frameQuad, cullFace, cover, slot, dyed, random, layerOf.apply(cover));
+                Direction spriteFace = meshQuad.sloped() == null ? face : slopedFace(cover, meshQuad.sloped());
+                addCover(parts, frameQuad, spriteFace, cullFace, cover, slot, dyed, random, layerOf.apply(cover));
             }
 
             // Overlay
@@ -97,10 +120,32 @@ public final class CoverQuads {
         return parts;
     }
 
-    private static void addCover(List<Part> parts, BakedQuad frameQuad, @Nullable Direction cullFace,
+    /**
+     * The cover face whose sprite a sloped quad shows, as the original's {@code getUniqueIcon}: the side texture by
+     * default; pillar ends when the pillar stands upright (bark when it lies down); the top for directional blocks
+     * on anything but plain wedges; and the top of grass-like blocks on upward slopes.
+     */
+    public static Direction slopedFace(BlockState cover, FrameMesh.Sloped sloped) {
+        Direction face = sloped.side();
+        if (cover.hasProperty(BlockStateProperties.AXIS)) {
+            Direction.Axis axis = cover.getValue(BlockStateProperties.AXIS);
+            if (axis == Direction.Axis.Y) {
+                face = sloped.positive() ? Direction.UP : Direction.DOWN;
+            } else if (sloped.side().getAxis() == axis) {
+                face = Direction.UP;
+            }
+        } else if (!sloped.wedge() && cover.getBlock() instanceof HorizontalDirectionalBlock) {
+            face = Direction.UP;
+        }
+        if (sloped.positive() && (cover.is(SLOPE_TOP_COVERS) || cover.getBlock() instanceof SnowyDirtBlock)) {
+            face = Direction.UP;
+        }
+        return face;
+    }
+
+    private static void addCover(List<Part> parts, BakedQuad frameQuad, Direction face, @Nullable Direction cullFace,
             BlockState cover, int slot, boolean dyed, RandomSource random, RenderType layer) {
         BakedModel coverModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(cover);
-        Direction face = frameQuad.getDirection();
 
         // Panes and bars have no full faces; show their main texture, as the original did
         List<BakedQuad> coverQuads = cover.getBlock() instanceof IronBarsBlock ? List.of()

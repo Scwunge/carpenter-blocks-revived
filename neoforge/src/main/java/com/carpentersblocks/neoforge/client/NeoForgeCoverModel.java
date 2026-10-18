@@ -25,11 +25,16 @@ import org.jetbrains.annotations.Nullable;
 import com.carpentersblocks.block.coverable.CoverData;
 import com.carpentersblocks.block.coverable.CoverableBlockEntity;
 import com.carpentersblocks.client.CoverQuads;
+import com.carpentersblocks.client.frame.FrameBuilder;
+import com.carpentersblocks.client.frame.FrameModels;
 
 /** NeoForge model that draws the frame re-textured with its covers. */
 public class NeoForgeCoverModel extends BakedModelWrapper<BakedModel> {
 
     private static final ModelProperty<CoverData> COVERS = new ModelProperty<>();
+    private static final ModelProperty<Object> FRAME_KEY = new ModelProperty<>();
+
+    private final FrameModels.Cache frames = new FrameModels.Cache();
 
     public NeoForgeCoverModel(BakedModel frame) {
         super(frame);
@@ -37,10 +42,15 @@ public class NeoForgeCoverModel extends BakedModelWrapper<BakedModel> {
 
     @Override
     public ModelData getModelData(BlockAndTintGetter level, BlockPos pos, BlockState state, ModelData modelData) {
+        ModelData.Builder data = modelData.derive();
         if (level.getBlockEntity(pos) instanceof CoverableBlockEntity blockEntity) {
-            return modelData.derive().with(COVERS, blockEntity.getCoverData()).build();
+            data.with(COVERS, blockEntity.getCoverData());
         }
-        return modelData;
+        FrameBuilder builder = FrameModels.builder(state.getBlock());
+        if (builder != null) {
+            data.with(FRAME_KEY, builder.renderKey(level, pos, state));
+        }
+        return data.build();
     }
 
     @Override
@@ -49,9 +59,13 @@ public class NeoForgeCoverModel extends BakedModelWrapper<BakedModel> {
         if (state == null) {
             return super.getQuads(null, side, random, data, renderType);
         }
+        FrameBuilder builder = FrameModels.builder(state.getBlock());
+        List<CoverQuads.Part> parts = builder == null
+                ? CoverQuads.build(originalModel, state, side, data.get(COVERS), random, NeoForgeCoverModel::layerOf)
+                : CoverQuads.build(frames.mesh(builder, state, data.get(FRAME_KEY)).quads(side), side,
+                        data.get(COVERS), random, NeoForgeCoverModel::layerOf);
         List<BakedQuad> quads = new ArrayList<>();
-        for (CoverQuads.Part part : CoverQuads.build(originalModel, state, side, data.get(COVERS), random,
-                NeoForgeCoverModel::layerOf)) {
+        for (CoverQuads.Part part : parts) {
             if (renderType == null || part.layer() == renderType) {
                 quads.add(part.quad());
             }
