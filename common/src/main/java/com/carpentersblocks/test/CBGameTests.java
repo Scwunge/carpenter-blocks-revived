@@ -16,6 +16,7 @@ import net.minecraft.gametest.framework.TestFunction;
 import net.minecraft.world.level.block.Rotation;
 
 import com.carpentersblocks.CarpentersBlocks;
+import com.carpentersblocks.test.barrier.BarrierTests;
 import com.carpentersblocks.test.block.CarpentersBlockTests;
 import com.carpentersblocks.test.block.CoverBehaviorTests;
 import com.carpentersblocks.test.stairs.StairsTests;
@@ -35,7 +36,8 @@ public final class CBGameTests {
     public static final List<Class<?>> TEST_CLASSES = List.of(
             CarpentersBlockTests.class,
             CoverBehaviorTests.class,
-            StairsTests.class);
+            StairsTests.class,
+            BarrierTests.class);
 
     /** Fabric instantiates gametest entrypoints. */
     public CBGameTests() {}

@@ -84,6 +84,7 @@ public final class ModContent {
                     new CarpentersBlockBlock(CoverableBlock.baseProperties()), true);
         }
         StairsContent.registerBlocks(registrar);
+        BarrierContent.registerBlocks(registrar);
     }
 
     public static void registerItems(BiConsumer<ResourceLocation, Item> registrar) {
