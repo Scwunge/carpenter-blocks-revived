@@ -106,7 +106,7 @@ def import_ref(lang_dir: Path) -> None:
         locale = path.stem.lower()
         entries = convert(parse_lang(path.read_text(encoding="utf-8")))
         (LANG_SOURCE / f"{locale}.json").write_text(
-            json.dumps(entries, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+            json.dumps(entries, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
         print(f"{path.name} -> tools/lang/{locale}.json ({len(entries)} strings)")
 
 
@@ -123,7 +123,7 @@ def generate() -> None:
         out = ASSETS / "lang" / source.name
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(json.dumps(dict(sorted(strings.items())), indent=2, ensure_ascii=False) + "\n",
-                       encoding="utf-8")
+                       encoding="utf-8", newline="\n")
 
 
 if __name__ == "__main__":

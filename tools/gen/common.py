@@ -17,7 +17,7 @@ AXE_MINEABLE = []
 
 def write(path: Path, obj) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(obj, indent=2) + "\n", encoding="utf-8")
+    path.write_text(json.dumps(obj, indent=2) + "\n", encoding="utf-8", newline="\n")
 
 
 def block_loot(name: str) -> None:
