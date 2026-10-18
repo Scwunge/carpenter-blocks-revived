@@ -7,20 +7,13 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -29,18 +22,16 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import com.carpentersblocks.CarpentersBlocks;
-import com.carpentersblocks.block.coverable.CoverableBlock;
 import com.carpentersblocks.block.coverable.CoverableBlockEntity;
+import com.carpentersblocks.block.sided.SidedBlock;
 
 /**
  * A redstone block attached to the face of another block: the Button, Lever, Pressure Plate and Daylight Sensor. It
  * gives its output as weak power all round and strong power into the block it hangs on, and the hammer's left-click
- * inverts that output. Port of the original {@code BlockSided} with the polarity the four shared.
+ * inverts that output, as the polarity the four shared in the original.
  */
-public abstract class SidedRedstoneBlock extends CoverableBlock {
+public abstract class SidedRedstoneBlock extends SidedBlock {
 
-    /** The side of the supporting block this is attached to, pointing out of it (the original's direction). */
-    public static final DirectionProperty FACING = BlockStateProperties.FACING;
     /** The original's negative polarity: full power when idle, none when active. */
     public static final BooleanProperty INVERTED = BlockStateProperties.INVERTED;
 
@@ -51,12 +42,7 @@ public abstract class SidedRedstoneBlock extends CoverableBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(FACING, INVERTED);
-    }
-
-    /** Whether the block may hang on this side of another block. */
-    protected boolean canAttach(Direction facing) {
-        return true;
+        builder.add(INVERTED);
     }
 
     /** Output before polarity, 0 to 15. */
@@ -66,47 +52,6 @@ public abstract class SidedRedstoneBlock extends CoverableBlock {
     public int output(BlockState state) {
         int active = activeOutput(state);
         return state.getValue(INVERTED) ? 15 - active : active;
-    }
-
-    // Placement and support
-
-    @Override
-    @Nullable
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        Direction facing = context.getClickedFace();
-        if (!canAttach(facing)) {
-            return null;
-        }
-        BlockState state = placementState(context, defaultBlockState()
-                .setValue(FACING, facing)
-                .setValue(WATERLOGGED, placedInWater(context)));
-        return state.canSurvive(context.getLevel(), context.getClickedPos()) ? state : null;
-    }
-
-    /** Adds what a block sets on placement beyond facing and water. */
-    protected BlockState placementState(BlockPlaceContext context, BlockState state) {
-        return state;
-    }
-
-    public static BlockPos supportPos(BlockState state, BlockPos pos) {
-        return pos.relative(state.getValue(FACING).getOpposite());
-    }
-
-    /** As the original's {@code isSideSolid} check: the face it hangs on must be sturdy, whatever block it is. */
-    @Override
-    protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
-        Direction facing = state.getValue(FACING);
-        BlockPos support = pos.relative(facing.getOpposite());
-        return canAttach(facing) && level.getBlockState(support).isFaceSturdy(level, support, facing);
-    }
-
-    @Override
-    protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
-            LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
-        if (direction == state.getValue(FACING).getOpposite() && !state.canSurvive(level, pos)) {
-            return Blocks.AIR.defaultBlockState();
-        }
-        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
     }
 
     // Power
@@ -180,22 +125,5 @@ public abstract class SidedRedstoneBlock extends CoverableBlock {
     protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos,
             CollisionContext context) {
         return Shapes.empty();
-    }
-
-    @Override
-    protected VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
-        return Shapes.empty();
-    }
-
-    // Structures
-
-    @Override
-    protected BlockState rotate(BlockState state, Rotation rotation) {
-        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
-    }
-
-    @Override
-    protected BlockState mirror(BlockState state, Mirror mirror) {
-        return state.setValue(FACING, mirror.mirror(state.getValue(FACING)));
     }
 }
