@@ -29,6 +29,7 @@ public class CarpentersBlocksNeoForge {
 
     public CarpentersBlocksNeoForge(IEventBus modBus, Dist dist) {
         Platform.set(new NeoForgePlatform());
+        com.carpentersblocks.neoforge.config.NeoForgeConfig.load();
         modBus.addListener(CarpentersBlocksNeoForge::register);
         NeoForge.EVENT_BUS.addListener(CarpentersBlocksNeoForge::onRightClickBlock);
         NeoForge.EVENT_BUS.addListener(CarpentersBlocksNeoForge::onLeftClickBlock);
