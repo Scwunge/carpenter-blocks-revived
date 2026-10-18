@@ -68,6 +68,12 @@ public final class ConfigOptions {
         bool(ITEMS, "enableTile", "Register the Carpenter's Tile.");
         integer(ITEMS, "toolUses", 1, 100_000, "Uses before a hammer or chisel breaks.");
         bool(ITEMS, "toolsDamageable", "Hammers and chisels take damage when used.");
+        decimal(ITEMS, "itemHammerDamageChanceFromSlopes", 0, 1,
+                "Chance that the hammer takes damage when it rotates or alters a slope.");
+        decimal(ITEMS, "itemHammerDamageChanceFromStairs", 0, 1,
+                "Chance that the hammer takes damage when it rotates or alters stairs.");
+        decimal(ITEMS, "itemHammerDamageChanceFromCollapsible", 0, 1,
+                "Chance that the hammer takes damage when it adjusts a collapsible block.");
         integer(RECIPE_QUANTITIES, "recipeQuantityTile", 1, 64, "Carpenter's Tiles crafted per recipe.");
     }
 
@@ -96,12 +102,12 @@ public final class ConfigOptions {
     /**
      * One config value, backed by the {@link CBConfig} field of the same name.
      *
-     * @param min, max inclusive range for integer options; unused for booleans
+     * @param min, max inclusive range for integer and decimal options; unused for booleans
      */
-    public record Option(String section, String key, Type type, Object defaultValue, int min, int max,
+    public record Option(String section, String key, Type type, Object defaultValue, double min, double max,
             List<String> comment, Field field) {
 
-        public enum Type { BOOLEAN, INTEGER }
+        public enum Type { BOOLEAN, INTEGER, DOUBLE }
 
         public Object get() {
             try {
@@ -111,13 +117,14 @@ public final class ConfigOptions {
             }
         }
 
-        /** Stores a value read from a config file, clamping integers into range. */
+        /** Stores a value read from a config file, clamping numbers into range. */
         public void set(Object value) {
             try {
-                if (type == Type.BOOLEAN) {
-                    field.setBoolean(null, (Boolean) value);
-                } else {
-                    field.setInt(null, Math.clamp(((Number) value).longValue(), min, max));
+                switch (type) {
+                    case BOOLEAN -> field.setBoolean(null, (Boolean) value);
+                    case INTEGER -> field.setInt(null, (int) Math.clamp(((Number) value).longValue(), (long) min,
+                            (long) max));
+                    case DOUBLE -> field.setDouble(null, Math.clamp(((Number) value).doubleValue(), min, max));
                 }
             } catch (IllegalAccessException e) {
                 throw new IllegalStateException(e);
@@ -133,7 +140,12 @@ public final class ConfigOptions {
         add(section, key, Option.Type.INTEGER, min, max, comment);
     }
 
-    private static void add(String section, String key, Option.Type type, int min, int max, String... comment) {
+    private static void decimal(String section, String key, double min, double max, String... comment) {
+        add(section, key, Option.Type.DOUBLE, min, max, comment);
+    }
+
+    private static void add(String section, String key, Option.Type type, double min, double max,
+            String... comment) {
         Field field;
         try {
             field = CBConfig.class.getField(key);

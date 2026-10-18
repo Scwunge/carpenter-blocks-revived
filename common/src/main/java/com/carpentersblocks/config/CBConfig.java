@@ -69,6 +69,9 @@ public final class CBConfig {
     public static boolean enableTile = true;
     public static int toolUses = 400;
     public static boolean toolsDamageable = true;
+    public static double itemHammerDamageChanceFromSlopes = 0.75;
+    public static double itemHammerDamageChanceFromStairs = 1.0;
+    public static double itemHammerDamageChanceFromCollapsible = 0.2;
     public static int recipeQuantityTile = 12;
 
     private CBConfig() {}

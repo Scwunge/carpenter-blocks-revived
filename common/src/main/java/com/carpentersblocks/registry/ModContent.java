@@ -83,6 +83,7 @@ public final class ModContent {
             CARPENTERS_BLOCK = block(registrar, "carpenters_block",
                     new CarpentersBlockBlock(CoverableBlock.baseProperties()), true);
         }
+        StairsContent.registerBlocks(registrar);
     }
 
     public static void registerItems(BiConsumer<ResourceLocation, Item> registrar) {

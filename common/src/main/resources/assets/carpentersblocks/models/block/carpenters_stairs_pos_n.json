@@ -1,0 +1,79 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "frame": "carpentersblocks:block/frame",
+    "particle": "carpentersblocks:block/frame"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        8
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#frame",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#frame",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#frame"
+        },
+        "south": {
+          "texture": "#frame",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#frame",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#frame",
+          "cullface": "east"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        8,
+        8
+      ],
+      "faces": {
+        "down": {
+          "texture": "#frame",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#frame"
+        },
+        "north": {
+          "texture": "#frame",
+          "cullface": "north"
+        },
+        "west": {
+          "texture": "#frame",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#frame",
+          "cullface": "east"
+        }
+      }
+    }
+  ]
+}

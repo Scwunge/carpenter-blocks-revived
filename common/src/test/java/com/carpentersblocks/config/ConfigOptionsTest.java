@@ -31,16 +31,19 @@ class ConfigOptionsTest {
 
     @Test
     void defaultsMatchOriginalMod() {
-        Map<String, Object> expected = Map.of(
-                "slopeSmoothness", 2,
-                "multiBlockSizeLimit", 500,
-                "toolUses", 400,
-                "toolsDamageable", true,
-                "enableRoutableFluids", false,
-                "enableFreeStandingLadders", false,
-                "recipeQuantityBlock", 5,
-                "recipeQuantitySlope", 6,
-                "recipeQuantityTile", 12);
+        Map<String, Object> expected = Map.ofEntries(
+                Map.entry("slopeSmoothness", 2),
+                Map.entry("multiBlockSizeLimit", 500),
+                Map.entry("toolUses", 400),
+                Map.entry("toolsDamageable", true),
+                Map.entry("enableRoutableFluids", false),
+                Map.entry("enableFreeStandingLadders", false),
+                Map.entry("recipeQuantityBlock", 5),
+                Map.entry("recipeQuantitySlope", 6),
+                Map.entry("recipeQuantityTile", 12),
+                Map.entry("itemHammerDamageChanceFromSlopes", 0.75),
+                Map.entry("itemHammerDamageChanceFromStairs", 1.0),
+                Map.entry("itemHammerDamageChanceFromCollapsible", 0.2));
         for (Option option : ConfigOptions.all()) {
             if (expected.containsKey(option.key())) {
                 assertEquals(expected.get(option.key()), option.defaultValue(), option.key());
@@ -58,6 +61,15 @@ class ConfigOptionsTest {
             assertEquals(smoothness.min(), CBConfig.slopeSmoothness);
         } finally {
             smoothness.set(smoothness.defaultValue());
+        }
+        Option stairs = option("itemHammerDamageChanceFromStairs");
+        try {
+            stairs.set(2.5);
+            assertEquals(1.0, CBConfig.itemHammerDamageChanceFromStairs);
+            stairs.set(0.3);
+            assertEquals(0.3, CBConfig.itemHammerDamageChanceFromStairs);
+        } finally {
+            stairs.set(stairs.defaultValue());
         }
     }
 

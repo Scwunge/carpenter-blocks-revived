@@ -191,6 +191,11 @@ public abstract class CoverableBlock extends BaseEntityBlock implements SimpleWa
         return be;
     }
 
+    /** Chance (0 to 1) that a right-click which changed the block wears the tool, as {@code damageItemWithChance}. */
+    protected double toolDamageChance() {
+        return 1.0;
+    }
+
     /**
      * The block state matching the attributes, called whenever they change. Sets {@link #LIGHT}; blocks that store
      * more (such as solidity) extend this.
@@ -244,7 +249,9 @@ public abstract class CoverableBlock extends BaseEntityBlock implements SimpleWa
                 BlockState base = be.getCoverData().cover(CoverData.BASE);
                 result.soundSource = base == null ? state : base;
             }
-            damageTool(level, player, hand);
+            if (level.random.nextFloat() <= toolDamageChance()) {
+                damageTool(level, player, hand);
+            }
         }
 
         if (server && result.altered && result.playSound && result.soundSource != null) {
