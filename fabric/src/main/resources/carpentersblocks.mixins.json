@@ -4,9 +4,18 @@
   "package": "com.carpentersblocks.fabric.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "ExplosionDamageCalculatorMixin"
+    "BushBlockMixin",
+    "EntityMixin",
+    "ExplosionDamageCalculatorMixin",
+    "FireBlockMixin",
+    "LivingEntityMixin",
+    "TallPlantMixin"
   ],
-  "client": [],
+  "client": [
+    "client.LevelRendererMixin",
+    "client.MultiPlayerGameModeMixin",
+    "client.TerrainParticleMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

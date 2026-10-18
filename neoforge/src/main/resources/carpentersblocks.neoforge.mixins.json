@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.carpentersblocks.neoforge.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "CoverableBlockMixin"
+  ],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

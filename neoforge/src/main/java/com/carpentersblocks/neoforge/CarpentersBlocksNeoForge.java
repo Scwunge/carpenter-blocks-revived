@@ -21,12 +21,14 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.block.coverable.CoverableBlock;
 import com.carpentersblocks.neoforge.client.CarpentersBlocksNeoForgeClient;
+import com.carpentersblocks.platform.Platform;
 import com.carpentersblocks.registry.ModContent;
 
 @Mod(CarpentersBlocks.MOD_ID)
 public class CarpentersBlocksNeoForge {
 
     public CarpentersBlocksNeoForge(IEventBus modBus, Dist dist) {
+        Platform.set(new NeoForgePlatform());
         modBus.addListener(CarpentersBlocksNeoForge::register);
         NeoForge.EVENT_BUS.addListener(CarpentersBlocksNeoForge::onRightClickBlock);
         NeoForge.EVENT_BUS.addListener(CarpentersBlocksNeoForge::onLeftClickBlock);

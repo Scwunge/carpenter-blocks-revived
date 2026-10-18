@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -17,12 +18,14 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import com.carpentersblocks.block.coverable.CoverableBlock;
+import com.carpentersblocks.platform.Platform;
 import com.carpentersblocks.registry.ModContent;
 
 public class CarpentersBlocksFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        Platform.set(new FabricPlatform());
         ModContent.registerBlocks((id, block) -> Registry.register(BuiltInRegistries.BLOCK, id, block));
         ModContent.registerItems((id, item) -> Registry.register(BuiltInRegistries.ITEM, id, item));
         ModContent.registerBlockEntities(
@@ -36,6 +39,12 @@ public class CarpentersBlocksFabric implements ModInitializer {
                 });
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ModContent.TAB_ID,
                 ModContent.buildTab(FabricItemGroup.builder()));
+
+        // Lets fire treat the frames as flammable; how well each one burns follows its covers (FireBlockMixin)
+        for (Block block : ModContent.coverableBlocks()) {
+            FlammableBlockRegistry.getDefaultInstance().add(block, CoverableBlock.FRAME_FLAMMABILITY,
+                    CoverableBlock.FRAME_FIRE_SPREAD);
+        }
 
         // Clicks go to the block before vanilla's sneak check, and with the clicked face (see CoverableBlock)
         UseBlockCallback.EVENT.register((player, level, hand, hit) -> {

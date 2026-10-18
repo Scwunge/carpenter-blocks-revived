@@ -6,6 +6,9 @@ import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -22,6 +25,14 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.BushBlock;
+import net.minecraft.world.level.block.CactusBlock;
+import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.DeadBushBlock;
+import net.minecraft.world.level.block.MushroomBlock;
+import net.minecraft.world.level.block.NetherWartBlock;
+import net.minecraft.world.level.block.SugarCaneBlock;
+import net.minecraft.world.level.block.WaterlilyBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -38,6 +49,7 @@ import org.jetbrains.annotations.Nullable;
 import com.carpentersblocks.api.ICarpentersChisel;
 import com.carpentersblocks.api.ICarpentersHammer;
 import com.carpentersblocks.config.CBConfig;
+import com.carpentersblocks.platform.Platform;
 
 /**
  * Base of every Carpenter's block: something that can be covered, dyed, overlaid, chiseled and lit, and that takes
@@ -394,10 +406,233 @@ public abstract class CoverableBlock extends BaseEntityBlock {
         return getExplosionResistance();
     }
 
-    /** Sound of the base cover. Overrides NeoForge's block extension. */
+    /**
+     * What a face looks like it is made of: a full-face overlay if there is one, otherwise the face's cover, or
+     * {@code null} for the bare frame. Port of {@code BlockProperties.getFeatureSensitiveSideItemStack}; a
+     * {@code null} face means the base.
+     */
+    @Nullable
+    public static BlockState featureSensitiveState(BlockGetter level, BlockPos pos, @Nullable Direction face) {
+        CoverableBlockEntity be = blockEntity(level, pos);
+        if (be == null) {
+            return null;
+        }
+        CoverData data = be.getCoverData();
+        if (face == null) {
+            return data.cover(CoverData.BASE);
+        }
+        int slot = data.slotFor(face);
+        Overlay overlay = data.overlay(slot);
+        if (overlay != null && overlay.coversFullSide(face)) {
+            return overlay.block().defaultBlockState();
+        }
+        return data.cover(slot);
+    }
+
+    /**
+     * Sound of the block. Footsteps (which come with an entity) sound like the top face, as the original's step
+     * sounds did; digging and breaking sound like the base cover. Overrides NeoForge's block extension; Fabric
+     * reaches it through mixins.
+     */
     public SoundType getSoundType(BlockState state, LevelReader level, BlockPos pos, @Nullable Entity entity) {
-        BlockState cover = baseCover(level, pos);
-        return cover != null ? cover.getSoundType() : state.getSoundType();
+        BlockState source = featureSensitiveState(level, pos, entity != null ? Direction.UP : null);
+        return source != null && !(source.getBlock() instanceof CoverableBlock) ? source.getSoundType()
+                : state.getSoundType();
+    }
+
+    /** Slipperiness of the top face (ice covers are slippery). Overrides NeoForge's block extension. */
+    public float getFriction(BlockState state, LevelReader level, BlockPos pos, @Nullable Entity entity) {
+        BlockState top = topCover(level, pos);
+        return top != null ? top.getBlock().getFriction() : getFriction();
+    }
+
+    // Fire, following the face's cover. The bare frame burns like the original (encouragement 5, flammability 20).
+
+    public static final int FRAME_FLAMMABILITY = 20;
+    public static final int FRAME_FIRE_SPREAD = 5;
+
+    /** Overrides NeoForge's block extension; Fabric reaches it through a mixin. */
+    public int getFlammability(BlockState state, BlockGetter level, BlockPos pos, Direction face) {
+        BlockState source = featureSensitiveState(level, pos, face);
+        return source == null || source.getBlock() instanceof CoverableBlock ? FRAME_FLAMMABILITY
+                : Platform.get().flammability(source, level, pos, face);
+    }
+
+    /** Overrides NeoForge's block extension; Fabric reaches it through a mixin. */
+    public int getFireSpreadSpeed(BlockState state, BlockGetter level, BlockPos pos, Direction face) {
+        BlockState source = featureSensitiveState(level, pos, face);
+        return source == null || source.getBlock() instanceof CoverableBlock ? FRAME_FIRE_SPREAD
+                : Platform.get().fireSpreadSpeed(source, level, pos, face);
+    }
+
+    /** Overrides NeoForge's block extension. */
+    public boolean isFlammable(BlockState state, BlockGetter level, BlockPos pos, Direction face) {
+        return getFlammability(state, level, pos, face) > 0;
+    }
+
+    /** Overrides NeoForge's block extension: netherrack covers burn forever. */
+    public boolean isFireSource(BlockState state, LevelReader level, BlockPos pos, Direction face) {
+        BlockState source = featureSensitiveState(level, pos, face);
+        return source != null && !(source.getBlock() instanceof CoverableBlock)
+                && Platform.get().isFireSource(source, level, pos, face);
+    }
+
+    // Plants, as the original's canSustainPlant
+
+    /** Kinds of plant soil, matching the original's plant types. */
+    public enum PlantType { PLAINS, DESERT, NETHER, BEACH }
+
+    /**
+     * Whether a plant may grow on the given face, or {@code null} to leave it to the plant. The face must be solid,
+     * and the top cover, base cover and their overlays decide which plants take: grass and dirt for flowers and
+     * saplings, sand for cactus and dead bushes, soul sand for nether wart, and grass, dirt or sand next to water
+     * for sugar cane.
+     */
+    @Nullable
+    public Boolean sustainsPlant(BlockState state, BlockGetter level, BlockPos pos, Direction face,
+            @Nullable PlantType type) {
+        CoverableBlockEntity be = blockEntity(level, pos);
+        if (be == null || type == null) {
+            return null;
+        }
+        if (!state.isFaceSturdy(level, pos, face)) {
+            return false;
+        }
+
+        CoverData data = be.getCoverData();
+        boolean grassOrDirt = false;
+        boolean sand = false;
+        boolean soulSand = false;
+        for (int slot : new int[] { Direction.UP.get3DDataValue(), CoverData.BASE }) {
+            Overlay overlay = data.overlay(slot);
+            for (BlockState soil : new BlockState[] { data.cover(slot),
+                    overlay == null ? null : overlay.block().defaultBlockState() }) {
+                if (soil != null) {
+                    grassOrDirt |= soil.is(BlockTags.DIRT);
+                    sand |= soil.is(BlockTags.SAND);
+                    soulSand |= soil.is(Blocks.SOUL_SAND) || soil.is(Blocks.SOUL_SOIL);
+                }
+            }
+        }
+
+        return switch (type) {
+            case PLAINS -> grassOrDirt;
+            case DESERT -> sand;
+            case NETHER -> soulSand;
+            case BEACH -> (grassOrDirt || sand) && hasAdjacentWater(level, pos);
+        };
+    }
+
+    private static boolean hasAdjacentWater(BlockGetter level, BlockPos pos) {
+        for (Direction dir : Direction.Plane.HORIZONTAL) {
+            if (level.getFluidState(pos.relative(dir)).is(FluidTags.WATER)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** The original's plant type for a plant block, or {@code null} for plants it left alone. */
+    @Nullable
+    public static PlantType plantTypeOf(BlockState plant) {
+        Block block = plant.getBlock();
+        if (block instanceof CactusBlock || block instanceof DeadBushBlock) {
+            return PlantType.DESERT;
+        }
+        if (block instanceof NetherWartBlock) {
+            return PlantType.NETHER;
+        }
+        if (block instanceof SugarCaneBlock) {
+            return PlantType.BEACH;
+        }
+        if (block instanceof BushBlock && !(block instanceof CropBlock) && !(block instanceof WaterlilyBlock)
+                && !(block instanceof MushroomBlock)) {
+            return PlantType.PLAINS;
+        }
+        return null;
+    }
+
+    // Behavior borrowed from covers
+
+    /** Side covers come off when the side is pressed flat against a solid neighbor, as in the original. */
+    @Override
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock,
+            BlockPos neighborPos, boolean movedByPiston) {
+        super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
+        CoverableBlockEntity be = blockEntity(level, pos);
+        if (level.isClientSide || be == null) {
+            return;
+        }
+        for (Direction dir : Direction.values()) {
+            int slot = dir.get3DDataValue();
+            if (!be.getCoverData().hasCover(slot)) {
+                continue;
+            }
+            BlockPos adjacent = pos.relative(dir);
+            if (!canCover(be, slot) || level.getBlockState(adjacent).isFaceSturdy(level, adjacent, dir.getOpposite())
+                    && state.isFaceSturdy(level, pos, dir)) {
+                ejectSlot(level, pos, be, slot);
+            }
+        }
+    }
+
+    /** Effects of the base cover (dripping leaves, and so on) and of a mycelium overlay. */
+    @Override
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+        CoverableBlockEntity be = blockEntity(level, pos);
+        if (be == null) {
+            return;
+        }
+        BlockState base = be.getCoverData().cover(CoverData.BASE);
+        try {
+            if (base != null) {
+                base.getBlock().animateTick(base, level, pos, random);
+            }
+            if (be.getCoverData().overlay(CoverData.BASE) == Overlay.MYCELIUM) {
+                Blocks.MYCELIUM.animateTick(Blocks.MYCELIUM.defaultBlockState(), level, pos, random);
+            }
+        } catch (RuntimeException ignored) {
+            // A cover's effect expected its own block in the world; skip it
+        }
+    }
+
+    /** Standing on the top cover: magma burns. A modern addition; 1.7 had none of these blocks. */
+    @Override
+    public void stepOn(Level level, BlockPos pos, BlockState state, Entity entity) {
+        BlockState top = topCover(level, pos);
+        if (top != null) {
+            top.getBlock().stepOn(level, pos, top, entity);
+        } else {
+            super.stepOn(level, pos, state, entity);
+        }
+    }
+
+    /** Landing on the top cover: hay and slime soften falls. A modern addition. */
+    @Override
+    public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float fallDistance) {
+        BlockState top = topCover(level, pos);
+        if (top != null) {
+            top.getBlock().fallOn(level, top, pos, entity, fallDistance);
+        } else {
+            super.fallOn(level, state, pos, entity, fallDistance);
+        }
+    }
+
+    /** Slime covers bounce. A modern addition. */
+    @Override
+    public void updateEntityAfterFallOn(BlockGetter level, Entity entity) {
+        BlockState top = topCover(level, entity.getOnPos());
+        if (top != null) {
+            top.getBlock().updateEntityAfterFallOn(level, entity);
+        } else {
+            super.updateEntityAfterFallOn(level, entity);
+        }
+    }
+
+    @Nullable
+    private static BlockState topCover(BlockGetter level, BlockPos pos) {
+        BlockState top = featureSensitiveState(level, pos, Direction.UP);
+        return top == null || top.getBlock() instanceof CoverableBlock ? null : top;
     }
 
     /** Weak power: the strongest signal any cover gives. */
