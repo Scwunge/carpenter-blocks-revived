@@ -22,10 +22,13 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import com.carpentersblocks.block.coverable.CoverData;
 import com.carpentersblocks.block.coverable.CoverableBlockEntity;
+import com.carpentersblocks.block.slope.RailSlopes;
+import com.carpentersblocks.block.slope.Slope;
 import com.carpentersblocks.client.CoverQuads;
 import com.carpentersblocks.client.frame.FrameBuilder;
 import com.carpentersblocks.client.frame.FrameMesh;
 import com.carpentersblocks.client.frame.FrameModels;
+import com.carpentersblocks.client.frame.RailSlopeFill;
 
 /** Fabric Renderer API model that draws the frame re-textured with its covers. */
 public class FabricCoverModel extends ForwardingBakedModel {
@@ -35,6 +38,7 @@ public class FabricCoverModel extends ForwardingBakedModel {
 
     private final Map<BlendMode, RenderMaterial> materials = new ConcurrentHashMap<>();
     private final FrameModels.Cache frames = new FrameModels.Cache();
+    private final RailSlopeFill railFill = new RailSlopeFill();
 
     public FabricCoverModel(BakedModel frame) {
         this.wrapped = frame;
@@ -64,6 +68,15 @@ public class FabricCoverModel extends ForwardingBakedModel {
                             ItemBlockRenderTypes::getChunkRenderType);
             for (CoverQuads.Part part : parts) {
                 emitter.fromVanilla(part.quad(), material(BlendMode.fromRenderLayer(part.layer())), cullFace);
+                emitter.emit();
+            }
+        }
+
+        Slope fill = RailSlopes.slopeAbove(level, pos, state);
+        if (fill != null) {
+            for (CoverQuads.Part part : CoverQuads.build(railFill.mesh(fill).quads(null), null, data, random,
+                    ItemBlockRenderTypes::getChunkRenderType)) {
+                emitter.fromVanilla(part.quad(), material(BlendMode.fromRenderLayer(part.layer())), null);
                 emitter.emit();
             }
         }

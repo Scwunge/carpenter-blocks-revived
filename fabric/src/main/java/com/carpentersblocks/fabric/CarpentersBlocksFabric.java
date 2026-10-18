@@ -6,6 +6,8 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.core.BlockPos;
@@ -18,6 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import com.carpentersblocks.block.coverable.CoverableBlock;
+import com.carpentersblocks.network.SlopeSelectPayload;
 import com.carpentersblocks.platform.Platform;
 import com.carpentersblocks.registry.ModContent;
 
@@ -27,6 +30,9 @@ public class CarpentersBlocksFabric implements ModInitializer {
     public void onInitialize() {
         Platform.set(new FabricPlatform());
         com.carpentersblocks.fabric.config.FabricConfig.load();
+        PayloadTypeRegistry.playC2S().register(SlopeSelectPayload.TYPE, SlopeSelectPayload.STREAM_CODEC);
+        ServerPlayNetworking.registerGlobalReceiver(SlopeSelectPayload.TYPE,
+                (payload, context) -> SlopeSelectPayload.handle(payload, context.player()));
         ModContent.registerDataComponents(
                 (id, type) -> Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, id, type));
         ModContent.registerBlocks((id, block) -> Registry.register(BuiltInRegistries.BLOCK, id, block));

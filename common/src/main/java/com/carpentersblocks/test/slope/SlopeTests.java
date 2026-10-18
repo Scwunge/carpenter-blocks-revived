@@ -13,16 +13,21 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RailBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 import com.carpentersblocks.block.coverable.CoverData;
 import com.carpentersblocks.block.coverable.CoverableBlockEntity;
 import com.carpentersblocks.block.slope.CarpentersSlopeBlock;
+import com.carpentersblocks.block.slope.RailSlopes;
 import com.carpentersblocks.block.slope.Slope;
 import com.carpentersblocks.block.slope.SlopeItem;
 import com.carpentersblocks.block.slope.SlopeKind;
+import com.carpentersblocks.network.SlopeSelectPayload;
+import com.carpentersblocks.config.CBConfig;
 import com.carpentersblocks.registry.ModContent;
 import com.carpentersblocks.registry.SlopeContent;
 import com.carpentersblocks.test.CBGameTest;
@@ -233,6 +238,54 @@ public class SlopeTests {
                     && SlopeItem.kind(drops.get(0)) == expected, slope + " must drop a " + expected + ": " + drops);
             ItemStack picked = SlopeContent.CARPENTERS_SLOPE.getCloneItemStack(level, pos, level.getBlockState(pos));
             check(helper, SlopeItem.kind(picked) == expected, slope + " must pick a " + expected);
+        }
+        helper.succeed();
+    }
+
+    @CBGameTest
+    public void slopeSelectCyclesTheHeldKind(GameTestHelper helper) {
+        Player player = player(helper, GameType.SURVIVAL, Direction.SOUTH, slopeItem(SlopeKind.WEDGE));
+        player.getInventory().setItem(1, new ItemStack(Blocks.STONE));
+        int slot = player.getInventory().selected;
+
+        SlopeSelectPayload.handle(new SlopeSelectPayload(slot, true), player);
+        check(helper, SlopeItem.kind(player.getMainHandItem()) == SlopeKind.OBLIQUE_INTERIOR, "scroll up: next kind");
+        SlopeSelectPayload.handle(new SlopeSelectPayload(slot, false), player);
+        SlopeSelectPayload.handle(new SlopeSelectPayload(slot, false), player);
+        check(helper, SlopeItem.kind(player.getMainHandItem()) == SlopeKind.PRISM_WEDGE, "scroll down wraps around");
+
+        SlopeSelectPayload.handle(new SlopeSelectPayload(1, true), player);
+        check(helper, player.getInventory().getItem(1).getComponentsPatch().isEmpty(), "other items are left alone");
+        SlopeSelectPayload.handle(new SlopeSelectPayload(40, true), player);
+        SlopeSelectPayload.handle(new SlopeSelectPayload(-1, true), player);
+        check(helper, SlopeItem.kind(player.getMainHandItem()) == SlopeKind.PRISM_WEDGE, "bad slots are ignored");
+        helper.succeed();
+    }
+
+    @CBGameTest
+    public void ascendingRailsGetASlopeFill(GameTestHelper helper) {
+        boolean enabled = CBConfig.enableRailSlopes;
+        try {
+            CBConfig.enableRailSlopes = true;
+            BlockPos rail = ON_FLOOR.above();
+            helper.setBlock(ON_FLOOR, ModContent.CARPENTERS_BLOCK.defaultBlockState());
+            helper.setBlock(rail.east(), Blocks.STONE);
+            helper.setBlock(rail, Blocks.RAIL.defaultBlockState().setValue(RailBlock.SHAPE, RailShape.ASCENDING_EAST));
+            Level level = helper.getLevel();
+            BlockPos pos = helper.absolutePos(ON_FLOOR);
+            check(helper, helper.getBlockState(rail).getValue(RailBlock.SHAPE) == RailShape.ASCENDING_EAST,
+                    "rail must stay ascending");
+            check(helper, RailSlopes.slopeAbove(level, pos, level.getBlockState(pos)) == Slope.WEDGE_POS_W,
+                    "a rail rising east fills a wedge high on the east");
+
+            CBConfig.enableRailSlopes = false;
+            check(helper, RailSlopes.slopeAbove(level, pos, level.getBlockState(pos)) == null, "config turns it off");
+            CBConfig.enableRailSlopes = true;
+
+            helper.setBlock(rail, Blocks.RAIL.defaultBlockState().setValue(RailBlock.SHAPE, RailShape.EAST_WEST));
+            check(helper, RailSlopes.slopeAbove(level, pos, level.getBlockState(pos)) == null, "flat rails get none");
+        } finally {
+            CBConfig.enableRailSlopes = enabled;
         }
         helper.succeed();
     }
