@@ -5,7 +5,11 @@ import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
@@ -17,6 +21,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.HoneycombItem;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -35,6 +41,9 @@ import net.minecraft.world.level.block.MushroomBlock;
 import net.minecraft.world.level.block.NetherWartBlock;
 import net.minecraft.world.level.block.SugarCaneBlock;
 import net.minecraft.world.level.block.WaterlilyBlock;
+import net.minecraft.world.level.block.WeatheringCopper;
+import net.minecraft.world.level.block.LevelEvent;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
@@ -269,6 +278,11 @@ public abstract class CoverableBlock extends BaseEntityBlock implements SimpleWa
             return;
         }
 
+        if (data.hasCover(slot) && modifyCover(level, pos, be, slot, player, hand, stack, server)) {
+            result.setAltered().setNoSound();
+            return;
+        }
+
         BlockState cover = CBConfig.enableCovers ? AttributeItems.coverStateFor(stack, player, hand, hit) : null;
         if (cover != null) {
             // The base takes the first cover; once it has one, covers go on the clicked side
@@ -313,6 +327,81 @@ public abstract class CoverableBlock extends BaseEntityBlock implements SimpleWa
             }
         }
     }
+
+    /**
+     * Modern addition: tools act on a cover as they would on the block itself. An axe strips a log, scrapes a
+     * copper block or takes its wax off; honeycomb waxes copper. Returns whether the cover changed.
+     */
+    private static boolean modifyCover(Level level, BlockPos pos, CoverableBlockEntity be, int slot, Player player,
+            InteractionHand hand, ItemStack stack, boolean server) {
+        BlockState cover = be.getCoverData().cover(slot);
+        BlockState changed = null;
+        SoundEvent sound = null;
+        int event = -1;
+        if (stack.is(ItemTags.AXES)) {
+            changed = Platform.get().stripped(cover);
+            sound = SoundEvents.AXE_STRIP;
+            if (changed == null && (changed = WeatheringCopper.getPrevious(cover).orElse(null)) != null) {
+                sound = SoundEvents.AXE_SCRAPE;
+                event = LevelEvent.PARTICLES_SCRAPE;
+            }
+            if (changed == null) {
+                Block unwaxed = HoneycombItem.WAX_OFF_BY_BLOCK.get().get(cover.getBlock());
+                if (unwaxed != null) {
+                    changed = unwaxed.withPropertiesOf(cover);
+                    sound = SoundEvents.AXE_WAX_OFF;
+                    event = LevelEvent.PARTICLES_WAX_OFF;
+                }
+            }
+        } else if (stack.is(Items.HONEYCOMB)) {
+            changed = HoneycombItem.getWaxed(cover).orElse(null);
+            sound = SoundEvents.HONEYCOMB_WAX_ON;
+            event = LevelEvent.PARTICLES_AND_SOUND_WAX_ON;
+        }
+        if (changed == null) {
+            return false;
+        }
+        if (server) {
+            be.setCover(slot, changed);
+            if (event == LevelEvent.PARTICLES_AND_SOUND_WAX_ON) {
+                level.levelEvent(null, event, pos, 0);
+                stack.consume(1, player);
+            } else {
+                level.playSound(null, pos, sound, SoundSource.BLOCKS, 1.0F, 1.0F);
+                if (event != -1) {
+                    level.levelEvent(null, event, pos, 0);
+                }
+                stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
+            }
+            level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, changed));
+        }
+        return true;
+    }
+
+    /** Modern addition: copper covers age like copper blocks. */
+    @Override
+    protected boolean isRandomlyTicking(BlockState state) {
+        return true;
+    }
+
+    @Override
+    protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        CoverableBlockEntity be = blockEntity(level, pos);
+        if (be == null || random.nextFloat() >= COPPER_AGING_CHANCE) {
+            return;
+        }
+        for (int i = 0; i < CoverData.SLOTS; i++) {
+            int slot = i;
+            BlockState cover = be.getCoverData().cover(slot);
+            if (cover != null && cover.getBlock() instanceof WeatheringCopper) {
+                WeatheringCopper.getNext(cover.getBlock())
+                        .ifPresent(next -> be.setCover(slot, next.withPropertiesOf(cover)));
+            }
+        }
+    }
+
+    /** Vanilla's per-random-tick chance that a lone copper block ages. */
+    private static final float COPPER_AGING_CHANCE = 0.05688889F;
 
     /** The original played a block item's own sound, or sand for anything else. */
     private static BlockState soundSourceFor(ItemStack stack) {

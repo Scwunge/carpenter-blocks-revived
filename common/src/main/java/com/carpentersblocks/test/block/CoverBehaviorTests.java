@@ -3,19 +3,27 @@ package com.carpentersblocks.test.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.Clearable;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 
 import com.carpentersblocks.block.CarpentersBlockBlock;
 import com.carpentersblocks.block.FrameShape;
 import com.carpentersblocks.block.coverable.CoverData;
 import com.carpentersblocks.block.coverable.CoverableBlock;
 import com.carpentersblocks.block.coverable.CoverableBlockEntity;
+import com.carpentersblocks.block.coverable.Overlay;
 import com.carpentersblocks.registry.ModContent;
 import com.carpentersblocks.test.CBGameTest;
 
@@ -166,6 +174,66 @@ public class CoverBehaviorTests {
                 "slab frame takes water");
         helper.assertBlockProperty(FLOOR, CoverableBlock.WATERLOGGED, true);
         check(helper, level.getFluidState(pos).is(Fluids.WATER), "slab frame holds water");
+        helper.succeed();
+    }
+
+    /** Right-clicks the top of the block at {@code rel} holding {@code stack}, as the loader click events do. */
+    private static void rightClick(GameTestHelper helper, BlockPos rel, ItemStack stack) {
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        player.setItemInHand(InteractionHand.MAIN_HAND, stack);
+        BlockPos pos = helper.absolutePos(rel);
+        BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(pos).add(0, 0.5, 0), Direction.UP, pos, false);
+        block().use(helper.getLevel().getBlockState(pos), helper.getLevel(), pos, player, InteractionHand.MAIN_HAND,
+                hit);
+    }
+
+    private static BlockState base(GameTestHelper helper, BlockPos rel) {
+        CoverableBlockEntity entity = helper.getBlockEntity(rel);
+        return entity.getCoverData().cover(CoverData.BASE);
+    }
+
+    @CBGameTest
+    public void axeStripsLogCover(GameTestHelper helper) {
+        frame(helper, FLOOR, Blocks.OAK_LOG.defaultBlockState());
+        ItemStack axe = new ItemStack(Items.IRON_AXE);
+        rightClick(helper, FLOOR, axe);
+        check(helper, base(helper, FLOOR).is(Blocks.STRIPPED_OAK_LOG), "axe strips oak log cover");
+        check(helper, axe.getDamageValue() == 1, "stripping wears the axe");
+        helper.succeed();
+    }
+
+    @CBGameTest
+    public void copperCoverWaxAndScrape(GameTestHelper helper) {
+        frame(helper, FLOOR, Blocks.EXPOSED_COPPER.defaultBlockState());
+        ItemStack honeycomb = new ItemStack(Items.HONEYCOMB, 2);
+        rightClick(helper, FLOOR, honeycomb);
+        check(helper, base(helper, FLOOR).is(Blocks.WAXED_EXPOSED_COPPER), "honeycomb waxes copper cover");
+        check(helper, honeycomb.getCount() == 1, "waxing uses a honeycomb");
+        rightClick(helper, FLOOR, new ItemStack(Items.IRON_AXE));
+        check(helper, base(helper, FLOOR).is(Blocks.EXPOSED_COPPER), "axe removes wax");
+        rightClick(helper, FLOOR, new ItemStack(Items.IRON_AXE));
+        check(helper, base(helper, FLOOR).is(Blocks.COPPER_BLOCK), "axe scrapes oxidation");
+        helper.succeed();
+    }
+
+    @CBGameTest
+    public void mossOverlaySupportsFlowers(GameTestHelper helper) {
+        CoverableBlockEntity entity = frame(helper, FLOOR, Blocks.STONE.defaultBlockState());
+        entity.setOverlay(CoverData.BASE, Overlay.MOSS, new ItemStack(Items.MOSS_CARPET));
+        check(helper, Blocks.POPPY.defaultBlockState().canSurvive(helper.getLevel(), helper.absolutePos(ABOVE)),
+                "poppy grows on moss overlay");
+        check(helper, Overlay.forItem(new ItemStack(Items.SCULK_VEIN)) == Overlay.SCULK, "sculk vein is an overlay");
+        helper.succeed();
+    }
+
+    @CBGameTest
+    public void commandsReplaceWithoutDrops(GameTestHelper helper) {
+        CoverableBlockEntity entity = frame(helper, FLOOR, Blocks.STONE.defaultBlockState());
+        entity.setDye(CoverData.BASE, DyeColor.RED, new ItemStack(Items.RED_DYE));
+        Clearable.tryClear(entity);
+        helper.setBlock(FLOOR, Blocks.AIR);
+        helper.assertItemEntityCountIs(Items.STONE, ABOVE, 3.0, 0);
+        helper.assertItemEntityCountIs(Items.RED_DYE, ABOVE, 3.0, 0);
         helper.succeed();
     }
 }

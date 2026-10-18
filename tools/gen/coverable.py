@@ -10,6 +10,9 @@ OVERLAYS = {
     "vine": ["minecraft:vine"],
     "hay": ["minecraft:wheat"],
     "mycelium": ["minecraft:brown_mushroom", "minecraft:red_mushroom"],
+    # Modern additions
+    "moss": ["minecraft:moss_carpet"],
+    "sculk": ["minecraft:sculk_vein"],
 }
 
 

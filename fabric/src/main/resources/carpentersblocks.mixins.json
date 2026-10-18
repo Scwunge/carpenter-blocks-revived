@@ -4,6 +4,7 @@
   "package": "com.carpentersblocks.fabric.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "AxeItemAccessor",
     "BushBlockMixin",
     "EntityMixin",
     "ExplosionDamageCalculatorMixin",

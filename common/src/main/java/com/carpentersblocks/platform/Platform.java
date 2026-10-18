@@ -6,6 +6,8 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Block properties whose lookup differs between loaders. Each loader calls {@link #set} before registration.
  */
@@ -27,6 +29,10 @@ public interface Platform {
 
     /** How readily the block catches fire from nearby fire (vanilla's ignite odds). */
     int fireSpreadSpeed(BlockState state, BlockGetter level, BlockPos pos, Direction face);
+
+    /** The stripped form of a log or wood, or {@code null} if an axe doesn't strip it. */
+    @Nullable
+    BlockState stripped(BlockState state);
 
     /** Whether fire on top of the block burns forever. */
     boolean isFireSource(BlockState state, LevelReader level, BlockPos pos, Direction face);

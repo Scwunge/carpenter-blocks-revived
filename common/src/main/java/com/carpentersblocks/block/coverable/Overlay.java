@@ -27,7 +27,10 @@ public enum Overlay implements StringRepresentable {
     WEB(Blocks.COBWEB, false),
     VINE(Blocks.VINE, false),
     HAY(Blocks.HAY_BLOCK, true),
-    MYCELIUM(Blocks.MYCELIUM, true);
+    MYCELIUM(Blocks.MYCELIUM, true),
+    // Modern additions
+    MOSS(Blocks.MOSS_BLOCK, true),
+    SCULK(Blocks.SCULK, false);
 
     private final Block block;
     private final boolean topOnly;
@@ -50,7 +53,7 @@ public enum Overlay implements StringRepresentable {
 
     /**
      * Whether the overlay hides the whole face, which decides the particles shown when the face is hit. Grass, snow,
-     * hay and mycelium only fully cover the top face.
+     * hay, mycelium and moss only fully cover the top face.
      */
     public boolean coversFullSide(Direction face) {
         return !topOnly || face == Direction.UP;
@@ -70,6 +73,8 @@ public enum Overlay implements StringRepresentable {
                     : face == Direction.DOWN ? null : own("overlay_hay_side");
             case MYCELIUM -> face == Direction.UP ? mc("mycelium_top")
                     : face == Direction.DOWN ? null : own("overlay_mycelium_side");
+            case MOSS -> face == Direction.UP ? mc("moss_block") : null;
+            case SCULK -> mc("sculk");
             case WEB -> mc("cobweb");
             case VINE -> mc("vine");
         };

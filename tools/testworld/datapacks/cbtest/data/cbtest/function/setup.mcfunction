@@ -28,6 +28,11 @@ execute at @s run setblock ~5 ~ ~6 carpentersblocks:carpenters_block[shape=full]
 execute at @s run setblock ~7 ~ ~6 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:spruce_planks"},Overlay:"hay",OverlayItem:{id:"minecraft:wheat",count:1}},{Slot:2b,State:{Name:"minecraft:gold_block"},Overlay:"web",OverlayItem:{id:"minecraft:string",count:1}}]}
 execute at @s run setblock ~9 ~ ~6 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:redstone_block"}}]}
 execute at @s run setblock ~9 ~ ~5 minecraft:redstone_lamp
+execute at @s run setblock ~-7 ~ ~8 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:stone"},Overlay:"moss",OverlayItem:{id:"minecraft:moss_carpet",count:1}}]}
+execute at @s run setblock ~-5 ~ ~8 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:cobblestone"},Overlay:"sculk",OverlayItem:{id:"minecraft:sculk_vein",count:1}}]}
+execute at @s run setblock ~-3 ~ ~8 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:oak_log",Properties:{axis:"y"}}}]}
+execute at @s run setblock ~-1 ~ ~8 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:exposed_copper"}}]}
+execute at @s run setblock ~1 ~ ~8 carpentersblocks:carpenters_block[shape=down]{Covers:[{Slot:6b,State:{Name:"minecraft:oak_planks"}}]}
 give @s carpentersblocks:carpenters_block 64
 give @s carpentersblocks:carpenters_hammer
 give @s minecraft:grass_block 64
@@ -37,3 +42,5 @@ give @s minecraft:red_dye 16
 give @s minecraft:wheat_seeds 16
 give @s minecraft:snowball 16
 give @s minecraft:stone 64
+give @s minecraft:iron_axe
+give @s minecraft:honeycomb 16

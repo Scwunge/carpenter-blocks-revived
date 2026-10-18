@@ -1,6 +1,7 @@
 package com.carpentersblocks.block.coverable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,6 +16,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -34,7 +36,7 @@ import com.carpentersblocks.registry.ModContent;
  * What renders lives in an immutable {@link CoverData}; the item stacks that were applied are kept alongside so the
  * same items come back out when an attribute is removed.
  */
-public class CoverableBlockEntity extends BlockEntity {
+public class CoverableBlockEntity extends BlockEntity implements Clearable {
 
     private static final String TAG_COVERS = "Covers";
     private static final String TAG_SLOT = "Slot";
@@ -57,6 +59,19 @@ public class CoverableBlockEntity extends BlockEntity {
     private UUID owner;
     private String design = "";
     private int blockData;
+
+    /**
+     * Forgets every attribute without dropping it. Vanilla calls this before commands such as /setblock and /fill
+     * replace the block, as it does for containers.
+     */
+    @Override
+    public void clearContent() {
+        data = CoverData.EMPTY;
+        Arrays.fill(dyeItems, ItemStack.EMPTY);
+        Arrays.fill(overlayItems, ItemStack.EMPTY);
+        illuminatorItem = ItemStack.EMPTY;
+        setChanged();
+    }
 
     public CoverableBlockEntity(BlockPos pos, BlockState state) {
         this(ModContent.COVERABLE_BLOCK_ENTITY, pos, state);
@@ -361,7 +376,7 @@ public class CoverableBlockEntity extends BlockEntity {
 
     private static ItemStack[] filled(int size) {
         ItemStack[] stacks = new ItemStack[size];
-        java.util.Arrays.fill(stacks, ItemStack.EMPTY);
+        Arrays.fill(stacks, ItemStack.EMPTY);
         return stacks;
     }
 

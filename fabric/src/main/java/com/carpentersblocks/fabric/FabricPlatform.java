@@ -5,8 +5,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
+import com.carpentersblocks.fabric.mixin.AxeItemAccessor;
 import com.carpentersblocks.platform.Platform;
 
 /**
@@ -23,6 +25,13 @@ public final class FabricPlatform implements Platform {
     @Override
     public int fireSpreadSpeed(BlockState state, BlockGetter level, BlockPos pos, Direction face) {
         return FlammableBlockRegistry.getDefaultInstance().get(state.getBlock()).getBurnChance();
+    }
+
+    /** Reads vanilla's strippables, which Fabric's StrippableBlockRegistry adds to. */
+    @Override
+    public BlockState stripped(BlockState state) {
+        Block stripped = AxeItemAccessor.carpentersblocks$strippables().get(state.getBlock());
+        return stripped == null ? null : stripped.withPropertiesOf(state);
     }
 
     @Override
