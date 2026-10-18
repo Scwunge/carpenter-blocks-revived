@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "  X",
+    " XY",
+    "XYY"
+  ],
+  "key": {
+    "X": {
+      "tag": "c:rods/wooden"
+    },
+    "Y": {
+      "item": "carpentersblocks:carpenters_block"
+    }
+  },
+  "result": {
+    "id": "carpentersblocks:carpenters_slope",
+    "count": 6
+  }
+}

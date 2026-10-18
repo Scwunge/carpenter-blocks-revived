@@ -1,12 +1,15 @@
 package com.carpentersblocks.registry;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
@@ -48,6 +51,8 @@ public final class ModContent {
     private static final List<Map.Entry<String, Block>> BLOCKS_WITH_ITEMS = new ArrayList<>();
     /** Creative tab contents, in order. */
     private static final List<Item> TAB_ITEMS = new ArrayList<>();
+    /** Items shown in the creative tab as several stacks (such as the slope kinds) instead of one. */
+    private static final Map<Item, Supplier<List<ItemStack>>> TAB_VARIANTS = new HashMap<>();
 
     private ModContent() {}
 
@@ -76,6 +81,15 @@ public final class ModContent {
         return item;
     }
 
+    /** Shows {@code item} in the creative tab as these stacks. */
+    public static void tabVariants(Item item, Supplier<List<ItemStack>> stacks) {
+        TAB_VARIANTS.put(item, stacks);
+    }
+
+    public static void registerDataComponents(BiConsumer<ResourceLocation, DataComponentType<?>> registrar) {
+        SlopeContent.registerDataComponents(registrar);
+    }
+
     public static void registerBlocks(BiConsumer<ResourceLocation, Block> registrar) {
         COVERABLE_BLOCKS.clear();
         BLOCKS_WITH_ITEMS.clear();
@@ -83,14 +97,22 @@ public final class ModContent {
             CARPENTERS_BLOCK = block(registrar, "carpenters_block",
                     new CarpentersBlockBlock(CoverableBlock.baseProperties()), true);
         }
+        SlopeContent.registerBlocks(registrar);
         StairsContent.registerBlocks(registrar);
         BarrierContent.registerBlocks(registrar);
     }
 
     public static void registerItems(BiConsumer<ResourceLocation, Item> registrar) {
         TAB_ITEMS.clear();
+        TAB_VARIANTS.clear();
         for (Map.Entry<String, Block> entry : BLOCKS_WITH_ITEMS) {
             item(registrar, entry.getKey(), new BlockItem(entry.getValue(), new Item.Properties()));
+            if (entry.getValue() == CARPENTERS_BLOCK) {
+                SlopeContent.registerItems(registrar);
+            }
+        }
+        if (CARPENTERS_BLOCK == null) {
+            SlopeContent.registerItems(registrar);
         }
         if (CBConfig.enableHammer) {
             CARPENTERS_HAMMER = item(registrar, "carpenters_hammer", new CarpentersHammerItem(toolProperties()));
@@ -121,7 +143,16 @@ public final class ModContent {
     public static CreativeModeTab buildTab(CreativeModeTab.Builder builder) {
         return builder.title(Component.translatable("itemGroup.carpentersblocks"))
                 .icon(() -> TAB_ITEMS.isEmpty() ? ItemStack.EMPTY : new ItemStack(TAB_ITEMS.get(0)))
-                .displayItems((parameters, output) -> TAB_ITEMS.forEach(output::accept))
+                .displayItems((parameters, output) -> {
+                    for (Item item : TAB_ITEMS) {
+                        Supplier<List<ItemStack>> variants = TAB_VARIANTS.get(item);
+                        if (variants == null) {
+                            output.accept(item);
+                        } else {
+                            variants.get().forEach(output::accept);
+                        }
+                    }
+                })
                 .build();
     }
 }

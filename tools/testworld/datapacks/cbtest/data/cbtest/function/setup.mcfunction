@@ -33,6 +33,7 @@ execute at @s run setblock ~-5 ~ ~8 carpentersblocks:carpenters_block[shape=full
 execute at @s run setblock ~-3 ~ ~8 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:oak_log",Properties:{axis:"y"}}}]}
 execute at @s run setblock ~-1 ~ ~8 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:exposed_copper"}}]}
 execute at @s run setblock ~1 ~ ~8 carpentersblocks:carpenters_block[shape=down]{Covers:[{Slot:6b,State:{Name:"minecraft:oak_planks"}}]}
+function cbtest:setup_slope
 function cbtest:setup_stairs
 function cbtest:setup_barrier
 give @s carpentersblocks:carpenters_block 64

@@ -1,0 +1,571 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "name": "carpentersblocks:carpenters_slope",
+              "conditions": [
+                {
+                  "condition": "minecraft:any_of",
+                  "terms": [
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_se"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_nw"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_ne"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_sw"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_neg_n"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_neg_s"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_neg_w"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_neg_e"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_pos_n"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_pos_s"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_pos_w"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_pos_e"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_int_neg_se"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_int_neg_nw"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_int_neg_ne"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_int_neg_sw"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_int_pos_se"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_int_pos_nw"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_int_pos_ne"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_int_pos_sw"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_ext_neg_se"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_ext_neg_nw"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_ext_neg_ne"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_ext_neg_sw"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_ext_pos_se"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_ext_pos_nw"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_ext_pos_ne"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "wedge_ext_pos_sw"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "functions": [
+                {
+                  "function": "minecraft:set_components",
+                  "components": {
+                    "carpentersblocks:slope_kind": "wedge"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "minecraft:item",
+              "name": "carpentersblocks:carpenters_slope",
+              "conditions": [
+                {
+                  "condition": "minecraft:any_of",
+                  "terms": [
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "obl_int_neg_se"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "obl_int_neg_nw"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "obl_int_neg_ne"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "obl_int_neg_sw"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "obl_int_pos_se"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "obl_int_pos_nw"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "obl_int_pos_ne"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "obl_int_pos_sw"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "functions": [
+                {
+                  "function": "minecraft:set_components",
+                  "components": {
+                    "carpentersblocks:slope_kind": "oblique_interior"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "minecraft:item",
+              "name": "carpentersblocks:carpenters_slope",
+              "conditions": [
+                {
+                  "condition": "minecraft:any_of",
+                  "terms": [
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "obl_ext_neg_se"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "obl_ext_neg_nw"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "obl_ext_neg_ne"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "obl_ext_neg_sw"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "obl_ext_pos_se"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "obl_ext_pos_nw"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "obl_ext_pos_ne"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "obl_ext_pos_sw"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "functions": [
+                {
+                  "function": "minecraft:set_components",
+                  "components": {
+                    "carpentersblocks:slope_kind": "oblique_exterior"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "minecraft:item",
+              "name": "carpentersblocks:carpenters_slope",
+              "conditions": [
+                {
+                  "condition": "minecraft:any_of",
+                  "terms": [
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "prism_neg"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "prism_pos"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "prism_1p_pos_n"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "prism_1p_pos_s"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "prism_1p_pos_w"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "prism_1p_pos_e"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "prism_2p_pos_ns"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "prism_2p_pos_we"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "prism_2p_pos_se"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "prism_2p_pos_nw"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "prism_2p_pos_ne"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "prism_2p_pos_sw"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "prism_3p_pos_nwe"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "prism_3p_pos_swe"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "prism_3p_pos_nsw"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "prism_3p_pos_nse"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "prism_4p_pos"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "functions": [
+                {
+                  "function": "minecraft:set_components",
+                  "components": {
+                    "carpentersblocks:slope_kind": "prism"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "minecraft:item",
+              "name": "carpentersblocks:carpenters_slope",
+              "conditions": [
+                {
+                  "condition": "minecraft:any_of",
+                  "terms": [
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "prism_wedge_pos_n"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "prism_wedge_pos_s"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "prism_wedge_pos_w"
+                      }
+                    },
+                    {
+                      "condition": "minecraft:block_state_property",
+                      "block": "carpentersblocks:carpenters_slope",
+                      "properties": {
+                        "slope": "prism_wedge_pos_e"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "functions": [
+                {
+                  "function": "minecraft:set_components",
+                  "components": {
+                    "carpentersblocks:slope_kind": "prism_wedge"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ],
+  "random_sequence": "carpentersblocks:blocks/carpenters_slope"
+}

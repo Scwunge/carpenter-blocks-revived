@@ -5,6 +5,8 @@ import java.util.Map;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.IEventBus;
@@ -12,8 +14,10 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 
+import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.client.CoverTint;
 import com.carpentersblocks.client.frame.ClientFrames;
+import com.carpentersblocks.client.frame.SlopeItemModel;
 import com.carpentersblocks.registry.ModContent;
 
 public final class CarpentersBlocksNeoForgeClient {
@@ -27,7 +31,7 @@ public final class CarpentersBlocksNeoForgeClient {
         modBus.addListener(CarpentersBlocksNeoForgeClient::registerColors);
     }
 
-    /** Wraps every block-state model of the coverable blocks; item models stay as baked. */
+    /** Wraps every block-state model of the coverable blocks; item models only where built in code. */
     private static void wrapModels(ModelEvent.ModifyBakingResult event) {
         Map<ModelResourceLocation, BakedModel> models = event.getModels();
         for (Block block : ModContent.coverableBlocks()) {
@@ -36,6 +40,16 @@ public final class CarpentersBlocksNeoForgeClient {
                 BakedModel model = models.get(id);
                 if (model != null && !(model instanceof NeoForgeCoverModel)) {
                     models.put(id, new NeoForgeCoverModel(model));
+                }
+            }
+        }
+        for (ResourceLocation itemId : BuiltInRegistries.ITEM.keySet()) {
+            if (CarpentersBlocks.MOD_ID.equals(itemId.getNamespace())) {
+                ModelResourceLocation id = ModelResourceLocation.inventory(itemId);
+                BakedModel model = models.get(id);
+                if (model != null) {
+                    BakedModel item = ClientFrames.itemModel(itemId, model);
+                    models.put(id, item instanceof SlopeItemModel slopes ? new NeoForgeSlopeItemModel(slopes) : item);
                 }
             }
         }
