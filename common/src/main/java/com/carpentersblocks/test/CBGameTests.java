@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.Rotation;
 
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.test.block.CarpentersBlockTests;
+import com.carpentersblocks.test.block.CoverBehaviorTests;
 
 /**
  * Entry point for every Carpenter's Blocks GameTest. Each loader registers only this class (Fabric through the
@@ -31,7 +32,8 @@ public final class CBGameTests {
     public static final String EMPTY_STRUCTURE = "empty";
 
     public static final List<Class<?>> TEST_CLASSES = List.of(
-            CarpentersBlockTests.class);
+            CarpentersBlockTests.class,
+            CoverBehaviorTests.class);
 
     /** Fabric instantiates gametest entrypoints. */
     public CBGameTests() {}

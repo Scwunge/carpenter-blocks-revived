@@ -9,17 +9,20 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import com.carpentersblocks.platform.Platform;
 
-/** Fabric lookups: fire values from Fabric's flammability registry (which falls back to vanilla's). */
+/**
+ * Fabric lookups: fire values from Fabric's flammability registry (which falls back to vanilla's). Fabric's names
+ * follow Yarn: its burn chance is vanilla's ignite odds and its spread chance is vanilla's burn odds.
+ */
 public final class FabricPlatform implements Platform {
 
     @Override
     public int flammability(BlockState state, BlockGetter level, BlockPos pos, Direction face) {
-        return FlammableBlockRegistry.getDefaultInstance().get(state.getBlock()).getBurnChance();
+        return FlammableBlockRegistry.getDefaultInstance().get(state.getBlock()).getSpreadChance();
     }
 
     @Override
     public int fireSpreadSpeed(BlockState state, BlockGetter level, BlockPos pos, Direction face) {
-        return FlammableBlockRegistry.getDefaultInstance().get(state.getBlock()).getSpreadChance();
+        return FlammableBlockRegistry.getDefaultInstance().get(state.getBlock()).getBurnChance();
     }
 
     @Override

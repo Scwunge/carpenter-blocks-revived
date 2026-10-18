@@ -42,8 +42,8 @@ public class CarpentersBlocksFabric implements ModInitializer {
 
         // Lets fire treat the frames as flammable; how well each one burns follows its covers (FireBlockMixin)
         for (Block block : ModContent.coverableBlocks()) {
-            FlammableBlockRegistry.getDefaultInstance().add(block, CoverableBlock.FRAME_FLAMMABILITY,
-                    CoverableBlock.FRAME_FIRE_SPREAD);
+            FlammableBlockRegistry.getDefaultInstance().add(block, CoverableBlock.FRAME_FIRE_SPREAD,
+                    CoverableBlock.FRAME_FLAMMABILITY);
         }
 
         // Clicks go to the block before vanilla's sneak check, and with the clicked face (see CoverableBlock)
