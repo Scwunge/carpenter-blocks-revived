@@ -2,7 +2,11 @@
   "values": [
     "carpentersblocks:carpenters_barrier",
     "carpentersblocks:carpenters_block",
+    "carpentersblocks:carpenters_button",
+    "carpentersblocks:carpenters_daylight_sensor",
     "carpentersblocks:carpenters_gate",
+    "carpentersblocks:carpenters_lever",
+    "carpentersblocks:carpenters_pressure_plate",
     "carpentersblocks:carpenters_stairs"
   ]
 }

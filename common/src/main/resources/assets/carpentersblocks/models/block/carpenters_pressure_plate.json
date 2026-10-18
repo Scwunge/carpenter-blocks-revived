@@ -1,0 +1,41 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "t0": "carpentersblocks:block/general/full_frame",
+    "particle": "carpentersblocks:block/general/full_frame"
+  },
+  "elements": [
+    {
+      "from": [
+        1,
+        0,
+        1
+      ],
+      "to": [
+        15,
+        1,
+        15
+      ],
+      "faces": {
+        "down": {
+          "texture": "#t0"
+        },
+        "up": {
+          "texture": "#t0"
+        },
+        "north": {
+          "texture": "#t0"
+        },
+        "south": {
+          "texture": "#t0"
+        },
+        "west": {
+          "texture": "#t0"
+        },
+        "east": {
+          "texture": "#t0"
+        }
+      }
+    }
+  ]
+}
