@@ -31,7 +31,9 @@ public final class NeoForgeConfig {
                 builder.comment(option.comment().toArray(String[]::new));
                 values.put(option, switch (option.type()) {
                     case BOOLEAN -> builder.define(option.key(), (boolean) option.defaultValue());
-                    case INTEGER -> builder.defineInRange(option.key(), (int) option.defaultValue(), option.min(),
+                    case INTEGER -> builder.defineInRange(option.key(), (int) option.defaultValue(),
+                            (int) option.min(), (int) option.max());
+                    case DOUBLE -> builder.defineInRange(option.key(), (double) option.defaultValue(), option.min(),
                             option.max());
                 });
             }

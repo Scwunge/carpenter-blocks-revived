@@ -69,6 +69,9 @@ public final class FabricConfig {
             if (option.type() == Option.Type.INTEGER && primitive.isNumber()) {
                 return primitive.getAsLong();
             }
+            if (option.type() == Option.Type.DOUBLE && primitive.isNumber()) {
+                return primitive.getAsDouble();
+            }
         }
         if (element != null) {
             LOGGER.warn("Config option {} has invalid value {}, using {}", option.key(), element, option.defaultValue());
@@ -78,9 +81,13 @@ public final class FabricConfig {
 
     private static String describe(Option option) {
         String text = String.join(" ", option.comment());
-        return option.type() == Option.Type.INTEGER
-                ? text + " Range: " + option.min() + "-" + option.max() + ", default " + option.defaultValue() + "."
-                : text + " Default " + option.defaultValue() + ".";
+        return switch (option.type()) {
+            case BOOLEAN -> text + " Default " + option.defaultValue() + ".";
+            case INTEGER -> text + " Range: " + (int) option.min() + "-" + (int) option.max() + ", default "
+                    + option.defaultValue() + ".";
+            case DOUBLE -> text + " Range: " + option.min() + "-" + option.max() + ", default "
+                    + option.defaultValue() + ".";
+        };
     }
 
     private static JsonElement toJson(Object value) {
