@@ -31,8 +31,12 @@ public final class FrameMesh {
      */
     public record Sloped(boolean positive, Direction side, boolean wedge) {}
 
-    /** A frame quad and, for sloped quads, how covers texture it. */
-    public record Quad(BakedQuad quad, @Nullable Sloped sloped) {}
+    /** A frame quad and, for sloped quads, how covers texture it. Fixed quads keep their own texture under covers. */
+    public record Quad(BakedQuad quad, @Nullable Sloped sloped, boolean fixed) {
+        public Quad(BakedQuad quad, @Nullable Sloped sloped) {
+            this(quad, sloped, false);
+        }
+    }
 
     private static final float EPSILON = 1.0E-5F;
 
@@ -51,6 +55,12 @@ public final class FrameMesh {
             all.addAll(quads(direction));
         }
         return all;
+    }
+
+    /** Adds a ready-made, unculled quad that covers never re-texture, such as a lever handle or an inlay. */
+    public FrameMesh fixed(BakedQuad quad) {
+        unculled.add(new Quad(quad, null, true));
+        return this;
     }
 
     /** A cuboid, coordinates 0 to 1. Faces on the block boundary are culled against it; zero-area faces are skipped. */
