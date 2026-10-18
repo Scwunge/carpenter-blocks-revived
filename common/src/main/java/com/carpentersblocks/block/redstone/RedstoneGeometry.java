@@ -8,7 +8,6 @@ import org.joml.Vector3f;
 
 import com.carpentersblocks.block.barrier.Box;
 import com.carpentersblocks.block.sided.LegacyVectors;
-import com.carpentersblocks.block.sided.SidedBlock;
 
 /**
  * Boxes (pixels) of the redstone family, from the original's {@code setBlockBoundsBasedOnState} and renderers. Each
@@ -18,9 +17,9 @@ public final class RedstoneGeometry {
 
     private RedstoneGeometry() {}
 
-    /** A south-facing box turned to {@code facing}; see {@link SidedBlock#attached}. */
+    /** A south-facing box turned to {@code facing}; see {@link Box#attached}. */
     public static Box attached(Box south, Direction facing) {
-        return SidedBlock.attached(south, facing);
+        return south.attached(facing);
     }
 
     public static Box button(Direction facing, boolean pressed) {

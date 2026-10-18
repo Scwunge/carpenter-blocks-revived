@@ -19,7 +19,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.carpentersblocks.block.barrier.Box;
 import com.carpentersblocks.block.coverable.CoverableBlock;
 
 /**
@@ -91,18 +90,6 @@ public abstract class SidedBlock extends CoverableBlock {
     @Override
     protected VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
         return Shapes.empty();
-    }
-
-    /**
-     * A box drawn for a block on the south face of its support (against z = 0) turned to {@code facing}, as the
-     * original's direction-aware {@code setBlockBounds}.
-     */
-    public static Box attached(Box south, Direction facing) {
-        return switch (facing) {
-            case UP -> new Box(south.x1(), south.z1(), south.y1(), south.x2(), south.z2(), south.y2());
-            case DOWN -> new Box(south.x1(), 16 - south.z2(), south.y1(), south.x2(), 16 - south.z1(), south.y2());
-            default -> south.facing(facing);
-        };
     }
 
     // Structures

@@ -28,6 +28,19 @@ public record Box(double x1, double y1, double z1, double x2, double y2, double 
         };
     }
 
+    /**
+     * This box, drawn for a block on the south face of its support (against z = 0), turned to a block on the
+     * {@code facing} face, as the original's direction-aware {@code setBlockBounds}. Unlike {@link #facing}, up and
+     * down lay it flat.
+     */
+    public Box attached(Direction facing) {
+        return switch (facing) {
+            case UP -> new Box(x1, z1, y1, x2, z2, y2);
+            case DOWN -> new Box(x1, 16 - z2, y1, x2, 16 - z1, y2);
+            default -> facing(facing);
+        };
+    }
+
     public boolean isEmpty() {
         return x1 >= x2 || y1 >= y2 || z1 >= z2;
     }
