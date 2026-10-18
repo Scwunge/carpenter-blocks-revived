@@ -1,0 +1,88 @@
+{
+  "variants": {
+    "shape=side_se": {
+      "model": "carpentersblocks:block/carpenters_stairs_side_se"
+    },
+    "shape=side_nw": {
+      "model": "carpentersblocks:block/carpenters_stairs_side_nw"
+    },
+    "shape=side_ne": {
+      "model": "carpentersblocks:block/carpenters_stairs_side_ne"
+    },
+    "shape=side_sw": {
+      "model": "carpentersblocks:block/carpenters_stairs_side_sw"
+    },
+    "shape=neg_n": {
+      "model": "carpentersblocks:block/carpenters_stairs_neg_n"
+    },
+    "shape=neg_s": {
+      "model": "carpentersblocks:block/carpenters_stairs_neg_s"
+    },
+    "shape=neg_w": {
+      "model": "carpentersblocks:block/carpenters_stairs_neg_w"
+    },
+    "shape=neg_e": {
+      "model": "carpentersblocks:block/carpenters_stairs_neg_e"
+    },
+    "shape=pos_n": {
+      "model": "carpentersblocks:block/carpenters_stairs_pos_n"
+    },
+    "shape=pos_s": {
+      "model": "carpentersblocks:block/carpenters_stairs_pos_s"
+    },
+    "shape=pos_w": {
+      "model": "carpentersblocks:block/carpenters_stairs_pos_w"
+    },
+    "shape=pos_e": {
+      "model": "carpentersblocks:block/carpenters_stairs_pos_e"
+    },
+    "shape=int_neg_se": {
+      "model": "carpentersblocks:block/carpenters_stairs_int_neg_se"
+    },
+    "shape=int_neg_nw": {
+      "model": "carpentersblocks:block/carpenters_stairs_int_neg_nw"
+    },
+    "shape=int_neg_ne": {
+      "model": "carpentersblocks:block/carpenters_stairs_int_neg_ne"
+    },
+    "shape=int_neg_sw": {
+      "model": "carpentersblocks:block/carpenters_stairs_int_neg_sw"
+    },
+    "shape=int_pos_se": {
+      "model": "carpentersblocks:block/carpenters_stairs_int_pos_se"
+    },
+    "shape=int_pos_nw": {
+      "model": "carpentersblocks:block/carpenters_stairs_int_pos_nw"
+    },
+    "shape=int_pos_ne": {
+      "model": "carpentersblocks:block/carpenters_stairs_int_pos_ne"
+    },
+    "shape=int_pos_sw": {
+      "model": "carpentersblocks:block/carpenters_stairs_int_pos_sw"
+    },
+    "shape=ext_neg_se": {
+      "model": "carpentersblocks:block/carpenters_stairs_ext_neg_se"
+    },
+    "shape=ext_neg_nw": {
+      "model": "carpentersblocks:block/carpenters_stairs_ext_neg_nw"
+    },
+    "shape=ext_neg_ne": {
+      "model": "carpentersblocks:block/carpenters_stairs_ext_neg_ne"
+    },
+    "shape=ext_neg_sw": {
+      "model": "carpentersblocks:block/carpenters_stairs_ext_neg_sw"
+    },
+    "shape=ext_pos_se": {
+      "model": "carpentersblocks:block/carpenters_stairs_ext_pos_se"
+    },
+    "shape=ext_pos_nw": {
+      "model": "carpentersblocks:block/carpenters_stairs_ext_pos_nw"
+    },
+    "shape=ext_pos_ne": {
+      "model": "carpentersblocks:block/carpenters_stairs_ext_pos_ne"
+    },
+    "shape=ext_pos_sw": {
+      "model": "carpentersblocks:block/carpenters_stairs_ext_pos_sw"
+    }
+  }
+}
