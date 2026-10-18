@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "carpentersblocks",
+  "version": "${version}",
+  "name": "Carpenter's Blocks",
+  "description": "Blocks that take on the look of any block you apply to them. A port of Mineshopper's Carpenter's Blocks.",
+  "authors": ["Mineshopper (original mod)", "GTNewHorizons (1.7.10 maintenance)"],
+  "license": "LGPL-2.1",
+  "icon": "assets/carpentersblocks/textures/block/frame.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.carpentersblocks.fabric.CarpentersBlocksFabric"],
+    "client": ["com.carpentersblocks.fabric.client.CarpentersBlocksFabricClient"]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}

@@ -1,0 +1,27 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "LGPL-2.1"
+
+[[mods]]
+modId = "carpentersblocks"
+version = "${version}"
+displayName = "Carpenter's Blocks"
+authors = "Mineshopper (original mod), GTNewHorizons (1.7.10 maintenance)"
+logoFile = "assets/carpentersblocks/textures/block/frame.png"
+description = '''
+Blocks that take on the look of any block you apply to them. A port of Mineshopper's Carpenter's Blocks.
+'''
+
+[[dependencies.carpentersblocks]]
+modId = "neoforge"
+type = "required"
+versionRange = "[21.1,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.carpentersblocks]]
+modId = "minecraft"
+type = "required"
+versionRange = "[1.21.1,1.21.2)"
+ordering = "NONE"
+side = "BOTH"
