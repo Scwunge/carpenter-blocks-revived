@@ -1,5 +1,8 @@
 package com.carpentersblocks.registry;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
@@ -11,57 +14,99 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
-import net.minecraft.world.level.material.MapColor;
 
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.block.CarpentersBlockBlock;
-import com.carpentersblocks.blockentity.CarpentersBlockEntity;
+import com.carpentersblocks.block.coverable.CoverableBlock;
+import com.carpentersblocks.block.coverable.CoverableBlockEntity;
+import com.carpentersblocks.config.CBConfig;
+import com.carpentersblocks.item.CarpentersChiselItem;
 import com.carpentersblocks.item.CarpentersHammerItem;
 
 /**
  * All blocks, items and block entity types. Each loader calls the {@code register*} methods from its own
  * registration hook, since objects must be constructed while the registries are open.
+ * <p>
+ * Each block family registers through its own {@code <Family>Content} class, called from here, using
+ * {@link #block} and {@link #item} so its blocks join the shared block entity type and the creative tab.
  */
 public final class ModContent {
 
     public static CarpentersBlockBlock CARPENTERS_BLOCK;
-    public static Item CARPENTERS_BLOCK_ITEM;
     public static Item CARPENTERS_HAMMER;
-    public static BlockEntityType<CarpentersBlockEntity> CARPENTERS_BLOCK_ENTITY;
+    public static Item CARPENTERS_CHISEL;
+    public static BlockEntityType<CoverableBlockEntity> COVERABLE_BLOCK_ENTITY;
 
     public static final ResourceLocation TAB_ID = CarpentersBlocks.id("main");
 
+    /** Every coverable block, for the shared block entity type. */
+    private static final List<Block> COVERABLE_BLOCKS = new ArrayList<>();
+    /** Blocks that get a plain block item, in registration order. */
+    private static final List<Map.Entry<String, Block>> BLOCKS_WITH_ITEMS = new ArrayList<>();
+    /** Creative tab contents, in order. */
+    private static final List<Item> TAB_ITEMS = new ArrayList<>();
+
     private ModContent() {}
 
+    /** Every coverable block registered so far; the loaders wrap their models and colors. */
+    public static List<Block> coverableBlocks() {
+        return List.copyOf(COVERABLE_BLOCKS);
+    }
+
+    /** Registers a block, giving it a block item unless {@code withItem} is false. */
+    public static <B extends Block> B block(BiConsumer<ResourceLocation, Block> registrar, String name, B block,
+            boolean withItem) {
+        registrar.accept(CarpentersBlocks.id(name), block);
+        if (block instanceof CoverableBlock) {
+            COVERABLE_BLOCKS.add(block);
+        }
+        if (withItem) {
+            BLOCKS_WITH_ITEMS.add(Map.entry(name, block));
+        }
+        return block;
+    }
+
+    /** Registers an item and adds it to the creative tab. */
+    public static <I extends Item> I item(BiConsumer<ResourceLocation, Item> registrar, String name, I item) {
+        registrar.accept(CarpentersBlocks.id(name), item);
+        TAB_ITEMS.add(item);
+        return item;
+    }
+
     public static void registerBlocks(BiConsumer<ResourceLocation, Block> registrar) {
-        CARPENTERS_BLOCK = new CarpentersBlockBlock(BlockBehaviour.Properties.of()
-                .mapColor(MapColor.WOOD)
-                .instrument(NoteBlockInstrument.BASS)
-                .strength(1.5F)
-                .sound(SoundType.WOOD)
-                .ignitedByLava()
-                .lightLevel(state -> state.getValue(CarpentersBlockBlock.LIGHT)));
-        registrar.accept(CarpentersBlocks.id("carpenters_block"), CARPENTERS_BLOCK);
+        COVERABLE_BLOCKS.clear();
+        BLOCKS_WITH_ITEMS.clear();
+        if (CBConfig.enableBlock) {
+            CARPENTERS_BLOCK = block(registrar, "carpenters_block",
+                    new CarpentersBlockBlock(CoverableBlock.baseProperties()), true);
+        }
     }
 
     public static void registerItems(BiConsumer<ResourceLocation, Item> registrar) {
-        CARPENTERS_BLOCK_ITEM = new BlockItem(CARPENTERS_BLOCK, new Item.Properties());
-        registrar.accept(CarpentersBlocks.id("carpenters_block"), CARPENTERS_BLOCK_ITEM);
+        TAB_ITEMS.clear();
+        for (Map.Entry<String, Block> entry : BLOCKS_WITH_ITEMS) {
+            item(registrar, entry.getKey(), new BlockItem(entry.getValue(), new Item.Properties()));
+        }
+        if (CBConfig.enableHammer) {
+            CARPENTERS_HAMMER = item(registrar, "carpenters_hammer", new CarpentersHammerItem(toolProperties()));
+        }
+        if (CBConfig.enableChisel) {
+            CARPENTERS_CHISEL = item(registrar, "carpenters_chisel", new CarpentersChiselItem(toolProperties()));
+        }
+    }
 
-        CARPENTERS_HAMMER = new CarpentersHammerItem(new Item.Properties().stacksTo(1));
-        registrar.accept(CarpentersBlocks.id("carpenters_hammer"), CARPENTERS_HAMMER);
+    private static Item.Properties toolProperties() {
+        Item.Properties properties = new Item.Properties().stacksTo(1);
+        return CBConfig.toolsDamageable ? properties.durability(CBConfig.toolUses) : properties;
     }
 
     public static void registerBlockEntities(BiConsumer<ResourceLocation, BlockEntityType<?>> registrar,
             BlockEntityTypeFactory factory) {
-        CARPENTERS_BLOCK_ENTITY = factory.create(CarpentersBlockEntity::new, CARPENTERS_BLOCK);
-        registrar.accept(CarpentersBlocks.id("carpenters_block"), CARPENTERS_BLOCK_ENTITY);
+        COVERABLE_BLOCK_ENTITY = factory.create(CoverableBlockEntity::new, COVERABLE_BLOCKS.toArray(Block[]::new));
+        registrar.accept(CarpentersBlocks.id("coverable"), COVERABLE_BLOCK_ENTITY);
     }
 
     /** Builds a block entity type; vanilla's builder is only accessible through each loader. */
@@ -73,11 +118,8 @@ public final class ModContent {
     /** Fills in a loader-provided creative tab builder. */
     public static CreativeModeTab buildTab(CreativeModeTab.Builder builder) {
         return builder.title(Component.translatable("itemGroup.carpentersblocks"))
-                .icon(() -> new ItemStack(CARPENTERS_BLOCK_ITEM))
-                .displayItems((parameters, output) -> {
-                    output.accept(CARPENTERS_BLOCK_ITEM);
-                    output.accept(CARPENTERS_HAMMER);
-                })
+                .icon(() -> TAB_ITEMS.isEmpty() ? ItemStack.EMPTY : new ItemStack(TAB_ITEMS.get(0)))
+                .displayItems((parameters, output) -> TAB_ITEMS.forEach(output::accept))
                 .build();
     }
 }

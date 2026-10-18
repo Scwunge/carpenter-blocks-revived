@@ -1,5 +1,6 @@
 {
   "block.carpentersblocks.carpenters_block": "Carpenter's Block",
+  "item.carpentersblocks.carpenters_chisel": "Carpenter's Chisel",
   "item.carpentersblocks.carpenters_hammer": "Carpenter's Hammer",
   "itemGroup.carpentersblocks": "Carpenter's Blocks"
 }

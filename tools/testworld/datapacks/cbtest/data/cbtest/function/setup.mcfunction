@@ -14,10 +14,26 @@ execute at @s run setblock ~-2 ~ ~9 carpentersblocks:carpenters_block[shape=full
 execute at @s run setblock ~0 ~ ~9 carpentersblocks:carpenters_block[shape=down]{Covers:[{Slot:6b,State:{Name:"minecraft:stone"}}]}
 execute at @s run setblock ~2 ~ ~9 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:red_stained_glass"}}]}
 execute at @s run setblock ~4 ~ ~9 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:oak_planks"}},{Slot:2b,State:{Name:"minecraft:diamond_block"}}]}
-execute at @s run setblock ~6 ~ ~9 carpentersblocks:carpenters_block[shape=up]{Covers:[{Slot:6b,State:{Name:"minecraft:oak_leaves",Properties:{distance:"7",persistent:"true",waterlogged:"false"}}}],Illuminated:1b}
+execute at @s run setblock ~6 ~ ~9 carpentersblocks:carpenters_block[shape=up]{Covers:[{Slot:6b,State:{Name:"minecraft:oak_leaves",Properties:{distance:"7",persistent:"true",waterlogged:"false"}}}],Illuminator:{id:"minecraft:glowstone_dust",count:1}}
 execute at @s run setblock ~8 ~ ~9 carpentersblocks:carpenters_block[shape=west]{Covers:[{Slot:6b,State:{Name:"minecraft:bricks"}}]}
 execute at @s run setblock ~ ~1 ~9 carpentersblocks:carpenters_block
+execute at @s run setblock ~-9 ~ ~6 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:stone"},Dye:"red"}]}
+execute at @s run setblock ~-7 ~ ~6 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:oak_planks"},Overlay:"grass",OverlayItem:{id:"minecraft:wheat_seeds",count:1}}]}
+execute at @s run setblock ~-5 ~ ~6 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:stone"},Overlay:"snow",OverlayItem:{id:"minecraft:snowball",count:1}}]}
+execute at @s run setblock ~-3 ~ ~6 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:cobblestone"},Overlay:"vine",OverlayItem:{id:"minecraft:vine",count:1}}]}
+execute at @s run setblock ~-1 ~ ~6 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:stone"},ChiselDesign:"creeper_face"}]}
+execute at @s run setblock ~1 ~ ~6 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:white_wool"},Dye:"blue",ChiselDesign:"brick"}]}
+execute at @s run setblock ~3 ~ ~6 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,Dye:"lime"}]}
+execute at @s run setblock ~5 ~ ~6 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:dirt"},Overlay:"mycelium",OverlayItem:{id:"minecraft:red_mushroom",count:1}}]}
+execute at @s run setblock ~7 ~ ~6 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:spruce_planks"},Overlay:"hay",OverlayItem:{id:"minecraft:wheat",count:1}},{Slot:2b,State:{Name:"minecraft:gold_block"},Overlay:"web",OverlayItem:{id:"minecraft:string",count:1}}]}
+execute at @s run setblock ~9 ~ ~6 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:redstone_block"}}]}
+execute at @s run setblock ~9 ~ ~5 minecraft:redstone_lamp
 give @s carpentersblocks:carpenters_block 64
 give @s carpentersblocks:carpenters_hammer
 give @s minecraft:grass_block 64
 give @s minecraft:glowstone_dust 16
+give @s carpentersblocks:carpenters_chisel
+give @s minecraft:red_dye 16
+give @s minecraft:wheat_seeds 16
+give @s minecraft:snowball 16
+give @s minecraft:stone 64

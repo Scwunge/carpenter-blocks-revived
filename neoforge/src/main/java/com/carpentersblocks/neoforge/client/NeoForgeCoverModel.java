@@ -22,8 +22,8 @@ import net.neoforged.neoforge.client.model.data.ModelProperty;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.carpentersblocks.blockentity.CarpentersBlockEntity;
-import com.carpentersblocks.blockentity.CoverData;
+import com.carpentersblocks.block.coverable.CoverData;
+import com.carpentersblocks.block.coverable.CoverableBlockEntity;
 import com.carpentersblocks.client.CoverQuads;
 
 /** NeoForge model that draws the frame re-textured with its covers. */
@@ -37,7 +37,7 @@ public class NeoForgeCoverModel extends BakedModelWrapper<BakedModel> {
 
     @Override
     public ModelData getModelData(BlockAndTintGetter level, BlockPos pos, BlockState state, ModelData modelData) {
-        if (level.getBlockEntity(pos) instanceof CarpentersBlockEntity blockEntity) {
+        if (level.getBlockEntity(pos) instanceof CoverableBlockEntity blockEntity) {
             return modelData.derive().with(COVERS, blockEntity.getCoverData()).build();
         }
         return modelData;
@@ -64,8 +64,19 @@ public class NeoForgeCoverModel extends BakedModelWrapper<BakedModel> {
         CoverData covers = data.get(COVERS);
         Set<RenderType> layers = new HashSet<>();
         for (Direction face : Direction.values()) {
-            BlockState cover = covers == null ? null : covers.coverFor(face);
+            if (covers == null) {
+                layers.add(CoverQuads.FRAME_LAYER);
+                continue;
+            }
+            int slot = covers.slotFor(face);
+            BlockState cover = covers.cover(slot);
             layers.add(cover == null ? CoverQuads.FRAME_LAYER : layerOf(cover));
+            if (covers.overlay(slot) != null) {
+                layers.add(CoverQuads.OVERLAY_LAYER);
+            }
+            if (cover != null && covers.design(slot) != null) {
+                layers.add(CoverQuads.DESIGN_LAYER);
+            }
         }
         return ChunkRenderTypeSet.of(layers);
     }

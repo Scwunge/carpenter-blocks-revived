@@ -7,3 +7,4 @@ out/
 .vscode/
 ref/
 *.log
+__pycache__/

@@ -19,8 +19,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
-import com.carpentersblocks.blockentity.CarpentersBlockEntity;
-import com.carpentersblocks.blockentity.CoverData;
+import com.carpentersblocks.block.coverable.CoverData;
+import com.carpentersblocks.block.coverable.CoverableBlockEntity;
 import com.carpentersblocks.client.CoverQuads;
 
 /** Fabric Renderer API model that draws the frame re-textured with its covers. */
@@ -43,7 +43,7 @@ public class FabricCoverModel extends ForwardingBakedModel {
     @Override
     public void emitBlockQuads(BlockAndTintGetter level, BlockState state, BlockPos pos,
             Supplier<RandomSource> randomSupplier, RenderContext context) {
-        CoverData data = level.getBlockEntity(pos) instanceof CarpentersBlockEntity blockEntity
+        CoverData data = level.getBlockEntity(pos) instanceof CoverableBlockEntity blockEntity
                 ? blockEntity.getCoverData()
                 : null;
         RandomSource random = randomSupplier.get();

@@ -7,21 +7,28 @@ import java.util.function.Function;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.carpentersblocks.blockentity.CoverData;
+import com.carpentersblocks.block.coverable.ChiselDesigns;
+import com.carpentersblocks.block.coverable.CoverData;
+import com.carpentersblocks.block.coverable.Overlay;
 
 /**
- * Builds the quads of a covered Carpenter's Block, shared by both loaders' model wrappers.
+ * Builds the quads of a coverable block, shared by both loaders' model wrappers.
  * <p>
- * The frame model supplies the geometry (full cube or slab). Each frame quad is re-textured with the sprites the
- * cover block shows on that face, so grass sides, logs and the like keep their per-face textures and tinting.
+ * The frame model supplies the geometry. Each frame quad is re-textured with the sprites the cover block shows on
+ * that face, so grass sides, logs and the like keep their per-face textures and tinting. On top of that come the
+ * overlay (grass, snow, ...) and the chisel design of the face's slot, as in the original's
+ * {@code renderMultiTexturedSide}.
  */
 public final class CoverQuads {
 
@@ -30,6 +37,10 @@ public final class CoverQuads {
 
     /** Layer of the bare frame, whose texture has transparent gaps. */
     public static final RenderType FRAME_LAYER = RenderType.cutout();
+    /** Overlays have transparent fringes. */
+    public static final RenderType OVERLAY_LAYER = RenderType.cutoutMipped();
+    /** Chisel designs are drawn see-through over the cover, as on the original's alpha pass. */
+    public static final RenderType DESIGN_LAYER = RenderType.translucent();
 
     private static final long SEED = 42L;
 
@@ -44,32 +55,67 @@ public final class CoverQuads {
             @Nullable CoverData data, RandomSource random, Function<BlockState, RenderType> layerOf) {
         random.setSeed(SEED);
         List<BakedQuad> frameQuads = frame.getQuads(state, cullFace, random);
-        List<Part> parts = new ArrayList<>(frameQuads.size());
+        if (data == null || data.isEmpty()) {
+            List<Part> parts = new ArrayList<>(frameQuads.size());
+            for (BakedQuad frameQuad : frameQuads) {
+                parts.add(new Part(frameQuad, cullFace, FRAME_LAYER));
+            }
+            return parts;
+        }
 
+        List<Part> parts = new ArrayList<>(frameQuads.size() * 2);
         for (BakedQuad frameQuad : frameQuads) {
             Direction face = frameQuad.getDirection();
-            BlockState cover = data == null ? null : data.coverFor(face);
+            int slot = data.slotFor(face);
+            BlockState cover = data.cover(slot);
+            boolean dyed = data.dye(slot) != null;
+
+            // Cover (or bare frame)
             if (cover == null) {
-                parts.add(new Part(frameQuad, cullFace, FRAME_LAYER));
-                continue;
+                parts.add(new Part(dyed ? retexture(frameQuad, frameQuad.getSprite(), CoverTint.dye(slot)) : frameQuad,
+                        cullFace, FRAME_LAYER));
+            } else {
+                addCover(parts, frameQuad, cullFace, cover, slot, dyed, random, layerOf.apply(cover));
             }
 
-            int slot = data.slotFor(face);
-            RenderType layer = layerOf.apply(cover);
-            BakedModel coverModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(cover);
-            List<BakedQuad> coverQuads = faceQuads(coverModel, cover, face, random);
+            // Overlay
+            Overlay overlay = data.overlay(slot);
+            ResourceLocation overlayTexture = overlay == null ? null : overlay.texture(face);
+            if (overlayTexture != null) {
+                parts.add(new Part(retexture(frameQuad, sprite(overlayTexture),
+                        overlay.tinted() ? CoverTint.overlay(slot) : -1), cullFace, OVERLAY_LAYER));
+            }
 
-            if (coverQuads.isEmpty()) {
-                parts.add(new Part(retexture(frameQuad, coverModel.getParticleIcon(), -1), cullFace, layer));
-            } else {
-                for (BakedQuad coverQuad : coverQuads) {
-                    int tint = coverQuad.isTinted() ? CoverTint.encode(slot, coverQuad.getTintIndex()) : -1;
-                    parts.add(new Part(retexture(frameQuad, coverQuad.getSprite(), tint), cullFace, layer));
-                }
+            // Chisel design
+            String design = data.design(slot);
+            if (design != null && cover != null) {
+                parts.add(new Part(retexture(frameQuad, sprite(ChiselDesigns.texture(design)), -1), cullFace,
+                        DESIGN_LAYER));
             }
         }
 
         return parts;
+    }
+
+    private static void addCover(List<Part> parts, BakedQuad frameQuad, @Nullable Direction cullFace,
+            BlockState cover, int slot, boolean dyed, RandomSource random, RenderType layer) {
+        BakedModel coverModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(cover);
+        Direction face = frameQuad.getDirection();
+
+        // Panes and bars have no full faces; show their main texture, as the original did
+        List<BakedQuad> coverQuads = cover.getBlock() instanceof IronBarsBlock ? List.of()
+                : faceQuads(coverModel, cover, face, random);
+
+        if (coverQuads.isEmpty()) {
+            parts.add(new Part(retexture(frameQuad, coverModel.getParticleIcon(), dyed ? CoverTint.dye(slot) : -1),
+                    cullFace, layer));
+            return;
+        }
+        for (BakedQuad coverQuad : coverQuads) {
+            int tint = dyed ? CoverTint.dye(slot)
+                    : coverQuad.isTinted() ? CoverTint.cover(slot, coverQuad.getTintIndex()) : -1;
+            parts.add(new Part(retexture(frameQuad, coverQuad.getSprite(), tint), cullFace, layer));
+        }
     }
 
     /** The cover model's quads facing {@code face}, whether or not the model marks them as culled. */
@@ -88,6 +134,10 @@ public final class CoverQuads {
             }
         }
         return facing;
+    }
+
+    private static TextureAtlasSprite sprite(ResourceLocation texture) {
+        return Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS).getSprite(texture);
     }
 
     /** Copies a quad, moving its UVs from its own sprite onto {@code sprite}. */

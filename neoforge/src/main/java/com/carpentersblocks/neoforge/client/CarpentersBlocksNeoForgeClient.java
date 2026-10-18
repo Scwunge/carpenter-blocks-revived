@@ -5,6 +5,7 @@ import java.util.Map;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.ModelEvent;
@@ -22,19 +23,21 @@ public final class CarpentersBlocksNeoForgeClient {
         modBus.addListener(CarpentersBlocksNeoForgeClient::registerColors);
     }
 
-    /** Wraps every block-state model of the Carpenter's Block; the item model stays as baked. */
+    /** Wraps every block-state model of the coverable blocks; item models stay as baked. */
     private static void wrapModels(ModelEvent.ModifyBakingResult event) {
         Map<ModelResourceLocation, BakedModel> models = event.getModels();
-        for (BlockState state : ModContent.CARPENTERS_BLOCK.getStateDefinition().getPossibleStates()) {
-            ModelResourceLocation id = BlockModelShaper.stateToModelLocation(state);
-            BakedModel model = models.get(id);
-            if (model != null && !(model instanceof NeoForgeCoverModel)) {
-                models.put(id, new NeoForgeCoverModel(model));
+        for (Block block : ModContent.coverableBlocks()) {
+            for (BlockState state : block.getStateDefinition().getPossibleStates()) {
+                ModelResourceLocation id = BlockModelShaper.stateToModelLocation(state);
+                BakedModel model = models.get(id);
+                if (model != null && !(model instanceof NeoForgeCoverModel)) {
+                    models.put(id, new NeoForgeCoverModel(model));
+                }
             }
         }
     }
 
     private static void registerColors(RegisterColorHandlersEvent.Block event) {
-        event.register(CoverTint.INSTANCE, ModContent.CARPENTERS_BLOCK);
+        event.register(CoverTint.INSTANCE, ModContent.coverableBlocks().toArray(Block[]::new));
     }
 }
