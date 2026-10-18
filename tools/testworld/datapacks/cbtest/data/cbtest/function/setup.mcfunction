@@ -35,6 +35,7 @@ execute at @s run setblock ~-1 ~ ~8 carpentersblocks:carpenters_block[shape=full
 execute at @s run setblock ~1 ~ ~8 carpentersblocks:carpenters_block[shape=down]{Covers:[{Slot:6b,State:{Name:"minecraft:oak_planks"}}]}
 function cbtest:setup_stairs
 function cbtest:setup_barrier
+function cbtest:setup_redstone
 give @s carpentersblocks:carpenters_block 64
 give @s carpentersblocks:carpenters_hammer
 give @s minecraft:grass_block 64
