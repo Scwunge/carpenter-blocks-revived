@@ -101,6 +101,8 @@ public final class ModContent {
         StairsContent.registerBlocks(registrar);
         BarrierContent.registerBlocks(registrar);
         RedstoneContent.registerBlocks(registrar);
+        TorchContent.registerBlocks(registrar);
+        LadderContent.registerBlocks(registrar);
     }
 
     public static void registerItems(BiConsumer<ResourceLocation, Item> registrar) {

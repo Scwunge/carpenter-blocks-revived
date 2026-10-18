@@ -5,8 +5,10 @@ import net.minecraft.resources.ResourceLocation;
 
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.registry.BarrierContent;
+import com.carpentersblocks.registry.LadderContent;
 import com.carpentersblocks.registry.RedstoneContent;
 import com.carpentersblocks.registry.SlopeContent;
+import com.carpentersblocks.registry.TorchContent;
 
 /** Registers every code-built frame. Both loaders' client entry points call this once during client setup. */
 public final class ClientFrames {
@@ -34,6 +36,12 @@ public final class ClientFrames {
         }
         if (RedstoneContent.CARPENTERS_DAYLIGHT_SENSOR != null) {
             FrameModels.register(RedstoneContent.CARPENTERS_DAYLIGHT_SENSOR, RedstoneFrames.DAYLIGHT_SENSOR);
+        }
+        if (TorchContent.CARPENTERS_TORCH != null) {
+            FrameModels.register(TorchContent.CARPENTERS_TORCH, TorchFrames.TORCH);
+        }
+        if (LadderContent.CARPENTERS_LADDER != null) {
+            FrameModels.register(LadderContent.CARPENTERS_LADDER, LadderFrames.LADDER);
         }
     }
 
