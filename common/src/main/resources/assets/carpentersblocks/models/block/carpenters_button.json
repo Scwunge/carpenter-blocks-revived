@@ -1,0 +1,41 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "t0": "carpentersblocks:block/frame",
+    "particle": "carpentersblocks:block/frame"
+  },
+  "elements": [
+    {
+      "from": [
+        5,
+        0,
+        6
+      ],
+      "to": [
+        11,
+        2,
+        10
+      ],
+      "faces": {
+        "down": {
+          "texture": "#t0"
+        },
+        "up": {
+          "texture": "#t0"
+        },
+        "north": {
+          "texture": "#t0"
+        },
+        "south": {
+          "texture": "#t0"
+        },
+        "west": {
+          "texture": "#t0"
+        },
+        "east": {
+          "texture": "#t0"
+        }
+      }
+    }
+  ]
+}

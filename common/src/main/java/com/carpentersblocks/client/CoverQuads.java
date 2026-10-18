@@ -86,6 +86,10 @@ public final class CoverQuads {
 
         List<Part> parts = new ArrayList<>(frameQuads.size() * 2);
         for (FrameMesh.Quad meshQuad : frameQuads) {
+            if (meshQuad.fixed()) {
+                parts.add(new Part(meshQuad.quad(), cullFace, FRAME_LAYER));
+                continue;
+            }
             BakedQuad frameQuad = meshQuad.quad();
             Direction face = frameQuad.getDirection();
             int slot = data.slotFor(face);

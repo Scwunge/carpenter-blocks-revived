@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "X"
+  ],
+  "key": {
+    "X": {
+      "item": "carpentersblocks:carpenters_block"
+    }
+  },
+  "result": {
+    "id": "carpentersblocks:carpenters_button",
+    "count": 1
+  }
+}

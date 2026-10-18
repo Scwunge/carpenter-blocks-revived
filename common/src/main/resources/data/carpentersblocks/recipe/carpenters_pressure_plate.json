@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "XX"
+  ],
+  "key": {
+    "X": {
+      "item": "carpentersblocks:carpenters_block"
+    }
+  },
+  "result": {
+    "id": "carpentersblocks:carpenters_pressure_plate",
+    "count": 1
+  }
+}

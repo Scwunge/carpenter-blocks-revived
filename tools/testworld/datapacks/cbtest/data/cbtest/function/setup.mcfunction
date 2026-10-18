@@ -5,8 +5,8 @@ weather clear
 gamerule doDaylightCycle false
 gamerule doWeatherCycle false
 tp @s ~ 160 ~ 0 10
-execute at @s run fill ~-10 ~-1 ~-2 ~10 ~-1 ~12 minecraft:smooth_stone
-execute at @s run fill ~-10 ~ ~-2 ~10 ~5 ~12 minecraft:air
+execute at @s run fill ~-10 ~-1 ~-2 ~10 ~-1 ~16 minecraft:smooth_stone
+execute at @s run fill ~-10 ~ ~-2 ~10 ~5 ~16 minecraft:air
 execute at @s run setblock ~-8 ~ ~9 carpentersblocks:carpenters_block[shape=full]{Covers:[]}
 execute at @s run setblock ~-6 ~ ~9 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:grass_block",Properties:{snowy:"false"}}}]}
 execute at @s run setblock ~-4 ~ ~9 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:oak_log",Properties:{axis:"x"}}}]}
@@ -36,6 +36,7 @@ execute at @s run setblock ~1 ~ ~8 carpentersblocks:carpenters_block[shape=down]
 function cbtest:setup_slope
 function cbtest:setup_stairs
 function cbtest:setup_barrier
+function cbtest:setup_redstone
 give @s carpentersblocks:carpenters_block 64
 give @s carpentersblocks:carpenters_hammer
 give @s minecraft:grass_block 64
