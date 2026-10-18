@@ -22,6 +22,28 @@ configurations {
     }
 }
 
+loom {
+    runs {
+        // Loom's Unprotect plugin widens access on every Minecraft and NeoForge class at load time and asks ModLauncher
+        // to recompute stack frames for each one. On a dedicated server that frame computation resolves client-only
+        // supertypes (net.minecraft.client.Minecraft via NeoForge's ClientPayloadHandler) and the dist cleaner kills
+        // the server in NetworkInitialization. Server-side runs don't need widened access, so switch it off there.
+        server {
+            property 'unprotect.target', 'none'
+        }
+        // Headless GameTest server: runs every carpentersblocks test, then exits with the number of failed tests
+        gameTestServer {
+            server()
+            name 'GameTest Server'
+            runDir 'build/gametest'
+            property 'neoforge.enableGameTest', 'true'
+            property 'neoforge.gameTestServer', 'true'
+            property 'unprotect.target', 'none'
+            property 'neoforge.enabledGameTestNamespaces', 'carpentersblocks'
+        }
+    }
+}
+
 dependencies {
     neoForge "net.neoforged:neoforge:$rootProject.neoforge_version"
 
