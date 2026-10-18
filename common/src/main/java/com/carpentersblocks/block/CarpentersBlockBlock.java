@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -42,7 +43,8 @@ public class CarpentersBlockBlock extends CoverableBlock {
         registerDefaultState(stateDefinition.any()
                 .setValue(SHAPE, FrameShape.FULL)
                 .setValue(SOLID, false)
-                .setValue(LIGHT, 0));
+                .setValue(LIGHT, 0)
+                .setValue(WATERLOGGED, false));
     }
 
     @Override
@@ -74,7 +76,7 @@ public class CarpentersBlockBlock extends CoverableBlock {
     @Override
     @Nullable
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        BlockState state = defaultBlockState();
+        BlockState state = defaultBlockState().setValue(WATERLOGGED, placedInWater(context));
 
         // Match the shape of an adjacent Carpenter's Block, unless sneaking (as in the original)
         if (!context.isSecondaryUseActive()) {
@@ -86,7 +88,15 @@ public class CarpentersBlockBlock extends CoverableBlock {
             }
         }
 
-        return state;
+        return state.getValue(SHAPE) == FrameShape.FULL ? state.setValue(WATERLOGGED, false) : state;
+    }
+
+    /** Only slabs hold water, like vanilla slabs. */
+    @Override
+    public boolean canPlaceLiquid(@Nullable Player player, BlockGetter level, BlockPos pos, BlockState state,
+            Fluid fluid) {
+        return state.getValue(SHAPE) != FrameShape.FULL
+                && super.canPlaceLiquid(player, level, pos, state, fluid);
     }
 
     @Override
@@ -114,6 +124,9 @@ public class CarpentersBlockBlock extends CoverableBlock {
                     : FrameShape.FULL;
             CoverableBlockEntity be = blockEntity(level, pos);
             BlockState updated = state.setValue(SHAPE, next);
+            if (next == FrameShape.FULL) {
+                updated = updated.setValue(WATERLOGGED, false);
+            }
             if (be != null) {
                 updated = stateForCovers(updated, be.getCoverData());
             }

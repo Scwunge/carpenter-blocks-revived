@@ -9,7 +9,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
 
+import com.carpentersblocks.block.CarpentersBlockBlock;
+import com.carpentersblocks.block.FrameShape;
 import com.carpentersblocks.block.coverable.CoverData;
 import com.carpentersblocks.block.coverable.CoverableBlock;
 import com.carpentersblocks.block.coverable.CoverableBlockEntity;
@@ -147,6 +150,22 @@ public class CoverBehaviorTests {
         helper.assertBlockProperty(FLOOR, CoverableBlock.LIGHT, 15);
         frame(helper, ABOVE, Blocks.SEA_LANTERN.defaultBlockState());
         helper.assertBlockProperty(ABOVE, CoverableBlock.LIGHT, 15);
+        helper.succeed();
+    }
+
+    @CBGameTest
+    public void onlySlabsHoldWater(GameTestHelper helper) {
+        Level level = helper.getLevel();
+        BlockPos pos = helper.absolutePos(FLOOR);
+        CarpentersBlockBlock block = (CarpentersBlockBlock) ModContent.CARPENTERS_BLOCK;
+        frame(helper, FLOOR, Blocks.STONE.defaultBlockState());
+        check(helper, !block.canPlaceLiquid(null, level, pos, level.getBlockState(pos), Fluids.WATER),
+                "full frame must not take water");
+        helper.setBlock(FLOOR, level.getBlockState(pos).setValue(CarpentersBlockBlock.SHAPE, FrameShape.DOWN));
+        check(helper, block.placeLiquid(level, pos, level.getBlockState(pos), Fluids.WATER.getSource(false)),
+                "slab frame takes water");
+        helper.assertBlockProperty(FLOOR, CoverableBlock.WATERLOGGED, true);
+        check(helper, level.getFluidState(pos).is(Fluids.WATER), "slab frame holds water");
         helper.succeed();
     }
 }
