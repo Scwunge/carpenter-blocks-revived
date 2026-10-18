@@ -5,4 +5,17 @@ architectury {
 dependencies {
     // Architectury common modules compile against Fabric Loader; common code itself stays loader-agnostic.
     modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
+
+    testImplementation platform("org.junit:junit-bom:$rootProject.junit_version")
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+// Unit tests cover pure logic (shape tables, geometry, data packing); in-world behavior goes in GameTests
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'failed'
+        exceptionFormat 'full'
+    }
 }
