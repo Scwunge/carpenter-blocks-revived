@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    " Y ",
+    "XYX"
+  ],
+  "key": {
+    "X": {
+      "tag": "c:rods/wooden"
+    },
+    "Y": {
+      "item": "carpentersblocks:carpenters_block"
+    }
+  },
+  "result": {
+    "id": "carpentersblocks:carpenters_barrier",
+    "count": 4
+  }
+}
