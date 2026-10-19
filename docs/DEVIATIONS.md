@@ -60,7 +60,9 @@ copper covers and so on) are noted in the code instead.
 - Sneak left-click with the hammer only takes the soil out once the plant is gone; the original could leave a plant
   floating.
 
-## Batch 9: Safe
+## Batch 9: Safe + Collapsible Block
+
+### Safe
 
 - Upgrades are matched by the common tags `c:ingots/gold`, `c:gems/diamond` and `c:gems/emerald`, replacing the
   original's ore dictionary names.
@@ -74,6 +76,21 @@ copper covers and so on) are noted in the code instead.
 - Lit lights glow at full brightness through each loader's renderer (Fabric's emissive material, NeoForge's baked
   light) instead of the original's brightness override.
 - The safe's front face counts as solid, as its other faces. The original's front wasn't solid for placing.
+
+### Collapsible Block
+
+- Whether the block stands or hangs is block state (`vertical_direction`), not the data's low bits. The corner
+  depths keep the original's bit layout in the block data.
+- A hanging block's flat top counts as a whole face, and its bottom only when full. The original always reported the
+  bottom whole and the top only when full, whichever way the block faced.
+- When placed, it takes corner heights only from collapsible blocks facing the same way. The original read any
+  Carpenter's block's data as corner depths.
+- Clicks don't send the hit position to the server, so the hammer finds the corner by tracing the player's view, as
+  the original's event handler did for left-clicks.
+- The outline is at least one pixel tall, so a flat block can still be aimed at. The original's was flat and was hit
+  through its zero-height collision boxes.
+- Neighbors never cull their faces against it, and it lets light through. Vanilla caches face culling per block
+  state, and the depths aren't in the state, so culling by them could leave holes.
 
 ## Batch 10: Tile
 

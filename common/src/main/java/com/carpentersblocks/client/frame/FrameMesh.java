@@ -148,6 +148,15 @@ public final class FrameMesh {
      * block boundary; sloped ones get {@code UP} or {@code DOWN} by their normal, or the side for vertical ones.
      */
     public FrameMesh polygon(List<Vector3f> vertices, ResourceLocation sprite, @Nullable Sloped sloped) {
+        return polygon(vertices, sprite, sloped, null);
+    }
+
+    /**
+     * As {@link #polygon(List, ResourceLocation, Sloped)}, with the UVs of a sloped polygon projected onto
+     * {@code uvFace} instead of the nearest side's, as for the Collapsible Block's gently sloped top.
+     */
+    public FrameMesh polygon(List<Vector3f> vertices, ResourceLocation sprite, @Nullable Sloped sloped,
+            @Nullable Direction uvFace) {
         if (vertices.size() < 3) {
             return this;
         }
@@ -180,6 +189,9 @@ public final class FrameMesh {
         }
         if (axis == null && Math.abs(normal.x) < EPSILON && Math.abs(normal.z) < EPSILON) {
             projection = face;
+        }
+        if (axis == null && uvFace != null) {
+            projection = uvFace;
         }
 
         TextureAtlasSprite atlasSprite = Minecraft.getInstance().getModelManager()

@@ -110,6 +110,7 @@ public final class ModContent {
         BedContent.registerBlocks(registrar);
         FlowerPotContent.registerBlocks(registrar);
         SafeContent.registerBlocks(registrar);
+        CollapsibleContent.registerBlocks(registrar);
     }
 
     public static void registerItems(BiConsumer<ResourceLocation, Item> registrar) {
