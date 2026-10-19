@@ -40,8 +40,12 @@ import com.carpentersblocks.client.frame.FrameMesh;
  */
 public final class CoverQuads {
 
-    /** A quad to render, the face it is culled against, and the chunk layer it belongs to. */
-    public record Part(BakedQuad quad, @Nullable Direction cullFace, RenderType layer) {}
+    /** A quad to render, the face it is culled against, the chunk layer it belongs to, and whether it glows. */
+    public record Part(BakedQuad quad, @Nullable Direction cullFace, RenderType layer, boolean emissive) {
+        public Part(BakedQuad quad, @Nullable Direction cullFace, RenderType layer) {
+            this(quad, cullFace, layer, false);
+        }
+    }
 
     /** Layer of the bare frame, whose texture has transparent gaps. */
     public static final RenderType FRAME_LAYER = RenderType.cutout();
@@ -81,7 +85,8 @@ public final class CoverQuads {
         if (data == null || data.isEmpty()) {
             List<Part> parts = new ArrayList<>(frameQuads.size());
             for (FrameMesh.Quad frameQuad : frameQuads) {
-                parts.add(new Part(frameQuad.quad(), cullFace, frameQuad.translucent() ? PANE_LAYER : FRAME_LAYER));
+                parts.add(new Part(frameQuad.quad(), cullFace, frameQuad.translucent() ? PANE_LAYER : FRAME_LAYER,
+                        frameQuad.emissive()));
             }
             return parts;
         }
@@ -89,7 +94,8 @@ public final class CoverQuads {
         List<Part> parts = new ArrayList<>(frameQuads.size() * 2);
         for (FrameMesh.Quad meshQuad : frameQuads) {
             if (meshQuad.fixed()) {
-                parts.add(new Part(meshQuad.quad(), cullFace, meshQuad.translucent() ? PANE_LAYER : FRAME_LAYER));
+                parts.add(new Part(meshQuad.quad(), cullFace, meshQuad.translucent() ? PANE_LAYER : FRAME_LAYER,
+                        meshQuad.emissive()));
                 continue;
             }
             BakedQuad frameQuad = meshQuad.quad();

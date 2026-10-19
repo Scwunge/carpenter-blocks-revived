@@ -33,9 +33,14 @@ public final class FrameMesh {
 
     /**
      * A frame quad and, for sloped quads, how covers texture it. Fixed quads keep their own texture under covers;
-     * translucent ones (panes, with {@code enableAlphaPanes}) draw in the translucent layer.
+     * translucent ones (panes, with {@code enableAlphaPanes}) draw in the translucent layer; emissive ones (the
+     * safe's lit lights) draw at full brightness, unshaded.
      */
-    public record Quad(BakedQuad quad, @Nullable Sloped sloped, boolean fixed, boolean translucent) {
+    public record Quad(BakedQuad quad, @Nullable Sloped sloped, boolean fixed, boolean translucent, boolean emissive) {
+        public Quad(BakedQuad quad, @Nullable Sloped sloped, boolean fixed, boolean translucent) {
+            this(quad, sloped, fixed, translucent, false);
+        }
+
         public Quad(BakedQuad quad, @Nullable Sloped sloped, boolean fixed) {
             this(quad, sloped, fixed, false);
         }
@@ -94,6 +99,13 @@ public final class FrameMesh {
     public FrameMesh fixedTranslucent(BakedQuad quad) {
         unculled.add(new Quad(quad, null, true, true));
         hasTranslucent = true;
+        return this;
+    }
+
+    /** Adds a fixed quad that glows: full brightness, no shading, as the original's lit safe lights. */
+    public FrameMesh fixedEmissive(BakedQuad quad) {
+        unculled.add(new Quad(FixedQuads.emissive(quad), null, true, false, true));
+        hasFixed = true;
         return this;
     }
 

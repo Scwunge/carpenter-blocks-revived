@@ -14,8 +14,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.items.wrapper.InvWrapper;
+import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
@@ -27,6 +31,7 @@ import com.carpentersblocks.neoforge.client.CarpentersBlocksNeoForgeClient;
 import com.carpentersblocks.platform.Platform;
 import com.carpentersblocks.registry.BedContent;
 import com.carpentersblocks.registry.ModContent;
+import com.carpentersblocks.registry.SafeContent;
 
 @Mod(CarpentersBlocks.MOD_ID)
 public class CarpentersBlocksNeoForge {
@@ -37,6 +42,7 @@ public class CarpentersBlocksNeoForge {
         BedContent.factory = NeoForgeBedBlock::new;
         modBus.addListener(CarpentersBlocksNeoForge::register);
         modBus.addListener(CarpentersBlocksNeoForge::registerPayloads);
+        modBus.addListener(CarpentersBlocksNeoForge::registerCapabilities);
         NeoForge.EVENT_BUS.addListener(CarpentersBlocksNeoForge::onRightClickBlock);
         NeoForge.EVENT_BUS.addListener(CarpentersBlocksNeoForge::onLeftClickBlock);
         if (dist.isClient()) {
@@ -76,6 +82,14 @@ public class CarpentersBlocksNeoForge {
                         (payload, context) -> SlopeSelectPayload.handle(payload, context.player()))
                 .playToServer(EnrichPlantPayload.TYPE, EnrichPlantPayload.STREAM_CODEC,
                         (payload, context) -> EnrichPlantPayload.handle(payload, context.player()));
+    }
+
+    /** Pipes and other mods' machines reach the safe's slots as hoppers do, through every side but the front. */
+    private static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        if (SafeContent.SAFE_BLOCK_ENTITY != null) {
+            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, SafeContent.SAFE_BLOCK_ENTITY,
+                    (safe, side) -> side == null ? new InvWrapper(safe) : new SidedInvWrapper(safe, side));
+        }
     }
 
     private static void register(RegisterEvent event) {

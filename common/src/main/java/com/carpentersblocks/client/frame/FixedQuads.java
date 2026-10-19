@@ -99,6 +99,18 @@ public final class FixedQuads {
         return quad;
     }
 
+    /** Full block and sky light, packed as a vertex's lightmap coordinates. */
+    private static final int FULL_BRIGHT = 0x00F000F0;
+
+    /** {@code quad} lit at full brightness whatever its surroundings, unshaded. */
+    public static BakedQuad emissive(BakedQuad quad) {
+        int[] data = quad.getVertices().clone();
+        for (int i = 0; i < 4; ++i) {
+            data[i * 8 + 6] = FULL_BRIGHT;
+        }
+        return new BakedQuad(data, quad.getTintIndex(), quad.getDirection(), quad.getSprite(), false);
+    }
+
     /** {@code quad} with another tint index, for quads a block color tints. */
     public static BakedQuad withTint(BakedQuad quad, int tintIndex) {
         return new BakedQuad(quad.getVertices(), tintIndex, quad.getDirection(), quad.getSprite(), quad.isShade());

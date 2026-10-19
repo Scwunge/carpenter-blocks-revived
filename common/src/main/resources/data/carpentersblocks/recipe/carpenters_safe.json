@@ -1,0 +1,25 @@
+{
+  "type": "carpentersblocks:configured_shaped",
+  "category": "misc",
+  "pattern": [
+    "XXX",
+    "XYX",
+    "XZX"
+  ],
+  "key": {
+    "X": {
+      "item": "carpentersblocks:carpenters_block"
+    },
+    "Y": {
+      "item": "minecraft:iron_block"
+    },
+    "Z": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "id": "carpentersblocks:carpenters_safe",
+    "count": 1
+  },
+  "quantity_option": "recipeQuantitySafe"
+}
