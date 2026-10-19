@@ -81,6 +81,8 @@ public class CarpentersBlocksNeoForge {
     private static void register(RegisterEvent event) {
         event.register(Registries.DATA_COMPONENT_TYPE, helper -> ModContent.registerDataComponents(helper::register));
         event.register(Registries.BLOCK, helper -> ModContent.registerBlocks(helper::register));
+        event.register(Registries.RECIPE_SERIALIZER,
+                helper -> ModContent.registerRecipeSerializers(helper::register));
         event.register(Registries.ENTITY_TYPE, helper -> ModContent.registerEntityTypes(helper::register));
         event.register(Registries.ITEM, helper -> ModContent.registerItems(helper::register));
         event.register(Registries.BLOCK_ENTITY_TYPE,

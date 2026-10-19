@@ -41,6 +41,8 @@ public class CarpentersBlocksFabric implements ModInitializer {
         ModContent.registerDataComponents(
                 (id, type) -> Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, id, type));
         ModContent.registerBlocks((id, block) -> Registry.register(BuiltInRegistries.BLOCK, id, block));
+        ModContent.registerRecipeSerializers(
+                (id, serializer) -> Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, id, serializer));
         ModContent.registerEntityTypes((id, type) -> Registry.register(BuiltInRegistries.ENTITY_TYPE, id, type));
         ModContent.registerItems((id, item) -> Registry.register(BuiltInRegistries.ITEM, id, item));
         ModContent.registerBlockEntities(

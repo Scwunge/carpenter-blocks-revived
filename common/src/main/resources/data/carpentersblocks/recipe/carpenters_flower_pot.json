@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "carpentersblocks:configured_shaped",
   "category": "decorations",
   "pattern": [
     "X X",
@@ -13,5 +13,6 @@
   "result": {
     "id": "carpentersblocks:carpenters_flower_pot",
     "count": 1
-  }
+  },
+  "quantity_option": "recipeQuantityFlowerPot"
 }

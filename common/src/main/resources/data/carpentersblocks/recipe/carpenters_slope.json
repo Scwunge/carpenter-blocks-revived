@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "carpentersblocks:configured_shaped",
   "category": "building",
   "pattern": [
     "  X",
@@ -17,5 +17,6 @@
   "result": {
     "id": "carpentersblocks:carpenters_slope",
     "count": 6
-  }
+  },
+  "quantity_option": "recipeQuantitySlope"
 }
