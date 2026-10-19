@@ -123,5 +123,15 @@
   "message.carpentersblocks.trigger_all": "TRIGGER: Activate for all entities.",
   "message.carpentersblocks.trigger_animal": "TRIGGER: Only activate for animals.",
   "message.carpentersblocks.trigger_monster": "TRIGGER: Only activate for monsters.",
-  "message.carpentersblocks.trigger_player": "TRIGGER: Only activate for players."
+  "message.carpentersblocks.trigger_player": "TRIGGER: Only activate for players.",
+  "tag.item.carpentersblocks.fertilizers": "Carpenter's Fertilizers",
+  "tag.item.carpentersblocks.illuminators": "Carpenter's Illuminators",
+  "tag.item.carpentersblocks.overlays.grass": "Grass Overlays",
+  "tag.item.carpentersblocks.overlays.hay": "Hay Overlays",
+  "tag.item.carpentersblocks.overlays.moss": "Moss Overlays",
+  "tag.item.carpentersblocks.overlays.mycelium": "Mycelium Overlays",
+  "tag.item.carpentersblocks.overlays.sculk": "Sculk Overlays",
+  "tag.item.carpentersblocks.overlays.snow": "Snow Overlays",
+  "tag.item.carpentersblocks.overlays.vine": "Vine Overlays",
+  "tag.item.carpentersblocks.overlays.web": "Web Overlays"
 }
