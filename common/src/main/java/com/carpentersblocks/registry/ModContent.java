@@ -103,6 +103,8 @@ public final class ModContent {
         RedstoneContent.registerBlocks(registrar);
         TorchContent.registerBlocks(registrar);
         LadderContent.registerBlocks(registrar);
+        BedContent.registerBlocks(registrar);
+        FlowerPotContent.registerBlocks(registrar);
     }
 
     public static void registerItems(BiConsumer<ResourceLocation, Item> registrar) {
@@ -134,6 +136,7 @@ public final class ModContent {
             BlockEntityTypeFactory factory) {
         COVERABLE_BLOCK_ENTITY = factory.create(CoverableBlockEntity::new, COVERABLE_BLOCKS.toArray(Block[]::new));
         registrar.accept(CarpentersBlocks.id("coverable"), COVERABLE_BLOCK_ENTITY);
+        FlowerPotContent.registerBlockEntities(registrar, factory);
     }
 
     /** Builds a block entity type; vanilla's builder is only accessible through each loader. */

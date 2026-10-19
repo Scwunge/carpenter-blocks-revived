@@ -1,10 +1,14 @@
 package com.carpentersblocks.client;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
@@ -26,11 +30,15 @@ public final class CoverTint implements BlockColor {
     private static final int KIND_COVER = 0;
     private static final int KIND_DYE = 1;
     private static final int KIND_OVERLAY = 2;
+    private static final int KIND_CUSTOM = 3;
 
     private static final int SLOT_SHIFT = 8;
     private static final int KIND_SHIFT = 12;
     private static final int TINT_MASK = (1 << SLOT_SHIFT) - 1;
     private static final int SLOT_MASK = (1 << (KIND_SHIFT - SLOT_SHIFT)) - 1;
+
+    /** Colors of {@link #custom} quads, by block. */
+    private static final Map<Block, BlockColor> CUSTOM = new ConcurrentHashMap<>();
 
     private CoverTint() {}
 
@@ -47,6 +55,18 @@ public final class CoverTint implements BlockColor {
     /** The tint of a slot's overlay block (grass and vines). */
     public static int overlay(int slot) {
         return encode(KIND_OVERLAY, slot, 0);
+    }
+
+    /**
+     * A color the block works out itself (the soil and plant in a flower pot), from the color registered for it with
+     * {@link #registerCustom}, which gets {@code tint} (0 to 255) as its tint index.
+     */
+    public static int custom(int tint) {
+        return encode(KIND_CUSTOM, CoverData.BASE, tint);
+    }
+
+    public static void registerCustom(Block block, BlockColor color) {
+        CUSTOM.put(block, color);
     }
 
     private static int encode(int kind, int slot, int tint) {
@@ -66,6 +86,10 @@ public final class CoverTint implements BlockColor {
             case KIND_DYE -> {
                 DyeColor dye = data.dye(slot);
                 return dye == null ? -1 : dye.getFireworkColor();
+            }
+            case KIND_CUSTOM -> {
+                BlockColor custom = CUSTOM.get(state.getBlock());
+                return custom == null ? -1 : custom.getColor(state, level, pos, tintIndex & TINT_MASK);
             }
             case KIND_OVERLAY -> {
                 Overlay overlay = data.overlay(slot);

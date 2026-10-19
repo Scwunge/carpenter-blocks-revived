@@ -62,15 +62,33 @@ public final class FixedQuads {
 
     /** One face of a box (pixels), UVs projected. */
     public static void face(FrameMesh mesh, Box box, Direction face, ResourceLocation texture, int color) {
+        mesh.fixed(face(box, face, sprite(texture), color));
+    }
+
+    /** One face of a box (pixels) with a sprite, UVs projected. */
+    public static BakedQuad face(Box box, Direction face, TextureAtlasSprite sprite, int color) {
+        Vector3f[] quad = faceCorners(box, face);
+        float[][] uv = new float[4][];
+        for (int i = 0; i < 4; ++i) {
+            uv[i] = FrameMesh.project(quad[i], face);
+        }
+        return bake(quad, uv, sprite, color);
+    }
+
+    /** The corners (block units) of one face of a box (pixels), counter-clockwise from outside. */
+    public static Vector3f[] faceCorners(Box box, Direction face) {
         Vector3f[] c = corners(box);
         int f = BOX_FACES.indexOf(face);
         Vector3f[] quad = new Vector3f[4];
-        float[][] uv = new float[4][];
         for (int i = 0; i < 4; ++i) {
-            quad[i] = c[BOX_CORNERS[f][i]];
-            uv[i] = FrameMesh.project(quad[i], face);
+            quad[i] = new Vector3f(c[BOX_CORNERS[f][i]]);
         }
-        mesh.fixed(bake(quad, uv, sprite(texture), color));
+        return quad;
+    }
+
+    /** {@code quad} with another tint index, for quads a block color tints. */
+    public static BakedQuad withTint(BakedQuad quad, int tintIndex) {
+        return new BakedQuad(quad.getVertices(), tintIndex, quad.getDirection(), quad.getSprite(), quad.isShade());
     }
 
     /**

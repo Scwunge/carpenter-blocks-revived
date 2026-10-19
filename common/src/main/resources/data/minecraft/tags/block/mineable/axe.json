@@ -1,9 +1,11 @@
 {
   "values": [
     "carpentersblocks:carpenters_barrier",
+    "carpentersblocks:carpenters_bed",
     "carpentersblocks:carpenters_block",
     "carpentersblocks:carpenters_button",
     "carpentersblocks:carpenters_daylight_sensor",
+    "carpentersblocks:carpenters_flower_pot",
     "carpentersblocks:carpenters_gate",
     "carpentersblocks:carpenters_ladder",
     "carpentersblocks:carpenters_lever",

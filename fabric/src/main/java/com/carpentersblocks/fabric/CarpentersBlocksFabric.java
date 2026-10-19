@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import com.carpentersblocks.block.coverable.CoverableBlock;
+import com.carpentersblocks.network.EnrichPlantPayload;
 import com.carpentersblocks.network.SlopeSelectPayload;
 import com.carpentersblocks.platform.Platform;
 import com.carpentersblocks.registry.ModContent;
@@ -30,9 +31,13 @@ public class CarpentersBlocksFabric implements ModInitializer {
     public void onInitialize() {
         Platform.set(new FabricPlatform());
         com.carpentersblocks.fabric.config.FabricConfig.load();
+        FabricBeds.register();
         PayloadTypeRegistry.playC2S().register(SlopeSelectPayload.TYPE, SlopeSelectPayload.STREAM_CODEC);
         ServerPlayNetworking.registerGlobalReceiver(SlopeSelectPayload.TYPE,
                 (payload, context) -> SlopeSelectPayload.handle(payload, context.player()));
+        PayloadTypeRegistry.playC2S().register(EnrichPlantPayload.TYPE, EnrichPlantPayload.STREAM_CODEC);
+        ServerPlayNetworking.registerGlobalReceiver(EnrichPlantPayload.TYPE,
+                (payload, context) -> EnrichPlantPayload.handle(payload, context.player()));
         ModContent.registerDataComponents(
                 (id, type) -> Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, id, type));
         ModContent.registerBlocks((id, block) -> Registry.register(BuiltInRegistries.BLOCK, id, block));
