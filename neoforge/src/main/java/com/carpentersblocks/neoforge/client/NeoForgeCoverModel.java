@@ -81,7 +81,10 @@ public class NeoForgeCoverModel extends BakedModelWrapper<BakedModel> {
         List<BakedQuad> quads = new ArrayList<>();
         for (CoverQuads.Part part : parts) {
             if (renderType == null || part.layer() == renderType) {
-                quads.add(part.quad());
+                BakedQuad quad = part.quad();
+                // Glowing quads keep their baked full-bright light; ambient occlusion would darken them
+                quads.add(part.emissive() ? new BakedQuad(quad.getVertices(), quad.getTintIndex(), quad.getDirection(),
+                        quad.getSprite(), false, false) : quad);
             }
         }
         return quads;

@@ -55,6 +55,21 @@ copper covers and so on) are noted in the code instead.
 - Sneak left-click with the hammer only takes the soil out once the plant is gone; the original could leave a plant
   floating.
 
+## Batch 9: Safe
+
+- Upgrades are matched by the common tags `c:ingots/gold`, `c:gems/diamond` and `c:gems/emerald`, replacing the
+  original's ore dictionary names.
+- The hammer's turning, locking and automation settings need the owner (or an operator, or singleplayer). The
+  original let anyone who could open the safe change them, so a stranger could lock an unlocked safe.
+- Comparators read how full a safe is, as a chest. NeoForge pipes reach the slots through an item handler
+  capability; Fabric's transfer API finds them through the safe's sided container. Both use the automation setting
+  and keep out of the front.
+- Clients are sent how full the safe is, not what is in it, and the capacity lights update as soon as they change
+  instead of once a second.
+- Lit lights glow at full brightness through each loader's renderer (Fabric's emissive material, NeoForge's baked
+  light) instead of the original's brightness override.
+- The safe's front face counts as solid, as its other faces. The original's front wasn't solid for placing.
+
 ## Batch 10: Tile
 
 - A tile copies the look only of neighboring tiles on the same kind of face (floor, ceiling or the same wall

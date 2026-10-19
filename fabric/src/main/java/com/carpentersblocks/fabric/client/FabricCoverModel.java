@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -37,6 +38,7 @@ public class FabricCoverModel extends ForwardingBakedModel {
             Direction.SOUTH, Direction.WEST, Direction.EAST };
 
     private final Map<BlendMode, RenderMaterial> materials = new ConcurrentHashMap<>();
+    private final Map<BlendMode, RenderMaterial> emissiveMaterials = new ConcurrentHashMap<>();
     private final FrameModels.Cache frames = new FrameModels.Cache();
     private final RailSlopeFill railFill = new RailSlopeFill();
 
@@ -68,7 +70,7 @@ public class FabricCoverModel extends ForwardingBakedModel {
                     : CoverQuads.build(mesh.quads(cullFace), cullFace, data, random,
                             ItemBlockRenderTypes::getChunkRenderType);
             for (CoverQuads.Part part : parts) {
-                emitter.fromVanilla(part.quad(), material(BlendMode.fromRenderLayer(part.layer())), cullFace);
+                emitter.fromVanilla(part.quad(), material(part), cullFace);
                 emitter.emit();
             }
         }
@@ -77,13 +79,19 @@ public class FabricCoverModel extends ForwardingBakedModel {
         if (fill != null) {
             for (CoverQuads.Part part : CoverQuads.build(railFill.mesh(fill).quads(null), null, data, random,
                     ItemBlockRenderTypes::getChunkRenderType)) {
-                emitter.fromVanilla(part.quad(), material(BlendMode.fromRenderLayer(part.layer())), null);
+                emitter.fromVanilla(part.quad(), material(part), null);
                 emitter.emit();
             }
         }
     }
 
-    private RenderMaterial material(BlendMode blendMode) {
+    private RenderMaterial material(CoverQuads.Part part) {
+        BlendMode blendMode = BlendMode.fromRenderLayer(part.layer());
+        if (part.emissive()) {
+            return emissiveMaterials.computeIfAbsent(blendMode, mode -> RendererAccess.INSTANCE.getRenderer()
+                    .materialFinder().blendMode(mode).emissive(true).disableDiffuse(true)
+                    .ambientOcclusion(TriState.FALSE).find());
+        }
         return materials.computeIfAbsent(blendMode, mode -> {
             Renderer renderer = RendererAccess.INSTANCE.getRenderer();
             return renderer.materialFinder().blendMode(mode).find();

@@ -11,6 +11,7 @@ import com.carpentersblocks.registry.DoorContent;
 import com.carpentersblocks.registry.FlowerPotContent;
 import com.carpentersblocks.registry.LadderContent;
 import com.carpentersblocks.registry.RedstoneContent;
+import com.carpentersblocks.registry.SafeContent;
 import com.carpentersblocks.registry.SlopeContent;
 import com.carpentersblocks.registry.TorchContent;
 
@@ -65,6 +66,9 @@ public final class ClientFrames {
         if (FlowerPotContent.CARPENTERS_FLOWER_POT != null) {
             FrameModels.register(FlowerPotContent.CARPENTERS_FLOWER_POT, FlowerPotFrames.POT);
             FlowerPotFrames.registerClient(FlowerPotContent.CARPENTERS_FLOWER_POT);
+        }
+        if (SafeContent.CARPENTERS_SAFE != null) {
+            FrameModels.register(SafeContent.CARPENTERS_SAFE, SafeFrames.SAFE);
         }
     }
 
