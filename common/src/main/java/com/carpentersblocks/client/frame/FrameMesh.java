@@ -43,6 +43,7 @@ public final class FrameMesh {
     private final List<Quad> unculled = new ArrayList<>();
     private final Map<Direction, List<Quad>> culled = new EnumMap<>(Direction.class);
     private final float raise;
+    private boolean hasFixed;
 
     public FrameMesh() {
         this(0);
@@ -77,7 +78,13 @@ public final class FrameMesh {
     /** Adds a ready-made, unculled quad that covers never re-texture, such as a lever handle or an inlay. */
     public FrameMesh fixed(BakedQuad quad) {
         unculled.add(new Quad(quad, null, true));
+        hasFixed = true;
         return this;
+    }
+
+    /** True when the mesh has fixed quads, which draw in the frame's layer whatever the covers are. */
+    public boolean hasFixed() {
+        return hasFixed;
     }
 
     /** A cuboid, coordinates 0 to 1. Faces on the block boundary are culled against it; zero-area faces are skipped. */

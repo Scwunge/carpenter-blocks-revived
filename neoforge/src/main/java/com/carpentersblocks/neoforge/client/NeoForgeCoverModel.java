@@ -89,6 +89,11 @@ public class NeoForgeCoverModel extends BakedModelWrapper<BakedModel> {
     public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource random, ModelData data) {
         CoverData covers = data.get(COVERS);
         Set<RenderType> layers = new HashSet<>();
+        // Fixed quads (blankets, handles, inlays, flames, potted plants) keep the frame's layer under any cover
+        FrameBuilder builder = FrameModels.builder(state.getBlock());
+        if (builder != null && frames.mesh(builder, state, data.get(FRAME_KEY)).hasFixed()) {
+            layers.add(CoverQuads.FRAME_LAYER);
+        }
         for (Direction face : Direction.values()) {
             if (covers == null) {
                 layers.add(CoverQuads.FRAME_LAYER);
