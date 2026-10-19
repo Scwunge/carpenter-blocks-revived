@@ -1,10 +1,10 @@
-# Carpenter's Blocks (1.21.1 port)
+# Carpenter Blocks Revived
 
 A port of [Carpenter's Blocks](https://github.com/GTNewHorizons/CarpentersBlocks) to Minecraft 1.21.1, built for
 **Fabric** and **NeoForge** from one codebase (Architectury Loom, no runtime library needed).
 
 Original mod by Mineshopper; the 1.7.10 code this port follows is maintained by GTNewHorizons. Licensed under the
-GNU LGPL 2.1, like the original (see `LICENSE`).
+GNU LGPL 2.1, like the original (see `LICENSE` and `NOTICE`).
 
 ## Contents
 

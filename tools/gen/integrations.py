@@ -19,7 +19,7 @@ def generate() -> None:
         f"config.jade.plugin_{MOD}.covers": "Carpenter's Blocks covers",
         f"config.jade.plugin_{MOD}.tile": "Carpenter's Tile",
         # WTHIT's name for the plugin
-        f"config.waila.plugin_{MOD}.plugin": "Carpenter's Blocks",
+        f"config.waila.plugin_{MOD}.plugin": "Carpenter Blocks Revived",
     })
     # Item tag names, which recipe viewers show where a recipe takes any item of a tag (tag.item.<ns>.<path, dotted>)
     LANG.update({f"tag.item.{MOD}.{path}": name for path, name in ITEM_TAGS.items()})
@@ -60,7 +60,7 @@ def config_lang() -> None:
     keys = config_keys()
     BLOCK_KEYS.update(key[len("enable"):] for section, key in keys if section == "BLOCKS")
     BLOCK_KEYS.update(("Hammer", "Chisel", "Tile"))
-    LANG[f"{MOD}.configuration.title"] = "Carpenter's Blocks"
+    LANG[f"{MOD}.configuration.title"] = "Carpenter Blocks Revived"
     LANG[f"{MOD}.configuration.restart"] = "Changes apply the next time the game starts."
     for section, name in SECTION_NAMES.items():
         LANG[f"{MOD}.configuration.{section}"] = name

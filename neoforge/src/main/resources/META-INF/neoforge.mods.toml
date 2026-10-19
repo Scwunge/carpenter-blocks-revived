@@ -5,8 +5,8 @@ license = "LGPL-2.1"
 [[mods]]
 modId = "carpentersblocks"
 version = "${version}"
-displayName = "Carpenter's Blocks"
-authors = "Mineshopper (original mod), GTNewHorizons (1.7.10 maintenance)"
+displayName = "Carpenter Blocks Revived"
+authors = "Scwunge (1.21.1 port), Mineshopper (original mod), GTNewHorizons (1.7.10 maintenance)"
 logoFile = "assets/carpentersblocks/textures/block/frame.png"
 description = '''
 Blocks that take on the look of any block you apply to them. A port of Mineshopper's Carpenter's Blocks.
