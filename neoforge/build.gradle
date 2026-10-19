@@ -47,6 +47,9 @@ loom {
 dependencies {
     neoForge "net.neoforged:neoforge:$rootProject.neoforge_version"
 
+    // Optional: only for the annotation REI scans for on NeoForge (see NeoForgeReiPlugin)
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-neoforge:$rootProject.rei_version") { transitive = false }
+
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
 }

@@ -6,6 +6,15 @@ dependencies {
     // Architectury common modules compile against Fabric Loader; common code itself stays loader-agnostic.
     modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
 
+    // Optional integrations: compiled against, never required. Each lives in com.carpentersblocks.integration.<mod>
+    // and is reached only through that mod's own plugin discovery.
+    compileOnly "mezz.jei:jei-${rootProject.minecraft_version}-common-api:$rootProject.jei_version"
+    compileOnly "dev.emi:emi-xplat-mojmap:$rootProject.emi_version:api"
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:$rootProject.rei_version") { transitive = false }
+    modCompileOnly("me.shedaniel.cloth:basic-math:0.6.1") { transitive = false }
+    modCompileOnly "maven.modrinth:jade:$rootProject.jade_version+fabric"
+    compileOnly "mcp.mobius.waila:wthit-api:mojmap-$rootProject.wthit_version"
+
     testImplementation platform("org.junit:junit-bom:$rootProject.junit_version")
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

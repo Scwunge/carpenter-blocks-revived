@@ -1,0 +1,8 @@
+{
+  "carpentersblocks:plugin": {
+    "entrypoints": {
+      "client": "com.carpentersblocks.integration.wthit.WthitPlugin"
+    },
+    "side": "client"
+  }
+}
