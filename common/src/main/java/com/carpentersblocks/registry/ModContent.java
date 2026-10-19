@@ -17,6 +17,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -29,6 +30,7 @@ import com.carpentersblocks.block.coverable.CoverableBlockEntity;
 import com.carpentersblocks.config.CBConfig;
 import com.carpentersblocks.item.CarpentersChiselItem;
 import com.carpentersblocks.item.CarpentersHammerItem;
+import com.carpentersblocks.recipe.ConfiguredShapedRecipe;
 
 /**
  * All blocks, items and block entity types. Each loader calls the {@code register*} methods from its own
@@ -127,6 +129,11 @@ public final class ModContent {
             CARPENTERS_CHISEL = item(registrar, "carpenters_chisel", new CarpentersChiselItem(toolProperties()));
         }
         TileContent.registerItems(registrar);
+    }
+
+    /** {@code carpentersblocks:configured_shaped}: shaped recipes whose count is a config option. */
+    public static void registerRecipeSerializers(BiConsumer<ResourceLocation, RecipeSerializer<?>> registrar) {
+        registrar.accept(CarpentersBlocks.id("configured_shaped"), ConfiguredShapedRecipe.SERIALIZER);
     }
 
     public static void registerEntityTypes(BiConsumer<ResourceLocation, EntityType<?>> registrar) {

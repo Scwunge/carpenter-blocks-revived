@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "carpentersblocks:configured_shaped",
   "category": "misc",
   "pattern": [
     "X",
@@ -16,5 +16,6 @@
   "result": {
     "id": "carpentersblocks:carpenters_torch",
     "count": 8
-  }
+  },
+  "quantity_option": "recipeQuantityTorch"
 }

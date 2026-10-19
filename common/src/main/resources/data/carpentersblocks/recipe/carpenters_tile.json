@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "carpentersblocks:configured_shaped",
   "category": "decorations",
   "pattern": [
     "XXX",
@@ -16,5 +16,6 @@
   "result": {
     "id": "carpentersblocks:carpenters_tile",
     "count": 12
-  }
+  },
+  "quantity_option": "recipeQuantityTile"
 }

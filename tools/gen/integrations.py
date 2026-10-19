@@ -1,9 +1,9 @@
 """Strings for the optional integrations: Jade/WTHIT tooltip lines (TooltipLines) and their toggles."""
 
 import re
-from pathlib import Path
 
 from .common import LANG, MOD
+from .config_options import config_keys
 
 
 def generate() -> None:
@@ -24,21 +24,7 @@ def generate() -> None:
     config_lang()
 
 
-CONFIG_OPTIONS = Path(__file__).resolve().parents[2] / "common/src/main/java/com/carpentersblocks/config/ConfigOptions.java"
 SECTION_NAMES = {"features": "Features", "blocks": "Blocks", "items": "Items", "recipe_quantities": "Recipe Quantities"}
-
-
-def config_keys():
-    """The option keys of ConfigOptions.java, in order, as (section constant, key). The per-block loop is expanded."""
-    source = CONFIG_OPTIONS.read_text(encoding="utf-8")
-    keys = []
-    loop = re.search(r'for \(String block : List\.of\(([^)]*)\)\) \{(.*?)\n        \}', source, re.S)
-    blocks = re.findall(r'"(\w+)"', loop.group(1))
-    for section, key in re.findall(r'(?:bool|integer|decimal)\((\w+), "(\w+)"(?! \+)', source):
-        keys.append((section, key))
-    for section, prefix in re.findall(r'(?:bool|integer|decimal)\((\w+), "(\w+)" \+ block', loop.group(2)):
-        keys.extend((section, prefix + block) for block in blocks)
-    return keys
 
 
 def config_name(key: str) -> str:

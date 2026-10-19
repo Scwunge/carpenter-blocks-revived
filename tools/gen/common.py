@@ -3,6 +3,8 @@
 import json
 from pathlib import Path
 
+from .config_options import recipe_quantity_option
+
 ROOT = Path("common/src/main/resources")
 ASSETS = ROOT / "assets/carpentersblocks"
 DATA = ROOT / "data"
@@ -39,10 +41,17 @@ def handheld_item(name: str, texture: str) -> None:
 
 
 def shaped_recipe(name: str, category: str, pattern, key, count: int, result: str = None) -> None:
-    write(DATA / f"{MOD}/recipe/{name}.json", {
+    """A shaped recipe. When the result has a recipeQuantity* config option, the recipe takes its count from it
+    (carpentersblocks:configured_shaped); count is then the option's default, which RecipeQuantityTest checks."""
+    recipe = {
         "type": "minecraft:crafting_shaped",
         "category": category,
         "pattern": pattern,
         "key": key,
         "result": {"id": f"{MOD}:{result or name}", "count": count},
-    })
+    }
+    option = recipe_quantity_option(result or name)
+    if option:
+        recipe["type"] = f"{MOD}:configured_shaped"
+        recipe["quantity_option"] = option
+    write(DATA / f"{MOD}/recipe/{name}.json", recipe)

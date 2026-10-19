@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "carpentersblocks:configured_shaped",
   "category": "misc",
   "pattern": [
     "XXX",
@@ -16,5 +16,6 @@
   "result": {
     "id": "carpentersblocks:carpenters_bed",
     "count": 1
-  }
+  },
+  "quantity_option": "recipeQuantityBed"
 }
