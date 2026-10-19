@@ -1,5 +1,7 @@
 package com.carpentersblocks.block.coverable;
 
+import java.util.function.Predicate;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -55,16 +57,27 @@ public final class AttributeItems {
     @Nullable
     public static BlockState coverStateFor(ItemStack stack, @Nullable Player player, InteractionHand hand,
             BlockHitResult hit) {
+        return coverStateFor(stack, player, hand, hit, state -> state.is(COVER_DENYLIST),
+                state -> state.is(COVER_ALLOWLIST));
+    }
+
+    /**
+     * As {@link #coverStateFor(ItemStack, Player, InteractionHand, BlockHitResult)}, with the deny and allow lists
+     * given; tests use it to try list entries the shipped tags don't have.
+     */
+    @Nullable
+    public static BlockState coverStateFor(ItemStack stack, @Nullable Player player, InteractionHand hand,
+            BlockHitResult hit, Predicate<BlockState> denied, Predicate<BlockState> allowed) {
         if (!(stack.getItem() instanceof BlockItem blockItem) || Overlay.forItem(stack) != null) {
             return null;
         }
         Block block = blockItem.getBlock();
         BlockState defaultState = block.defaultBlockState();
-        if (block instanceof CoverableBlock || defaultState.is(COVER_DENYLIST)) {
+        if (block instanceof CoverableBlock || denied.test(defaultState)) {
             return null;
         }
 
-        if (!defaultState.is(COVER_ALLOWLIST)) {
+        if (!allowed.test(defaultState)) {
             if (block instanceof EntityBlock) {
                 return null;
             }
