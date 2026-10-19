@@ -41,6 +41,12 @@ loom {
             property 'unprotect.target', 'none'
             property 'neoforge.enabledGameTestNamespaces', 'carpentersblocks'
         }
+        // -Pautoshots=<script>: the dev client runs the script's commands and screenshots, then quits (AutoShots)
+        if (project.hasProperty('autoshots')) {
+            client {
+                property 'carpentersblocks.autoshots', project.property('autoshots').toString()
+            }
+        }
     }
 }
 
@@ -52,6 +58,23 @@ dependencies {
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
+
+    // -Pdevmods=jei,jade,...: put other mods on the dev client to check the integrations in game. Local runtime
+    // only: never in the jars, the published metadata or a run without the property.
+    def devMods = [
+        // Later JEI jars were built with a newer Loom than ours, which refuses them
+        jei: ["mezz.jei:jei-$rootProject.minecraft_version-neoforge:19.44.0.406"],
+        emi: ["dev.emi:emi-neoforge:$rootProject.emi_version"],
+        rei: ["me.shedaniel:RoughlyEnoughItems-neoforge:$rootProject.rei_version"],
+        jade: ["maven.modrinth:jade:$rootProject.jade_version+neoforge"],
+        wthit: ["mcp.mobius.waila:wthit:neo-$rootProject.wthit_version", "lol.bai:badpackets:neo-0.8.2"],
+    ]
+    if (project.hasProperty('devmods')) {
+        project.property('devmods').toString().split(',').each { name ->
+            // A set only one loader has (modmenu, sodium...) is skipped on the other
+            devMods.getOrDefault(name, []).each { modLocalRuntime it }
+        }
+    }
 }
 
 processResources {

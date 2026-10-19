@@ -1,0 +1,46 @@
+# Render compatibility (Sodium, Iris, Indium): wide shots of every scene, by day and by night, to compare with the
+# same shots taken without those mods. Run it once plain and once with -Pdevmods=sodium (or iris, indium).
+cmd gamerule sendCommandFeedback false
+# A fixed spot, away from other scripts' scenes: setup builds around the player, wherever the last run left them
+cmd tp @s 1000.5 160 1000.5 0 10
+wait 100
+cmd function cbtest:setup
+wait 40
+cmd kill @e[type=marker,tag=cbo]
+cmd execute at @s run summon marker ~ ~ ~ {Tags:["cbo"]}
+cmd gamemode spectator @s
+wait 100
+
+# From the north, looking south and down, one stretch of the scenes at a time
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~-2 ~5 ~-17 0 35
+wait 60
+shot r_beds_collapsible
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~0 ~4 ~-5 0 35
+wait 60
+shot r_stairs_barrier_torch_ladder
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~0 ~4 ~2 0 35
+wait 60
+shot r_covers
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~0 ~4 ~8 0 35
+wait 60
+shot r_redstone_slopes
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~0 ~3 ~14 0 25
+wait 60
+shot r_doors
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~-4 ~3 ~20 0 30
+wait 60
+shot r_safes
+
+# Night: illuminated covers, the safes' lights, torches
+cmd time set midnight
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~0 ~4 ~2 0 35
+wait 60
+shot r_covers_night
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~0 ~4 ~-5 0 35
+wait 60
+shot r_torch_night
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~-4 ~3 ~20 0 30
+wait 60
+shot r_safes_night
+cmd time set noon
+wait 20

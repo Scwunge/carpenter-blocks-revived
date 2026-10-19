@@ -1,0 +1,49 @@
+# Integrations (b11): the recipe viewer's overlay, the block tooltip (Jade/WTHIT), the mod list and our config screen.
+# Run with the mods on: -Pdevmods=jei,jade,modmenu (Fabric) or -Pdevmods=jei,jade (NeoForge), and so on.
+cmd gamerule sendCommandFeedback false
+# A fixed spot, away from other scripts' scenes: setup builds around the player, wherever the last run left them
+cmd tp @s 1000.5 160 1000.5 0 10
+wait 100
+cmd function cbtest:setup
+wait 40
+cmd kill @e[type=marker,tag=cbo]
+cmd execute at @s run summon marker ~ ~ ~ {Tags:["cbo"]}
+cmd gamemode survival @s
+wait 60
+
+# The recipe viewer beside the inventory (survival: creative swaps in its own screen), then a search for slopes.
+# The clicks are each viewer's search box by default (GUI 427x240): JEI's at the bottom right, EMI's and REI's at the
+# bottom middle. Then the mouse rests on the first result, for its tooltip.
+screen inventory plain
+wait 40
+shot i_inventory
+ifmod jei click 366 229
+ifmod emi click 213 229
+ifmod roughlyenoughitems click 213 229
+type slope
+wait 20
+ifmod jei mouse 322 70
+wait 10
+shot i_search
+screen close
+cmd gamemode creative @s
+
+# Block tooltips: a grass-covered block, then planks with a diamond side cover, from the north
+cmd execute at @e[tag=cbo,limit=1] align xyz run tp @s ~-5.5 ~ ~7.5 0 30
+hud on
+wait 40
+shot i_tooltip_grass
+cmd execute at @e[tag=cbo,limit=1] align xyz run tp @s ~4.5 ~ ~7.5 0 30
+wait 40
+shot i_tooltip_planks
+hud off
+
+# The loader's mod list and our config screen through it
+screen mods
+wait 20
+shot i_mods
+screen config
+wait 20
+shot i_config
+screen close
+wait 20

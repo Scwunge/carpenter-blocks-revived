@@ -50,6 +50,28 @@ dependencies {
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
+
+    // -Pdevmods=jei,jade,...: put other mods on the dev client to check the integrations in game. Local runtime
+    // only: never in the jars, the published metadata or a run without the property.
+    def devMods = [
+        // Later JEI jars were built with a newer Loom than ours, which refuses them
+        jei: ["mezz.jei:jei-$rootProject.minecraft_version-fabric:19.44.0.406"],
+        emi: ["dev.emi:emi-fabric:$rootProject.emi_version"],
+        rei: ["me.shedaniel:RoughlyEnoughItems-fabric:$rootProject.rei_version"],
+        jade: ["maven.modrinth:jade:$rootProject.jade_version+fabric"],
+        wthit: ["mcp.mobius.waila:wthit:fabric-$rootProject.wthit_version", "lol.bai:badpackets:fabric-0.8.2"],
+        modmenu: ["com.terraformersmc:modmenu:$rootProject.modmenu_version"],
+        // Sodium 0.6 renders the Fabric Rendering API itself, Iris 1.8 needs it; Indium only works with Sodium 0.5
+        sodium: ["maven.modrinth:sodium:mc1.21.1-0.6.13-fabric"],
+        iris: ["maven.modrinth:sodium:mc1.21.1-0.6.13-fabric", "maven.modrinth:iris:1.8.8+1.21.1-fabric"],
+        indium: ["maven.modrinth:sodium:mc1.21-0.5.11", "maven.modrinth:indium:1.0.35+mc1.21"],
+    ]
+    if (project.hasProperty('devmods')) {
+        project.property('devmods').toString().split(',').each { name ->
+            // A set only one loader has (modmenu, sodium...) is skipped on the other
+            devMods.getOrDefault(name, []).each { modLocalRuntime it }
+        }
+    }
 }
 
 processResources {
