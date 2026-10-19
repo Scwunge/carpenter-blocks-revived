@@ -19,6 +19,15 @@ class DesignListTest {
     }
 
     @Test
+    void tileDesignsNeverCycleBackToBlank() {
+        DesignList list = DesignList.TILE;
+        assertEquals("stock_chain", list.next(""));
+        assertEquals("stock_striped", list.previous(""));
+        assertEquals("stock_chain", list.next("stock_striped"));
+        assertEquals("carpentersblocks:block/designs/tile/stock_dots", list.texture("stock_dots").toString());
+    }
+
+    @Test
     void namesAndTextures() {
         assertTrue(DesignList.BED.isValid("carpenters_rainbow"));
         assertFalse(DesignList.BED.isValid(""));

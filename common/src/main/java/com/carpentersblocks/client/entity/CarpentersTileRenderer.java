@@ -20,6 +20,7 @@ import com.carpentersblocks.block.barrier.Box;
 import com.carpentersblocks.block.design.DesignList;
 import com.carpentersblocks.client.frame.FixedQuads;
 import com.carpentersblocks.entity.CarpentersTileEntity;
+import com.carpentersblocks.entity.TileGeometry;
 
 /**
  * Draws a Carpenter's Tile as a block-textured slab: the design (or the blank tile) on every face, in the dye color,
@@ -37,7 +38,7 @@ public class CarpentersTileRenderer extends EntityRenderer<CarpentersTileEntity>
     public void render(CarpentersTileEntity tile, float yaw, float partialTick, PoseStack poseStack,
             MultiBufferSource buffers, int packedLight) {
         BlockPos pos = tile.getPos();
-        AABB bounds = CarpentersTileEntity.box(pos, tile.getDirection()).move(-pos.getX(), -pos.getY(), -pos.getZ());
+        AABB bounds = TileGeometry.box(pos, tile.getDirection()).move(-pos.getX(), -pos.getY(), -pos.getZ());
         Box box = new Box(bounds.minX * 16, bounds.minY * 16, bounds.minZ * 16, bounds.maxX * 16, bounds.maxY * 16,
                 bounds.maxZ * 16);
         String design = tile.getDesign();

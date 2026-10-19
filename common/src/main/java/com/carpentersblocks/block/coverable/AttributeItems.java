@@ -97,6 +97,13 @@ public final class AttributeItems {
      */
     @Nullable
     public static DyeColor dyeFor(ItemStack stack) {
+        DyeColor color = anyDyeFor(stack);
+        return color == DyeColor.WHITE ? null : color;
+    }
+
+    /** Dye color the item applies, white included (tiles can be dyed back to white), or {@code null}. */
+    @Nullable
+    public static DyeColor anyDyeFor(ItemStack stack) {
         DyeColor color = null;
         if (stack.getItem() instanceof DyeItem dyeItem) {
             color = dyeItem.getDyeColor();
@@ -108,7 +115,7 @@ public final class AttributeItems {
                 }
             }
         }
-        return color == DyeColor.WHITE ? null : color;
+        return color;
     }
 
     public static boolean isIlluminator(ItemStack stack) {

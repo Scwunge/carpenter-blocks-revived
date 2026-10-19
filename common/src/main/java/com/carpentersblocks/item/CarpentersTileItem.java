@@ -11,9 +11,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 
-import org.jetbrains.annotations.Nullable;
-
 import com.carpentersblocks.entity.CarpentersTileEntity;
+import com.carpentersblocks.entity.TileGeometry;
 
 /**
  * The Carpenter's Tile item: places a tile on the clicked face. Unless sneaking, the new tile takes the look of the
@@ -21,9 +20,6 @@ import com.carpentersblocks.entity.CarpentersTileEntity;
  * of {@code ItemCarpentersTile}.
  */
 public class CarpentersTileItem extends Item {
-
-    /** How close to an edge of the face (as a fraction) counts as clicking near it, as the original. */
-    private static final double EDGE = 0.2;
 
     public CarpentersTileItem(Properties properties) {
         super(properties);
@@ -48,7 +44,7 @@ public class CarpentersTileItem extends Item {
                 tile.setOwner(player.getUUID());
             }
             if (player == null || !player.isSecondaryUseActive()) {
-                tile.matchNeighbors(edge(face, context.getClickLocation().subtract(Vec3.atLowerCornerOf(
+                tile.matchNeighbors(TileGeometry.edge(face, context.getClickLocation().subtract(Vec3.atLowerCornerOf(
                         context.getClickedPos()))));
             }
             tile.playPlacementSound();
@@ -57,27 +53,5 @@ public class CarpentersTileItem extends Item {
             stack.consume(1, player);
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
-    }
-
-    /**
-     * The edge of the face nearest the click when it is within {@link #EDGE} of one, else {@code null}. {@code hit} is
-     * relative to the clicked block.
-     */
-    @Nullable
-    public static Direction edge(Direction face, Vec3 hit) {
-        Direction nearest = null;
-        double best = Double.MAX_VALUE;
-        for (Direction side : Direction.values()) {
-            if (side.getAxis() == face.getAxis()) {
-                continue;
-            }
-            double coord = side.getAxis().choose(hit.x, hit.y, hit.z);
-            double distance = side.getAxisDirection() == Direction.AxisDirection.POSITIVE ? 1 - coord : coord;
-            if (distance < best) {
-                best = distance;
-                nearest = side;
-            }
-        }
-        return best <= EDGE ? nearest : null;
     }
 }

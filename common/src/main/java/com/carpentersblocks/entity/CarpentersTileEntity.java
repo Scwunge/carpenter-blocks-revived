@@ -47,9 +47,6 @@ import com.carpentersblocks.registry.TileContent;
  */
 public class CarpentersTileEntity extends HangingEntity {
 
-    /** Thickness of the tile, in blocks. */
-    public static final double DEPTH = 1.0 / 16;
-
     private static final EntityDataAccessor<String> DATA_DESIGN = SynchedEntityData.defineId(CarpentersTileEntity.class,
             EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Integer> DATA_DYE = SynchedEntityData.defineId(CarpentersTileEntity.class,
@@ -65,6 +62,8 @@ public class CarpentersTileEntity extends HangingEntity {
 
     /** Neighbors closer than this (in blocks, beyond the tile's own cell) pass on their look, as the original. */
     private static final double MATCH_REACH = 0.2;
+
+    private static final int SURVIVAL_CHECK_TICKS = 20;
 
     @Nullable
     private UUID owner;
@@ -183,23 +182,20 @@ public class CarpentersTileEntity extends HangingEntity {
         recalculateBoundingBox();
     }
 
-    /** The cell squeezed against the block behind it, {@link #DEPTH} thick. */
+    /** The cell squeezed against the block behind it, {@link TileGeometry#DEPTH} thick. */
     @Override
     protected AABB calculateBoundingBox(BlockPos pos, Direction direction) {
-        return box(pos, direction);
+        return TileGeometry.box(pos, direction);
     }
 
-    /** The tile's box in the cell {@code pos} on a face pointing {@code direction}. */
-    public static AABB box(BlockPos pos, Direction direction) {
-        AABB cell = new AABB(pos);
-        return switch (direction) {
-            case DOWN -> cell.setMinY(cell.maxY - DEPTH);
-            case UP -> cell.setMaxY(cell.minY + DEPTH);
-            case NORTH -> cell.setMinZ(cell.maxZ - DEPTH);
-            case SOUTH -> cell.setMaxZ(cell.minZ + DEPTH);
-            case WEST -> cell.setMinX(cell.maxX - DEPTH);
-            case EAST -> cell.setMaxX(cell.minX + DEPTH);
-        };
+    /** Checks the face behind every second, as the original, rather than vanilla's every five. */
+    @Override
+    public void tick() {
+        super.tick();
+        if (!level().isClientSide && !isRemoved() && tickCount % SURVIVAL_CHECK_TICKS == 0 && !survives()) {
+            discard();
+            dropItem(null);
+        }
     }
 
     /** A tile stays while the face behind it is solid, as the original; other tiles and entities don't matter. */
@@ -220,7 +216,7 @@ public class CarpentersTileEntity extends HangingEntity {
     public InteractionResult interact(Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         boolean hammer = stack.getItem() instanceof ICarpentersHammer;
-        DyeColor dye = hammer ? null : AttributeItems.dyeFor(stack);
+        DyeColor dye = hammer ? null : AttributeItems.anyDyeFor(stack);
         if (!hammer && (dye == null || !player.isSecondaryUseActive())) {
             return InteractionResult.PASS;
         }
@@ -256,7 +252,7 @@ public class CarpentersTileEntity extends HangingEntity {
             setDesign(DesignList.TILE.next(getDesign()));
             return false;
         }
-        if (hammer || player.getAbilities().instabuild) {
+        if (hammer || player.isCreative()) {
             kill();
             markHurt();
             dropItem(player);
@@ -268,7 +264,7 @@ public class CarpentersTileEntity extends HangingEntity {
     /** Drops the tile, unless a creative player without the hammer took it down. */
     @Override
     public void dropItem(@Nullable Entity breaker) {
-        if (breaker instanceof Player player && player.getAbilities().instabuild
+        if (breaker instanceof Player player && player.isCreative()
                 && !(player.getMainHandItem().getItem() instanceof ICarpentersHammer)) {
             return;
         }
@@ -308,6 +304,13 @@ public class CarpentersTileEntity extends HangingEntity {
 
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
+        if (!tag.contains("TileX")) {
+            // Summoned without a block position: the tile goes in the cell it was summoned in
+            tag = tag.copy();
+            tag.putInt("TileX", blockPosition().getX());
+            tag.putInt("TileY", blockPosition().getY());
+            tag.putInt("TileZ", blockPosition().getZ());
+        }
         super.readAdditionalSaveData(tag);
         setDirection(Direction.from3DDataValue(tag.getByte(TAG_FACING)));
         setDesign(tag.getString(TAG_DESIGN));
