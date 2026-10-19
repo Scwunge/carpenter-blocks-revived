@@ -9,5 +9,5 @@ def generate() -> None:
     write(ASSETS / f"models/item/{name}.json",
           {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{name}"}})
     # Terracotta stands in for the original's hardened clay
-    shaped_recipe(name, "decorations", ["XXX", "YYY"],
+    shaped_recipe(name, "misc", ["XXX", "YYY"],
                   {"X": {"item": "minecraft:terracotta"}, "Y": {"item": f"{MOD}:carpenters_block"}}, 12)

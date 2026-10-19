@@ -11,23 +11,19 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.IronBarsBlock;
-import net.minecraft.world.level.block.SnowyDirtBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.block.coverable.ChiselDesigns;
 import com.carpentersblocks.block.coverable.CoverData;
 import com.carpentersblocks.block.coverable.Overlay;
+import com.carpentersblocks.block.slope.SlopedCoverFace;
 import com.carpentersblocks.client.frame.FrameMesh;
 
 /**
@@ -56,9 +52,8 @@ public final class CoverQuads {
     /** See-through panes ({@code enableAlphaPanes}), as on the original's alpha pass. */
     public static final RenderType PANE_LAYER = RenderType.translucent();
 
-    /** Covers that show their top on upward slopes, like grass; anything extending SnowyDirtBlock counts too. */
-    public static final TagKey<Block> SLOPE_TOP_COVERS = TagKey.create(Registries.BLOCK,
-            CarpentersBlocks.id("slope_top_covers"));
+    /** Covers that show their top on upward slopes; see {@link SlopedCoverFace}. */
+    public static final TagKey<Block> SLOPE_TOP_COVERS = SlopedCoverFace.SLOPE_TOP_COVERS;
 
     private static final long SEED = 42L;
 
@@ -138,21 +133,7 @@ public final class CoverQuads {
      * on anything but plain wedges; and the top of grass-like blocks on upward slopes.
      */
     public static Direction slopedFace(BlockState cover, FrameMesh.Sloped sloped) {
-        Direction face = sloped.side();
-        if (cover.hasProperty(BlockStateProperties.AXIS)) {
-            Direction.Axis axis = cover.getValue(BlockStateProperties.AXIS);
-            if (axis == Direction.Axis.Y) {
-                face = sloped.positive() ? Direction.UP : Direction.DOWN;
-            } else if (sloped.side().getAxis() == axis) {
-                face = Direction.UP;
-            }
-        } else if (!sloped.wedge() && cover.getBlock() instanceof HorizontalDirectionalBlock) {
-            face = Direction.UP;
-        }
-        if (sloped.positive() && (cover.is(SLOPE_TOP_COVERS) || cover.getBlock() instanceof SnowyDirtBlock)) {
-            face = Direction.UP;
-        }
-        return face;
+        return SlopedCoverFace.of(cover, sloped.positive(), sloped.side(), sloped.wedge());
     }
 
     private static void addCover(List<Part> parts, BakedQuad frameQuad, Direction face, @Nullable Direction cullFace,

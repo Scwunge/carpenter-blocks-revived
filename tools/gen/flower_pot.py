@@ -27,7 +27,7 @@ def generate() -> None:
     block_loot(name)
     AXE_MINEABLE.append(f"{MOD}:{name}")
 
-    shaped_recipe(name, "decorations", ["X X", " X "], {"X": {"item": f"{MOD}:carpenters_block"}}, 1)
+    shaped_recipe(name, "misc", ["X X", " X "], {"X": {"item": f"{MOD}:carpenters_block"}}, 1)
 
     write(DATA / f"{MOD}/tags/block/flower_pot_plants.json", {"values": PLANTS})
     write(DATA / f"{MOD}/tags/block/flower_pot_soils.json", {"values": SOILS})
