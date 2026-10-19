@@ -3,6 +3,14 @@
 Where the port behaves or looks differently from the 1.7.10 mod on purpose, by batch. Modern additions (waterlogging,
 copper covers and so on) are noted in the code instead.
 
+## Batch 2: Slope
+
+- The slope type lives in the block state and the item kind in the `carpentersblocks:slope_kind` data component, in
+  place of tile entity data and item damage. Slope select (sneak + scroll) steps the data component.
+- The rail slope fill re-textures each face with the cover for that side, as the block itself does, and keeps
+  overlays. The original drew the whole fill with the base cover and suppressed overlays. The fill's side faces take
+  their light from the neighboring block, so they can look darker than the original.
+
 ## Batch 6: Torch + Ladder
 
 - The default ladder on a wall keeps all its parts 3 pixels deep on every wall. The original drew its rungs 2 deep on
