@@ -252,7 +252,8 @@ public class CarpentersFlowerPotBlock extends CoverableBlock {
         }
         Vec3 location = hit.getLocation();
         ItemStack drop = ItemStack.EMPTY;
-        if (location.y - pos.getY() > PotGeometry.PLANT_CLICK_HEIGHT) {
+        // A hit on the rim (exactly at the height) counts as low, whatever the rounding
+        if (location.y - pos.getY() > PotGeometry.PLANT_CLICK_HEIGHT + 1.0E-4) {
             if (pot.isFertilized()) {
                 drop = pot.getFertilizer().copy();
                 pot.setFertilizer(ItemStack.EMPTY);

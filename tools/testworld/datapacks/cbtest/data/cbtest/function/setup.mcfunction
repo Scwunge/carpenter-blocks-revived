@@ -39,6 +39,7 @@ function cbtest:setup_barrier
 function cbtest:setup_redstone
 function cbtest:setup_torch
 function cbtest:setup_ladder
+function cbtest:setup_bed
 give @s carpentersblocks:carpenters_block 64
 give @s carpentersblocks:carpenters_hammer
 give @s minecraft:grass_block 64

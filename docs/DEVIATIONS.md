@@ -1,0 +1,34 @@
+# Deviations from the original
+
+Where the port behaves or looks differently from the 1.7.10 mod on purpose, by batch. Modern additions (waterlogging,
+copper covers and so on) are noted in the code instead.
+
+## Batch 6: Torch + Ladder
+
+- The default ladder on a wall keeps all its parts 3 pixels deep on every wall. The original drew its rungs 2 deep on
+  north and west walls only.
+
+## Batch 8: Bed + Flower Pot
+
+### Bed
+
+- The bed is a block item placed like a vanilla bed (foot where you click, head beyond it in the direction you look),
+  so it can go on any face whose block has a solid top under both halves. The original's bed item placed only from
+  the top face.
+- A dye applied while sneaking colors the blanket on both halves instead of the frame, so the frame can't be dyed.
+  The original colored the blanket from the foot half's dye and the frame from the head half's.
+- Sleeping, respawning and occupancy use vanilla's bed properties. NeoForge asks the block through its bed hooks;
+  Fabric uses its sleep events plus one mixin that lets the respawn check accept the Carpenter's Bed.
+
+### Flower Pot
+
+- Plants are chosen by class and tag instead of Forge's plant interfaces and a list of names: any bush (so any mod's
+  flowers, saplings, mushrooms and crops), cactus, sugar cane and leaves, plus `carpentersblocks:flower_pot_plants`.
+  Soil is `carpentersblocks:flower_pot_soils`, full-size plants `carpentersblocks:flower_pot_full_size`, and
+  fertilizer `carpentersblocks:fertilizers` (bone meal).
+- Plants are drawn from their own block models, scaled, rather than as crossed squares. The original's thin plant
+  profile is gone (thin plants draw at three quarters like the rest), and the whole plant turns with the angle it was
+  planted at, not only the sunflower head.
+- A pot covered in glass shows the glass, not the original's special `flower_pot_glass` texture.
+- Sneak left-click with the hammer only takes the soil out once the plant is gone; the original could leave a plant
+  floating.

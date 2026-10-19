@@ -17,8 +17,10 @@ import net.minecraft.world.level.block.Rotation;
 
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.test.barrier.BarrierTests;
+import com.carpentersblocks.test.bed.BedTests;
 import com.carpentersblocks.test.block.CarpentersBlockTests;
 import com.carpentersblocks.test.block.CoverBehaviorTests;
+import com.carpentersblocks.test.flowerpot.FlowerPotTests;
 import com.carpentersblocks.test.ladder.LadderTests;
 import com.carpentersblocks.test.redstone.RedstoneTests;
 import com.carpentersblocks.test.slope.SlopeTests;
@@ -45,6 +47,8 @@ public final class CBGameTests {
             RedstoneTests.class,
             TorchTests.class,
             LadderTests.class,
+            BedTests.class,
+            FlowerPotTests.class,
             SlopeTests.class);
 
     /** Fabric instantiates gametest entrypoints. */
