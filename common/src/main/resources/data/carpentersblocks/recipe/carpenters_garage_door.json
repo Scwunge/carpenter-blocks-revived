@@ -1,0 +1,19 @@
+{
+  "type": "carpentersblocks:configured_shaped",
+  "category": "redstone",
+  "pattern": [
+    "XXX",
+    "X X",
+    "XXX"
+  ],
+  "key": {
+    "X": {
+      "item": "carpentersblocks:carpenters_block"
+    }
+  },
+  "result": {
+    "id": "carpentersblocks:carpenters_garage_door",
+    "count": 8
+  },
+  "quantity_option": "recipeQuantityGarageDoor"
+}

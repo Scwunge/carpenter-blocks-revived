@@ -22,6 +22,15 @@ public interface FrameBuilder {
         return null;
     }
 
+    /**
+     * Where the covers drawn on this block come from: the block itself, unless it shows another block's attributes
+     * (the open garage door shows its bottom piece's). Read at chunk-build time like {@link #renderKey}, so it must
+     * stay within a block section's reach of {@code pos}.
+     */
+    default BlockPos coverSource(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+        return pos;
+    }
+
     /** Adds the frame's quads for {@code state} and the key from {@link #renderKey}. */
     void build(BlockState state, @Nullable Object key, FrameMesh mesh);
 }

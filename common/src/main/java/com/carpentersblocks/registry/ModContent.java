@@ -106,6 +106,7 @@ public final class ModContent {
         RedstoneContent.registerBlocks(registrar);
         TorchContent.registerBlocks(registrar);
         LadderContent.registerBlocks(registrar);
+        DoorContent.registerBlocks(registrar);
         BedContent.registerBlocks(registrar);
         FlowerPotContent.registerBlocks(registrar);
     }

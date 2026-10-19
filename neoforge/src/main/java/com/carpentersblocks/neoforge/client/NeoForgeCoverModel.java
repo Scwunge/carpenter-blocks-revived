@@ -28,6 +28,7 @@ import com.carpentersblocks.block.slope.RailSlopes;
 import com.carpentersblocks.block.slope.Slope;
 import com.carpentersblocks.client.CoverQuads;
 import com.carpentersblocks.client.frame.FrameBuilder;
+import com.carpentersblocks.client.frame.FrameMesh;
 import com.carpentersblocks.client.frame.FrameModels;
 import com.carpentersblocks.client.frame.RailSlopeFill;
 
@@ -48,10 +49,11 @@ public class NeoForgeCoverModel extends BakedModelWrapper<BakedModel> {
     @Override
     public ModelData getModelData(BlockAndTintGetter level, BlockPos pos, BlockState state, ModelData modelData) {
         ModelData.Builder data = modelData.derive();
-        if (level.getBlockEntity(pos) instanceof CoverableBlockEntity blockEntity) {
+        FrameBuilder builder = FrameModels.builder(state.getBlock());
+        BlockPos coverPos = builder == null ? pos : builder.coverSource(level, pos, state);
+        if (level.getBlockEntity(coverPos) instanceof CoverableBlockEntity blockEntity) {
             data.with(COVERS, blockEntity.getCoverData());
         }
-        FrameBuilder builder = FrameModels.builder(state.getBlock());
         if (builder != null) {
             data.with(FRAME_KEY, builder.renderKey(level, pos, state));
         }
@@ -91,8 +93,14 @@ public class NeoForgeCoverModel extends BakedModelWrapper<BakedModel> {
         Set<RenderType> layers = new HashSet<>();
         // Fixed quads (blankets, handles, inlays, flames, potted plants) keep the frame's layer under any cover
         FrameBuilder builder = FrameModels.builder(state.getBlock());
-        if (builder != null && frames.mesh(builder, state, data.get(FRAME_KEY)).hasFixed()) {
-            layers.add(CoverQuads.FRAME_LAYER);
+        if (builder != null) {
+            FrameMesh mesh = frames.mesh(builder, state, data.get(FRAME_KEY));
+            if (mesh.hasFixed()) {
+                layers.add(CoverQuads.FRAME_LAYER);
+            }
+            if (mesh.hasTranslucent()) {
+                layers.add(CoverQuads.PANE_LAYER);
+            }
         }
         for (Direction face : Direction.values()) {
             if (covers == null) {

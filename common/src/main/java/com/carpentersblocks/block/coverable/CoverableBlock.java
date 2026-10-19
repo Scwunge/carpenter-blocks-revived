@@ -191,6 +191,12 @@ public abstract class CoverableBlock extends BaseEntityBlock implements SimpleWa
         return be;
     }
 
+    /**
+     * Runs on the client after a block entity received new attributes. Blocks drawn with another block's attributes
+     * (the open garage door shows its bottom piece's) re-render those blocks here.
+     */
+    public void onClientAttributesChanged(Level level, BlockPos pos, BlockState state) {}
+
     /** Chance (0 to 1) that a right-click which changed the block wears the tool, as {@code damageItemWithChance}. */
     protected double toolDamageChance() {
         return 1.0;

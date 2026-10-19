@@ -31,8 +31,15 @@ public final class FrameMesh {
      */
     public record Sloped(boolean positive, Direction side, boolean wedge) {}
 
-    /** A frame quad and, for sloped quads, how covers texture it. Fixed quads keep their own texture under covers. */
-    public record Quad(BakedQuad quad, @Nullable Sloped sloped, boolean fixed) {
+    /**
+     * A frame quad and, for sloped quads, how covers texture it. Fixed quads keep their own texture under covers;
+     * translucent ones (panes, with {@code enableAlphaPanes}) draw in the translucent layer.
+     */
+    public record Quad(BakedQuad quad, @Nullable Sloped sloped, boolean fixed, boolean translucent) {
+        public Quad(BakedQuad quad, @Nullable Sloped sloped, boolean fixed) {
+            this(quad, sloped, fixed, false);
+        }
+
         public Quad(BakedQuad quad, @Nullable Sloped sloped) {
             this(quad, sloped, false);
         }
@@ -44,6 +51,7 @@ public final class FrameMesh {
     private final Map<Direction, List<Quad>> culled = new EnumMap<>(Direction.class);
     private final float raise;
     private boolean hasFixed;
+    private boolean hasTranslucent;
 
     public FrameMesh() {
         this(0);
@@ -82,9 +90,21 @@ public final class FrameMesh {
         return this;
     }
 
+    /** Adds a fixed quad drawn in the translucent layer, such as a pane when panes are see-through. */
+    public FrameMesh fixedTranslucent(BakedQuad quad) {
+        unculled.add(new Quad(quad, null, true, true));
+        hasTranslucent = true;
+        return this;
+    }
+
     /** True when the mesh has fixed quads, which draw in the frame's layer whatever the covers are. */
     public boolean hasFixed() {
         return hasFixed;
+    }
+
+    /** True when the mesh has fixed quads in the translucent layer. */
+    public boolean hasTranslucent() {
+        return hasTranslucent;
     }
 
     /** A cuboid, coordinates 0 to 1. Faces on the block boundary are culled against it; zero-area faces are skipped. */

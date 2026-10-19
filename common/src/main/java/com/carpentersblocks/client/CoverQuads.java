@@ -49,6 +49,8 @@ public final class CoverQuads {
     public static final RenderType OVERLAY_LAYER = RenderType.cutoutMipped();
     /** Chisel designs are drawn see-through over the cover, as on the original's alpha pass. */
     public static final RenderType DESIGN_LAYER = RenderType.translucent();
+    /** See-through panes ({@code enableAlphaPanes}), as on the original's alpha pass. */
+    public static final RenderType PANE_LAYER = RenderType.translucent();
 
     /** Covers that show their top on upward slopes, like grass; anything extending SnowyDirtBlock counts too. */
     public static final TagKey<Block> SLOPE_TOP_COVERS = TagKey.create(Registries.BLOCK,
@@ -79,7 +81,7 @@ public final class CoverQuads {
         if (data == null || data.isEmpty()) {
             List<Part> parts = new ArrayList<>(frameQuads.size());
             for (FrameMesh.Quad frameQuad : frameQuads) {
-                parts.add(new Part(frameQuad.quad(), cullFace, FRAME_LAYER));
+                parts.add(new Part(frameQuad.quad(), cullFace, frameQuad.translucent() ? PANE_LAYER : FRAME_LAYER));
             }
             return parts;
         }
@@ -87,7 +89,7 @@ public final class CoverQuads {
         List<Part> parts = new ArrayList<>(frameQuads.size() * 2);
         for (FrameMesh.Quad meshQuad : frameQuads) {
             if (meshQuad.fixed()) {
-                parts.add(new Part(meshQuad.quad(), cullFace, FRAME_LAYER));
+                parts.add(new Part(meshQuad.quad(), cullFace, meshQuad.translucent() ? PANE_LAYER : FRAME_LAYER));
                 continue;
             }
             BakedQuad frameQuad = meshQuad.quad();

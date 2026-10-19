@@ -1,0 +1,18 @@
+{
+  "type": "carpentersblocks:configured_shaped",
+  "category": "redstone",
+  "pattern": [
+    "XXX",
+    "XXX"
+  ],
+  "key": {
+    "X": {
+      "item": "carpentersblocks:carpenters_block"
+    }
+  },
+  "result": {
+    "id": "carpentersblocks:carpenters_hatch",
+    "count": 1
+  },
+  "quantity_option": "recipeQuantityHatch"
+}

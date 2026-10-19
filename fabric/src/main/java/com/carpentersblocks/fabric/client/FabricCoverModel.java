@@ -52,13 +52,14 @@ public class FabricCoverModel extends ForwardingBakedModel {
     @Override
     public void emitBlockQuads(BlockAndTintGetter level, BlockState state, BlockPos pos,
             Supplier<RandomSource> randomSupplier, RenderContext context) {
-        CoverData data = level.getBlockEntity(pos) instanceof CoverableBlockEntity blockEntity
+        FrameBuilder builder = FrameModels.builder(state.getBlock());
+        BlockPos coverPos = builder == null ? pos : builder.coverSource(level, pos, state);
+        CoverData data = level.getBlockEntity(coverPos) instanceof CoverableBlockEntity blockEntity
                 ? blockEntity.getCoverData()
                 : null;
         RandomSource random = randomSupplier.get();
         QuadEmitter emitter = context.getEmitter();
 
-        FrameBuilder builder = FrameModels.builder(state.getBlock());
         FrameMesh mesh = builder == null ? null : frames.mesh(builder, state, builder.renderKey(level, pos, state));
 
         for (Direction cullFace : CULL_FACES) {

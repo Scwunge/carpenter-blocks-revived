@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.registry.BarrierContent;
 import com.carpentersblocks.registry.BedContent;
+import com.carpentersblocks.registry.DoorContent;
 import com.carpentersblocks.registry.FlowerPotContent;
 import com.carpentersblocks.registry.LadderContent;
 import com.carpentersblocks.registry.RedstoneContent;
@@ -44,6 +45,15 @@ public final class ClientFrames {
         }
         if (LadderContent.CARPENTERS_LADDER != null) {
             FrameModels.register(LadderContent.CARPENTERS_LADDER, LadderFrames.LADDER);
+        }
+        if (DoorContent.CARPENTERS_DOOR != null) {
+            FrameModels.register(DoorContent.CARPENTERS_DOOR, DoorFrames.DOOR);
+        }
+        if (DoorContent.CARPENTERS_HATCH != null) {
+            FrameModels.register(DoorContent.CARPENTERS_HATCH, DoorFrames.HATCH);
+        }
+        if (DoorContent.CARPENTERS_GARAGE_DOOR != null) {
+            FrameModels.register(DoorContent.CARPENTERS_GARAGE_DOOR, DoorFrames.GARAGE_DOOR);
         }
         if (BedContent.CARPENTERS_BED != null) {
             FrameModels.register(BedContent.CARPENTERS_BED, BedFrames.BED);

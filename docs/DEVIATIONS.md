@@ -16,6 +16,20 @@ copper covers and so on) are noted in the code instead.
 - The default ladder on a wall keeps all its parts 3 pixels deep on every wall. The original drew its rungs 2 deep on
   north and west walls only.
 
+## Batch 7: Door, Hatch, Garage Door
+
+- Redstone opens and closes the door, hatch and garage door only when the signal changes, as vanilla's doors (a
+  `powered` state). The original toggled on any neighbor update while powered, so it could flip unexpectedly.
+- Villagers and other mobs don't open Carpenter's Doors, and the blocks aren't in vanilla's door and trapdoor tags:
+  mob AI casts anything in those tags to vanilla's door class. Mobs path through an open door, hatch or garage door.
+- One door drops from the lower half and one garage door from the top (host) piece, by loot table conditions, so
+  explosions and modded breakers drop the right count.
+- With `enableAlphaPanes`, glass and screen panes draw translucent; otherwise they draw cut out, as the original.
+- Garage doors still join any garage door beside them whose facing shares the original's facing bits, so some
+  doors at right angles join as they did in the original.
+- On Fabric, an open hidden hatch at the top of its space is climbable through a mixin on `LivingEntity.onClimbable`
+  that only adds to vanilla's check; NeoForge asks the block's `isLadder`.
+
 ## Batch 8: Bed + Flower Pot
 
 ### Bed

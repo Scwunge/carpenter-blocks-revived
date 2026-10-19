@@ -361,6 +361,9 @@ public class CoverableBlockEntity extends BlockEntity implements Clearable {
         // Client received new attributes: rebuild the chunk section so the model picks them up
         if (level != null && level.isClientSide) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_IMMEDIATE);
+            if (getBlockState().getBlock() instanceof CoverableBlock block) {
+                block.onClientAttributesChanged(level, worldPosition, getBlockState());
+            }
         }
     }
 
