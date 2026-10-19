@@ -1,15 +1,21 @@
 package com.carpentersblocks.block.redstone;
 
+import net.minecraft.core.BlockPos;
+
+import net.minecraft.core.Direction;
+
+import java.util.function.BiConsumer;
+
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -79,6 +85,18 @@ public class CarpentersButtonBlock extends SidedRedstoneBlock {
             }
             result.setAltered().setNoSound();
         }
+    }
+
+    /** A wind charge presses the button, as vanilla's. */
+    @Override
+    protected void onExplosionHit(BlockState state, Level level, BlockPos pos, Explosion explosion,
+            BiConsumer<ItemStack, BlockPos> drops) {
+        if (!level.isClientSide && explosion.canTriggerBlocks() && !state.getValue(POWERED)) {
+            setPowerState(level, pos, state.setValue(POWERED, true));
+            click(level, pos, null, SoundEvents.STONE_BUTTON_CLICK_ON, true);
+            level.scheduleTick(pos, this, PRESS_TICKS);
+        }
+        super.onExplosionHit(state, level, pos, explosion, drops);
     }
 
     @Override

@@ -1,15 +1,21 @@
 package com.carpentersblocks.block.barrier;
 
+import net.minecraft.core.BlockPos;
+
+import net.minecraft.core.Direction;
+
+import java.util.function.BiConsumer;
+
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -110,6 +116,16 @@ public class CarpentersGateBlock extends CoverableBlock {
             setGate(level, pos, next, player, true);
         }
         result.setAltered().setNoSound();
+    }
+
+    /** A wind charge swings the gate, as vanilla's fence gates. */
+    @Override
+    protected void onExplosionHit(BlockState state, Level level, BlockPos pos, Explosion explosion,
+            BiConsumer<ItemStack, BlockPos> drops) {
+        if (!level.isClientSide && explosion.canTriggerBlocks() && !state.getValue(POWERED)) {
+            setGate(level, pos, state.setValue(OPEN, !state.getValue(OPEN)), null, true);
+        }
+        super.onExplosionHit(state, level, pos, explosion, drops);
     }
 
     /** Opens the gate so it swings away from a player looking towards {@code look}, as the original. */

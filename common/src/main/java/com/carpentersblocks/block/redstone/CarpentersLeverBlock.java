@@ -1,14 +1,20 @@
 package com.carpentersblocks.block.redstone;
 
+import net.minecraft.core.BlockPos;
+
+import net.minecraft.core.Direction;
+
+import java.util.function.BiConsumer;
+
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -92,6 +98,18 @@ public class CarpentersLeverBlock extends SidedRedstoneBlock {
             click(level, pos, player, SoundEvents.LEVER_CLICK, on);
         }
         result.setAltered().setNoSound();
+    }
+
+    /** A wind charge flips the lever, as vanilla's. */
+    @Override
+    protected void onExplosionHit(BlockState state, Level level, BlockPos pos, Explosion explosion,
+            BiConsumer<ItemStack, BlockPos> drops) {
+        if (!level.isClientSide && explosion.canTriggerBlocks()) {
+            boolean on = !state.getValue(POWERED);
+            setPowerState(level, pos, state.setValue(POWERED, on));
+            click(level, pos, null, SoundEvents.LEVER_CLICK, on);
+        }
+        super.onExplosionHit(state, level, pos, explosion, drops);
     }
 
     @Override

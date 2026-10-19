@@ -30,6 +30,7 @@ import com.carpentersblocks.test.slope.SlopeTests;
 import com.carpentersblocks.test.stairs.StairsTests;
 import com.carpentersblocks.test.tile.TileTests;
 import com.carpentersblocks.test.torch.TorchTests;
+import com.carpentersblocks.test.wind.WindChargeTests;
 
 /**
  * Entry point for every Carpenter's Blocks GameTest. Each loader registers only this class (Fabric through the
@@ -57,7 +58,8 @@ public final class CBGameTests {
             RecipeTests.class,
             SlopeTests.class,
             DoorTests.class,
-            SafeTests.class);
+            SafeTests.class,
+            WindChargeTests.class);
 
     /** Fabric instantiates gametest entrypoints. */
     public CBGameTests() {}

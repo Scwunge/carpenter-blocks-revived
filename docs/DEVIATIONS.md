@@ -3,6 +3,11 @@
 Where the port behaves or looks differently from the 1.7.10 mod on purpose, by batch. Modern additions (waterlogging,
 copper covers and so on) are noted in the code instead.
 
+## All blocks
+
+- `enableRoutableFluids` is read but does nothing. In the original it drew neighboring water and lava into the gaps of
+  Carpenter's blocks; waterlogging replaces it.
+
 ## Batch 2: Slope
 
 - The slope type lives in the block state and the item kind in the `carpentersblocks:slope_kind` data component, in

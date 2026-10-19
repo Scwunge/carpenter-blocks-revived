@@ -6,6 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiConsumer;
 
 import com.mojang.serialization.MapCodec;
 
@@ -322,6 +323,19 @@ public class CarpentersGarageDoorBlock extends CoverableBlock {
             BlockState topState = level.getBlockState(top);
             level.sendBlockUpdated(top, topState, topState, Block.UPDATE_IMMEDIATE);
         }
+    }
+
+    /** A wind charge rolls the whole door up or down, once however many pieces it reaches; a rigid door stays put. */
+    @Override
+    protected void onExplosionHit(BlockState state, Level level, BlockPos pos, Explosion explosion,
+            BiConsumer<ItemStack, BlockPos> drops) {
+        if (!level.isClientSide && !state.getValue(RIGID) && !state.getValue(POWERED)) {
+            Set<BlockPos> pieces = pieces(level, pos, state);
+            if (Openables.windToggles(explosion, pieces)) {
+                setOpen(level, pos, state, null, !state.getValue(OPEN));
+            }
+        }
+        super.onExplosionHit(state, level, pos, explosion, drops);
     }
 
     @Override

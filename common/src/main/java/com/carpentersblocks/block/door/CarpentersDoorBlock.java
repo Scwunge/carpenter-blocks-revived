@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 import com.mojang.serialization.MapCodec;
 
@@ -15,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -268,6 +270,17 @@ public class CarpentersDoorBlock extends CoverableBlock {
      * Redstone on any of the pieces opens them all, as the original; the original's foundation check drops a lower
      * half left without a solid top under it.
      */
+    /** A wind charge swings the door, as vanilla's wooden doors; a rigid door stays put, as an iron one. */
+    @Override
+    protected void onExplosionHit(BlockState state, Level level, BlockPos pos, Explosion explosion,
+            BiConsumer<ItemStack, BlockPos> drops) {
+        if (!level.isClientSide && !state.getValue(RIGID) && !state.getValue(POWERED)
+                && Openables.windToggles(explosion, hingePieces(level, pos, state))) {
+            setOpen(level, pos, state, null, !state.getValue(OPEN));
+        }
+        super.onExplosionHit(state, level, pos, explosion, drops);
+    }
+
     @Override
     protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock,
             BlockPos neighborPos, boolean movedByPiston) {
