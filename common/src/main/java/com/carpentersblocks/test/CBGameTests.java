@@ -20,6 +20,7 @@ import com.carpentersblocks.test.barrier.BarrierTests;
 import com.carpentersblocks.test.bed.BedTests;
 import com.carpentersblocks.test.block.CarpentersBlockTests;
 import com.carpentersblocks.test.block.CoverBehaviorTests;
+import com.carpentersblocks.test.collapsible.CollapsibleTests;
 import com.carpentersblocks.test.door.DoorTests;
 import com.carpentersblocks.test.flowerpot.FlowerPotTests;
 import com.carpentersblocks.test.ladder.LadderTests;
@@ -55,7 +56,8 @@ public final class CBGameTests {
             TileTests.class,
             RecipeTests.class,
             SlopeTests.class,
-            DoorTests.class);
+            DoorTests.class,
+            CollapsibleTests.class);
 
     /** Fabric instantiates gametest entrypoints. */
     public CBGameTests() {}

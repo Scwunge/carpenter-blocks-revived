@@ -1,0 +1,19 @@
+{
+  "type": "carpentersblocks:configured_shaped",
+  "category": "building",
+  "pattern": [
+    "XXX",
+    "XXX",
+    "XXX"
+  ],
+  "key": {
+    "X": {
+      "item": "carpentersblocks:carpenters_block"
+    }
+  },
+  "result": {
+    "id": "carpentersblocks:carpenters_collapsible_block",
+    "count": 9
+  },
+  "quantity_option": "recipeQuantityCollapsibleBlock"
+}

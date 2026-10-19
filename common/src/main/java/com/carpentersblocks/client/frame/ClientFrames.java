@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.registry.BarrierContent;
 import com.carpentersblocks.registry.BedContent;
+import com.carpentersblocks.registry.CollapsibleContent;
 import com.carpentersblocks.registry.DoorContent;
 import com.carpentersblocks.registry.FlowerPotContent;
 import com.carpentersblocks.registry.LadderContent;
@@ -57,6 +58,9 @@ public final class ClientFrames {
         }
         if (BedContent.CARPENTERS_BED != null) {
             FrameModels.register(BedContent.CARPENTERS_BED, BedFrames.BED);
+        }
+        if (CollapsibleContent.CARPENTERS_COLLAPSIBLE_BLOCK != null) {
+            FrameModels.register(CollapsibleContent.CARPENTERS_COLLAPSIBLE_BLOCK, CollapsibleFrames.COLLAPSIBLE);
         }
         if (FlowerPotContent.CARPENTERS_FLOWER_POT != null) {
             FrameModels.register(FlowerPotContent.CARPENTERS_FLOWER_POT, FlowerPotFrames.POT);

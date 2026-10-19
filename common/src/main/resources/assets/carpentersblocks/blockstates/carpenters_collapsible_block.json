@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "vertical_direction=up": {
+      "model": "carpentersblocks:block/carpenters_collapsible_block"
+    },
+    "vertical_direction=down": {
+      "model": "carpentersblocks:block/carpenters_collapsible_block"
+    }
+  }
+}
