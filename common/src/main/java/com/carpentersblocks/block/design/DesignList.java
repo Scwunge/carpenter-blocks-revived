@@ -25,6 +25,11 @@ public record DesignList(String folder, List<String> names) {
             "gray", "green", "light_blue", "light_gray", "lime", "magenta", "orange", "original", "pink", "purple",
             "rainbow", "red", "white", "yellow"));
 
+    /** Tile designs, drawn in the tile's dye color; no design shows the blank tile. */
+    public static final DesignList TILE = new DesignList("tile", List.of("stock_chain", "stock_chainlink",
+            "stock_dandelion", "stock_decorative", "stock_decorative2", "stock_diagonal_striped", "stock_dots",
+            "stock_grid", "stock_leaves", "stock_offset_squares", "stock_quilt", "stock_shifted", "stock_striped"));
+
     public boolean isValid(String design) {
         return names.contains(design);
     }

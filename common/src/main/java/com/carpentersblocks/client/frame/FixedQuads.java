@@ -75,6 +75,19 @@ public final class FixedQuads {
         return bake(quad, uv, sprite, color);
     }
 
+    /** One face of a box (pixels) with its projected UVs turned {@code quarterTurns} times about the middle. */
+    public static BakedQuad face(Box box, Direction face, TextureAtlasSprite sprite, int color, int quarterTurns) {
+        Vector3f[] quad = faceCorners(box, face);
+        float[][] uv = new float[4][];
+        for (int i = 0; i < 4; ++i) {
+            uv[i] = FrameMesh.project(quad[i], face);
+            for (int turn = 0; turn < (quarterTurns & 3); ++turn) {
+                uv[i] = new float[] { 1 - uv[i][1], uv[i][0] };
+            }
+        }
+        return bake(quad, uv, sprite, color);
+    }
+
     /** The corners (block units) of one face of a box (pixels), counter-clockwise from outside. */
     public static Vector3f[] faceCorners(Box box, Direction face) {
         Vector3f[] c = corners(box);

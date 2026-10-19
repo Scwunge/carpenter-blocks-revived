@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -125,6 +126,11 @@ public final class ModContent {
         if (CBConfig.enableChisel) {
             CARPENTERS_CHISEL = item(registrar, "carpenters_chisel", new CarpentersChiselItem(toolProperties()));
         }
+        TileContent.registerItems(registrar);
+    }
+
+    public static void registerEntityTypes(BiConsumer<ResourceLocation, EntityType<?>> registrar) {
+        TileContent.registerEntityTypes(registrar);
     }
 
     private static Item.Properties toolProperties() {

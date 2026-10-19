@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
@@ -20,9 +21,11 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import com.carpentersblocks.CarpentersBlocks;
 import com.carpentersblocks.client.CoverTint;
 import com.carpentersblocks.client.SlopeSelectClient;
+import com.carpentersblocks.client.entity.CarpentersTileRenderer;
 import com.carpentersblocks.client.frame.ClientFrames;
 import com.carpentersblocks.client.frame.SlopeItemModel;
 import com.carpentersblocks.registry.ModContent;
+import com.carpentersblocks.registry.TileContent;
 
 public final class CarpentersBlocksNeoForgeClient {
 
@@ -33,8 +36,15 @@ public final class CarpentersBlocksNeoForgeClient {
         modBus.addListener((FMLClientSetupEvent event) -> ClientFrames.registerAll());
         modBus.addListener(CarpentersBlocksNeoForgeClient::wrapModels);
         modBus.addListener(CarpentersBlocksNeoForgeClient::registerColors);
+        modBus.addListener(CarpentersBlocksNeoForgeClient::registerRenderers);
         SlopeSelectClient.sender = PacketDistributor::sendToServer;
         NeoForge.EVENT_BUS.addListener(CarpentersBlocksNeoForgeClient::onScroll);
+    }
+
+    private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        if (TileContent.CARPENTERS_TILE != null) {
+            event.registerEntityRenderer(TileContent.CARPENTERS_TILE, CarpentersTileRenderer::new);
+        }
     }
 
     /** Slope select: scrolling while sneaking with a slope in hand changes its kind instead of the hotbar slot. */
