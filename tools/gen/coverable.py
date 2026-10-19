@@ -29,4 +29,4 @@ def generate() -> None:
     write(DATA / f"{MOD}/tags/block/cover_denylist.json", {"values": []})
     write(DATA / f"{MOD}/tags/block/cover_allowlist.json", {"values": []})
 
-    LANG["itemGroup.carpentersblocks"] = "Carpenter's Blocks"
+    LANG["itemGroup.carpentersblocks"] = "Carpenter Blocks Revived"

@@ -1,0 +1,15 @@
+Carpenter Blocks Revived
+A port of Carpenter's Blocks to Minecraft 1.21.1 for Fabric and NeoForge.
+
+This is a modified version of Carpenter's Blocks:
+  - Original mod by Mineshopper and contributors: https://github.com/Mineshopper/carpentersblocks
+  - 1.7.10 fork maintained by GTNewHorizons and contributors: https://github.com/GTNewHorizons/CarpentersBlocks
+    (the port follows this fork, at commit 0ef22db308928e53fb67bccb5647af7d5e744556)
+
+Changes: rewritten for Minecraft 1.21.1, Fabric and NeoForge, from 2026 by Scwunge. The code was ported to the
+modern game; the textures, sounds and translations come from the original, some reorganized or adapted. The
+differences in behavior are listed in docs/DEVIATIONS.md in the source code.
+
+Carpenter Blocks Revived is free software, licensed like the original under the GNU Lesser General Public License,
+version 2.1 (see the LICENSE file). It comes with no warranty. Its complete source code is published with every
+release, under the same license.
