@@ -1,0 +1,24 @@
+# Recipe-book unlocks: forget every recipe, then pick up the key items one at a time
+cmd gamemode survival @s
+cmd advancement revoke @s everything
+cmd recipe take @s *
+cmd clear @s
+wait 40
+cmd execute if entity @s[advancements={carpentersblocks:recipes/building_blocks/carpenters_block=false}] run say CHECK before planks: carpenters_block locked
+cmd execute if entity @s[advancements={carpentersblocks:recipes/tools/carpenters_hammer=false}] run say CHECK before planks: hammer locked
+cmd give @s minecraft:oak_planks 4
+wait 40
+cmd execute if entity @s[advancements={carpentersblocks:recipes/building_blocks/carpenters_block=true}] run say CHECK planks unlocked carpenters_block
+cmd execute if entity @s[advancements={carpentersblocks:recipes/tools/carpenters_hammer=false}] run say CHECK hammer still locked
+cmd give @s carpentersblocks:carpenters_block 1
+wait 40
+cmd execute if entity @s[advancements={carpentersblocks:recipes/tools/carpenters_hammer=true}] run say CHECK carpenters_block unlocked hammer
+cmd execute if entity @s[advancements={carpentersblocks:recipes/misc/carpenters_safe=true}] run say CHECK carpenters_block unlocked safe
+cmd execute if entity @s[advancements={carpentersblocks:recipes/redstone/carpenters_door=true}] run say CHECK carpenters_block unlocked door
+wait 20
+screen inventory
+wait 40
+shot d_recipe_book
+screen close
+cmd gamemode creative @s
+wait 20

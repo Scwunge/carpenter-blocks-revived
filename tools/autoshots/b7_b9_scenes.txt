@@ -1,0 +1,55 @@
+# Rebuild the scenes around the player, and mark where they were built
+cmd function cbtest:setup
+wait 40
+cmd kill @e[type=marker,tag=cbo]
+cmd execute at @s run summon marker ~ ~ ~ {Tags:["cbo"]}
+cmd gamemode spectator @s
+wait 100
+
+# Batch 7: doors (z18), from the north
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~-5 ~1 ~13 0 10
+wait 60
+shot b7_doors_west
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~3 ~1 ~13 0 10
+wait 60
+shot b7_doors_east
+# Doors from the south side, above the hatches
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~-2 ~3 ~23 180 30
+wait 60
+shot b7_hatches_from_south
+# Garage doors (z21), from the south
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~6 ~1.5 ~26 180 5
+wait 60
+shot b7_garage_from_south
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~6 ~1.5 ~16 0 5
+wait 60
+shot b7_garage_from_north
+
+# Batch 9: collapsible blocks (z-12 and hanging z-10), from the south and the north
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~-2 ~2.5 ~-6 180 25
+wait 60
+shot b9_collapsible_from_south
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~-2 ~2.5 ~-17 0 25
+wait 60
+shot b9_collapsible_from_north
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~-5 ~0.5 ~-7 160 -15
+wait 60
+shot b9_collapsible_hanging
+
+# Batch 9: safes (z24, fronts north). Clear the door rows in front of them first.
+cmd execute at @e[tag=cbo,limit=1] run fill ~-10 ~ ~19 ~1 ~3 ~22 minecraft:air
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~-4 ~1.2 ~20 0 12
+wait 80
+shot b9_safes_day
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~-4 ~0.8 ~22.2 0 5
+wait 60
+shot b9_safes_close
+cmd time set midnight
+wait 80
+shot b9_safes_night
+
+# Leave the world as it was
+cmd time set noon
+cmd gamemode creative @s
+cmd kill @e[type=marker,tag=cbo]
+wait 20

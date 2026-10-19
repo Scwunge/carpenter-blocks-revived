@@ -63,3 +63,7 @@ bash tools/check.sh
 
 To play in a dev client, use `./gradlew :fabric:runClient` or `./gradlew :neoforge:runClient`. To load the test world,
 first copy it to `<loader>/run/saves/cbtest`, then add `--args="--quickPlaySingleplayer cbtest"`.
+
+To check the render without driving the game, give the client a script from `tools/autoshots`. It runs the
+script's commands, saves screenshots to `fabric/run/screenshots`, then quits:
+`./gradlew :fabric:runClient -Pautoshots=tools/autoshots/b7_b9_scenes.txt --args="--quickPlaySingleplayer cbtest"`.

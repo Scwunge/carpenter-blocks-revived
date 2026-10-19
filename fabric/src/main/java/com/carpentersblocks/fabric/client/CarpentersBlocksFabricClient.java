@@ -20,6 +20,7 @@ import com.carpentersblocks.client.SlopeSelectClient;
 import com.carpentersblocks.client.entity.CarpentersTileRenderer;
 import com.carpentersblocks.client.frame.ClientFrames;
 import com.carpentersblocks.client.frame.SlopeItemModel;
+import com.carpentersblocks.fabric.client.dev.AutoShots;
 import com.carpentersblocks.registry.ModContent;
 import com.carpentersblocks.registry.TileContent;
 
@@ -52,5 +53,7 @@ public class CarpentersBlocksFabricClient implements ClientModInitializer {
             }
             return model;
         }));
+
+        AutoShots.registerIfRequested();
     }
 }

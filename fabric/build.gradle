@@ -17,6 +17,12 @@ loom {
             property 'fabric-api.gametest'
             property 'fabric-api.gametest.report-file', "${project.layout.buildDirectory.get()}/gametest/report.xml"
         }
+        // -Pautoshots=<script>: the dev client runs the script's commands and screenshots, then quits (AutoShots)
+        if (project.hasProperty('autoshots')) {
+            client {
+                property 'carpentersblocks.autoshots', project.property('autoshots').toString()
+            }
+        }
     }
 }
 

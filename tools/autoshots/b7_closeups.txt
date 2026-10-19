@@ -1,0 +1,24 @@
+cmd function cbtest:setup
+wait 40
+cmd kill @e[type=marker,tag=cbo]
+cmd execute at @s run summon marker ~ ~ ~ {Tags:["cbo"]}
+cmd gamemode spectator @s
+wait 100
+# Doors up close, from the north
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~-6 ~1 ~15.5 0 5
+wait 60
+shot c_doors_1
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~1.5 ~1 ~15.5 0 5
+wait 60
+shot c_doors_2
+# Hatches (z20) between the doors and their wall, from above
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~-5 ~2.6 ~18.9 0 45
+wait 60
+shot c_hatches
+# The garage doors' west end from the south, close
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~4.5 ~1.5 ~24 180 0
+wait 60
+shot c_garage_west
+cmd gamemode creative @s
+cmd kill @e[type=marker,tag=cbo]
+wait 20
