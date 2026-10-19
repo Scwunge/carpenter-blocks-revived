@@ -11,7 +11,12 @@
   "entrypoints": {
     "main": ["com.carpentersblocks.fabric.CarpentersBlocksFabric"],
     "client": ["com.carpentersblocks.fabric.client.CarpentersBlocksFabricClient"],
-    "fabric-gametest": ["com.carpentersblocks.test.CBGameTests"]
+    "fabric-gametest": ["com.carpentersblocks.test.CBGameTests"],
+    "jei_mod_plugin": ["com.carpentersblocks.integration.jei.JeiPlugin"],
+    "emi": ["com.carpentersblocks.integration.emi.EmiPlugin"],
+    "rei_client": ["com.carpentersblocks.integration.rei.ReiPlugin"],
+    "jade": ["com.carpentersblocks.integration.jade.JadePlugin"],
+    "modmenu": ["com.carpentersblocks.fabric.integration.ModMenuIntegration"]
   },
   "mixins": ["carpentersblocks.mixins.json"],
   "depends": {
@@ -19,5 +24,13 @@
     "minecraft": "~1.21.1",
     "java": ">=21",
     "fabric-api": "*"
+  },
+  "suggests": {
+    "jei": "*",
+    "emi": "*",
+    "roughlyenoughitems": "*",
+    "jade": "*",
+    "wthit": "*",
+    "modmenu": "*"
   }
 }

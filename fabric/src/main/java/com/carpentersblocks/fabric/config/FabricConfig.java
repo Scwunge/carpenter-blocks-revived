@@ -6,6 +6,8 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -39,21 +41,53 @@ public final class FabricConfig {
 
     /** Call first thing in {@code onInitialize}. */
     public static void load() {
-        load(FabricLoader.getInstance().getConfigDir().resolve("carpentersblocks.json"));
+        load(file());
     }
 
     static void load(Path file) {
+        Map<Option, Object> values = values(file);
+        values.forEach(Option::set);
+        save(file, values);
+    }
+
+    /**
+     * The values in the file now, which can differ from {@link CBConfig} after the config screen saved changes that
+     * apply at the next start.
+     */
+    public static Map<Option, Object> values() {
+        return values(file());
+    }
+
+    /** Writes these values (every option) to the file; they take effect at the next start. */
+    public static void save(Map<Option, Object> values) {
+        save(file(), values);
+    }
+
+    private static Path file() {
+        return FabricLoader.getInstance().getConfigDir().resolve("carpentersblocks.json");
+    }
+
+    private static Map<Option, Object> values(Path file) {
         JsonObject root = read(file);
-        JsonObject out = new JsonObject();
+        Map<Option, Object> values = new LinkedHashMap<>();
         for (String section : ConfigOptions.SECTIONS) {
             JsonObject in = root.has(section) && root.get(section).isJsonObject()
                     ? root.getAsJsonObject(section) : new JsonObject();
+            for (Option option : ConfigOptions.inSection(section)) {
+                values.put(option, valueOf(option, in.get(option.key())));
+            }
+        }
+        return values;
+    }
+
+    private static void save(Path file, Map<Option, Object> values) {
+        JsonObject out = new JsonObject();
+        for (String section : ConfigOptions.SECTIONS) {
             JsonObject written = new JsonObject();
             JsonObject comments = new JsonObject();
             for (Option option : ConfigOptions.inSection(section)) {
-                option.set(valueOf(option, in.get(option.key())));
                 comments.addProperty(option.key(), describe(option));
-                written.add(option.key(), toJson(option.get()));
+                written.add(option.key(), toJson(option.clamp(values.getOrDefault(option, option.defaultValue()))));
             }
             out.add(section, withComments(comments, written));
         }

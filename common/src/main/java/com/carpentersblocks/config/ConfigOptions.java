@@ -122,13 +122,21 @@ public final class ConfigOptions {
             try {
                 switch (type) {
                     case BOOLEAN -> field.setBoolean(null, (Boolean) value);
-                    case INTEGER -> field.setInt(null, (int) Math.clamp(((Number) value).longValue(), (long) min,
-                            (long) max));
-                    case DOUBLE -> field.setDouble(null, Math.clamp(((Number) value).doubleValue(), min, max));
+                    case INTEGER -> field.setInt(null, (Integer) clamp(value));
+                    case DOUBLE -> field.setDouble(null, (Double) clamp(value));
                 }
             } catch (IllegalAccessException e) {
                 throw new IllegalStateException(e);
             }
+        }
+
+        /** {@code value} as this option's type, numbers clamped into range. */
+        public Object clamp(Object value) {
+            return switch (type) {
+                case BOOLEAN -> (Boolean) value;
+                case INTEGER -> (int) Math.clamp(((Number) value).longValue(), (long) min, (long) max);
+                case DOUBLE -> Math.clamp(((Number) value).doubleValue(), min, max);
+            };
         }
     }
 

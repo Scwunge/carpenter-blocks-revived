@@ -10,7 +10,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
@@ -38,6 +41,9 @@ public final class CarpentersBlocksNeoForgeClient {
         modBus.addListener(CarpentersBlocksNeoForgeClient::registerColors);
         modBus.addListener(CarpentersBlocksNeoForgeClient::registerRenderers);
         SlopeSelectClient.sender = PacketDistributor::sendToServer;
+        // NeoForge's own screen edits the startup config; it names options from carpentersblocks.configuration.*
+        ModLoadingContext.get().getActiveContainer().registerExtensionPoint(IConfigScreenFactory.class,
+                ConfigurationScreen::new);
         NeoForge.EVENT_BUS.addListener(CarpentersBlocksNeoForgeClient::onScroll);
     }
 
