@@ -53,4 +53,9 @@ subprojects {
         it.options.release = 21
         it.options.encoding = 'UTF-8'
     }
+
+    // The LGPL asks for its text to travel with the jars
+    tasks.withType(Jar).configureEach {
+        from(rootProject.file('LICENSE')) { rename { "LICENSE_$rootProject.archives_name" } }
+    }
 }
