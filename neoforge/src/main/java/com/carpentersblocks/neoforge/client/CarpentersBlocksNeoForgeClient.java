@@ -45,6 +45,7 @@ public final class CarpentersBlocksNeoForgeClient {
         ModLoadingContext.get().getActiveContainer().registerExtensionPoint(IConfigScreenFactory.class,
                 ConfigurationScreen::new);
         NeoForge.EVENT_BUS.addListener(CarpentersBlocksNeoForgeClient::onScroll);
+        com.carpentersblocks.neoforge.client.dev.NeoForgeAutoShots.registerIfRequested();
     }
 
     private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {

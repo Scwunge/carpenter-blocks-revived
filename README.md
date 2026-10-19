@@ -65,5 +65,12 @@ To play in a dev client, use `./gradlew :fabric:runClient` or `./gradlew :neofor
 first copy it to `<loader>/run/saves/cbtest`, then add `--args="--quickPlaySingleplayer cbtest"`.
 
 To check the render without driving the game, give the client a script from `tools/autoshots`. It runs the
-script's commands, saves screenshots to `fabric/run/screenshots`, then quits:
-`./gradlew :fabric:runClient -Pautoshots=tools/autoshots/b7_b9_scenes.txt --args="--quickPlaySingleplayer cbtest"`.
+script's commands, saves screenshots to `<loader>/run/screenshots`, then quits. Either loader takes one; the path is
+read from the run folder, so make it absolute:
+`./gradlew :fabric:runClient -Pautoshots=$PWD/tools/autoshots/b7_b9_scenes.txt --args="--quickPlaySingleplayer cbtest"`.
+The script lines are listed in `AutoShots`.
+
+To check the integrations in game, add `-Pdevmods=` with any of `jei`, `emi`, `rei`, `jade`, `wthit`, and on Fabric
+`modmenu`, `sodium`, `iris` (Sodium 0.6 and Iris) or `indium` (Sodium 0.5 and Indium). They go on that client's
+runtime only, never into the jars. `tools/autoshots/integrations.txt` shoots the recipe viewer, the block tooltip,
+the mod list and the config screen; `tools/autoshots/render_compat.txt` shoots every scene for comparing renderers.

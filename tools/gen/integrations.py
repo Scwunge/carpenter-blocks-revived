@@ -21,8 +21,23 @@ def generate() -> None:
         # WTHIT's name for the plugin
         f"config.waila.plugin_{MOD}.plugin": "Carpenter's Blocks",
     })
+    # Item tag names, which recipe viewers show where a recipe takes any item of a tag (tag.item.<ns>.<path, dotted>)
+    LANG.update({f"tag.item.{MOD}.{path}": name for path, name in ITEM_TAGS.items()})
     config_lang()
 
+
+ITEM_TAGS = {
+    "fertilizers": "Carpenter's Fertilizers",
+    "illuminators": "Carpenter's Illuminators",
+    "overlays.grass": "Grass Overlays",
+    "overlays.hay": "Hay Overlays",
+    "overlays.moss": "Moss Overlays",
+    "overlays.mycelium": "Mycelium Overlays",
+    "overlays.sculk": "Sculk Overlays",
+    "overlays.snow": "Snow Overlays",
+    "overlays.vine": "Vine Overlays",
+    "overlays.web": "Web Overlays",
+}
 
 SECTION_NAMES = {"features": "Features", "blocks": "Blocks", "items": "Items", "recipe_quantities": "Recipe Quantities"}
 
