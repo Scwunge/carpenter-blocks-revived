@@ -25,6 +25,7 @@ import com.carpentersblocks.test.ladder.LadderTests;
 import com.carpentersblocks.test.redstone.RedstoneTests;
 import com.carpentersblocks.test.slope.SlopeTests;
 import com.carpentersblocks.test.stairs.StairsTests;
+import com.carpentersblocks.test.tile.TileTests;
 import com.carpentersblocks.test.torch.TorchTests;
 
 /**
@@ -49,6 +50,7 @@ public final class CBGameTests {
             LadderTests.class,
             BedTests.class,
             FlowerPotTests.class,
+            TileTests.class,
             SlopeTests.class);
 
     /** Fabric instantiates gametest entrypoints. */

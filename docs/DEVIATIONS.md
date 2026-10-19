@@ -40,3 +40,8 @@ copper covers and so on) are noted in the code instead.
 - A pot covered in glass shows the glass, not the original's special `flower_pot_glass` texture.
 - Sneak left-click with the hammer only takes the soil out once the plant is gone; the original could leave a plant
   floating.
+
+## Batch 10: Tile
+
+- A tile copies the look only of neighboring tiles on the same kind of face (floor, ceiling or the same wall
+  direction). The original could also copy a tile on a neighboring face at a corner.
