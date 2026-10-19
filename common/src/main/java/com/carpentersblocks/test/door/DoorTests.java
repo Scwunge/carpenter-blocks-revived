@@ -308,9 +308,10 @@ public class DoorTests {
     @CBGameTest
     public void garageDoorFollowsRedstone(GameTestHelper helper) {
         placeGarageDoor(helper, GameType.CREATIVE, CEILING);
-        helper.setBlock(new BlockPos(0, 0, 1), Blocks.REDSTONE_BLOCK);
+        // East of the bottom piece: power on the west, at (0, 0, 1), would reach the test's structure block
+        helper.setBlock(new BlockPos(2, 0, 1), Blocks.REDSTONE_BLOCK);
         check(helper, helper.getBlockState(HOST).getValue(CarpentersGarageDoorBlock.OPEN), "power on a piece opens");
-        helper.setBlock(new BlockPos(0, 0, 1), Blocks.AIR);
+        helper.setBlock(new BlockPos(2, 0, 1), Blocks.AIR);
         check(helper, !helper.getBlockState(HOST).getValue(CarpentersGarageDoorBlock.OPEN), "and it closes after");
         helper.succeed();
     }
