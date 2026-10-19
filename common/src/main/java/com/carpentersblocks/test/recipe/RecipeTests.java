@@ -4,7 +4,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -59,6 +62,33 @@ public class RecipeTests {
         } finally {
             CBConfig.recipeQuantityTile = saved;
         }
+        helper.succeed();
+    }
+
+    /** Every recipe has vanilla's unlock advancement, in the folder of its crafting book category. */
+    @CBGameTest
+    public void everyRecipeHasAnUnlockAdvancement(GameTestHelper helper) {
+        int recipes = 0;
+        for (RecipeHolder<?> holder : helper.getLevel().getRecipeManager().getRecipes()) {
+            ResourceLocation id = holder.id();
+            if (!id.getNamespace().equals(CarpentersBlocks.MOD_ID)) {
+                continue;
+            }
+            ++recipes;
+            check(helper, holder.value() instanceof CraftingRecipe, id + " is a crafting recipe");
+            String folder = switch (((CraftingRecipe) holder.value()).category()) {
+                case BUILDING -> "building_blocks";
+                case EQUIPMENT -> "tools";
+                case REDSTONE -> "redstone";
+                case MISC -> "misc";
+            };
+            ResourceLocation advancementId = CarpentersBlocks.id("recipes/" + folder + "/" + id.getPath());
+            AdvancementHolder advancement = helper.getLevel().getServer().getAdvancements().get(advancementId);
+            check(helper, advancement != null, "no advancement " + advancementId);
+            check(helper, advancement.value().rewards().recipes().contains(id), advancementId + " unlocks " + id);
+            check(helper, advancement.value().criteria().containsKey("has_the_recipe"), advancementId + " criteria");
+        }
+        check(helper, recipes > 0, "found the recipes");
         helper.succeed();
     }
 }
