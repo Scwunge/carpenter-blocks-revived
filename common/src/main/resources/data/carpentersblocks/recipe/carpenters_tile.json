@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "decorations",
+  "pattern": [
+    "XXX",
+    "YYY"
+  ],
+  "key": {
+    "X": {
+      "item": "minecraft:terracotta"
+    },
+    "Y": {
+      "item": "carpentersblocks:carpenters_block"
+    }
+  },
+  "result": {
+    "id": "carpentersblocks:carpenters_tile",
+    "count": 12
+  }
+}

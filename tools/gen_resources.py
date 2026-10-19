@@ -8,11 +8,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from gen import barrier, bed, block, coverable, flower_pot, ladder, lang, redstone, slope, stairs, structures, tools, torch  # noqa: E402
+from gen import barrier, bed, block, coverable, flower_pot, ladder, lang, redstone, slope, stairs, structures, tile, tools, torch  # noqa: E402
 from gen.common import ASSETS, AXE_MINEABLE, DATA, LANG, write  # noqa: E402
 
 # lang goes last: it fills gaps in LANG from tools/lang/en_us.json and writes the other locales
-MODULES = [coverable, block, slope, stairs, barrier, redstone, torch, ladder, bed, flower_pot, tools, structures, lang]
+MODULES = [coverable, block, slope, stairs, barrier, redstone, torch, ladder, bed, flower_pot, tile, tools, structures, lang]
 
 
 def main() -> None:
