@@ -1,5 +1,6 @@
 tag @s add cbtest
 gamemode creative @s
+clear @s
 time set noon
 weather clear
 gamerule doDaylightCycle false
@@ -52,3 +53,5 @@ give @s minecraft:snowball 16
 give @s minecraft:stone 64
 give @s minecraft:iron_axe
 give @s minecraft:honeycomb 16
+# Re-running the scenes breaks the previous run's beds and covers; clear their drops
+kill @e[type=item,distance=..64]
