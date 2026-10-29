@@ -77,7 +77,7 @@ public class FabricCoverModel extends ForwardingBakedModel {
 
         Slope fill = RailSlopes.slopeAbove(level, pos, state);
         if (fill != null) {
-            for (CoverQuads.Part part : CoverQuads.build(railFill.mesh(fill).quads(null), null, data, random,
+            for (CoverQuads.Part part : CoverQuads.buildFill(railFill.mesh(fill).quads(null), data, random,
                     ItemBlockRenderTypes::getChunkRenderType)) {
                 emitter.fromVanilla(part.quad(), material(part), null);
                 emitter.emit();
