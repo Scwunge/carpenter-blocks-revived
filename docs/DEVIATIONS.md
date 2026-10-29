@@ -8,12 +8,14 @@ copper covers and so on) are noted in the code instead.
 - `enableRoutableFluids` is read but does nothing. In the original it drew neighboring water and lava into the gaps of
   Carpenter's blocks; waterlogging replaces it.
 
+- Side covers stand a pixel out from their face, as the original's. Where one reaches into the neighboring space,
+  its thin edges take their light from the block itself, so they can look darker than the original.
+
 ## Batch 2: Slope
 
 - The slope type lives in the block state and the item kind in the `carpentersblocks:slope_kind` data component, in
   place of tile entity data and item damage. Slope select (sneak + scroll) steps the data component.
-- The rail slope fill re-textures each face with the cover for that side, as the block itself does, and keeps
-  overlays. The original drew the whole fill with the base cover and suppressed overlays. The fill's side faces take
+- The rail slope fill keeps the base cover's overlays; the original suppressed them. The fill's side faces take
   their light from the neighboring block, so they can look darker than the original.
 
 ## Batch 6: Torch + Ladder

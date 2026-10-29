@@ -230,7 +230,7 @@ public final class FrameMesh {
     }
 
     /** UV (0 to 1) of a point projected onto a face, matching vanilla's automatic UVs for a full-block element. */
-    static float[] project(Vector3f p, Direction face) {
+    public static float[] project(Vector3f p, Direction face) {
         return switch (face) {
             case DOWN -> new float[] { p.x, 1 - p.z };
             case UP -> new float[] { p.x, p.z };

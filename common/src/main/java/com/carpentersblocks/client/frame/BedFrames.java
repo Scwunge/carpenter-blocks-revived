@@ -59,6 +59,8 @@ public final class BedFrames {
                 boolean fromTemplate = design && fabric.fabric() != BedGeometry.Fabric.MATTRESS;
                 if (fromTemplate) {
                     addTemplateBox(mesh, fabric, head, occupied, facing, template);
+                } else if (fabric.fabric() == BedGeometry.Fabric.PILLOW) {
+                    addPillow(mesh, fabric.box(), facing);
                 } else {
                     TextureAtlasSprite sprite = FixedQuads.sprite(texture(fabric.fabric(), look.blanket()));
                     Box b = fabric.box().facing(facing);
@@ -77,6 +79,24 @@ public final class BedFrames {
             default -> ResourceLocation.withDefaultNamespace(
                     "block/" + (blanket == null ? DyeColor.WHITE : blanket).getName() + "_wool");
         };
+    }
+
+    /**
+     * The pillow, its UVs worked out facing south and then turned, so the texture turns with the bed. The texture
+     * fills rows 3 to 8, where the original's pillow (z 3 to 9, head to the north) took its top from; the top here
+     * takes the bottom's UVs, which mirror z to match.
+     */
+    private static void addPillow(FrameMesh mesh, Box box, Direction facing) {
+        TextureAtlasSprite sprite = FixedQuads.sprite(PILLOW);
+        for (Direction face : Direction.values()) {
+            Vector3f[] corners = FixedQuads.faceCorners(box, face);
+            float[][] uv = new float[4][];
+            for (int i = 0; i < 4; ++i) {
+                uv[i] = FrameMesh.project(corners[i], face == Direction.UP ? Direction.DOWN : face);
+                turn(corners[i], facing);
+            }
+            mesh.fixed(FixedQuads.bake(corners, uv, sprite, FixedQuads.WHITE));
+        }
     }
 
     /** A fabric box textured from the design template, worked out facing south and then turned. */

@@ -1,6 +1,5 @@
 package com.carpentersblocks.block.stairs;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -12,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -225,19 +225,44 @@ class StairsShapeTest {
             String model = variant.get("model").getAsString().replace("carpentersblocks:", "");
             JsonArray elements = read(root + "models/" + model + ".json").getAsJsonArray("elements");
             List<double[]> boxes = stairs.boxes();
-            assertEquals(boxes.size(), elements.size(), model);
-            for (int i = 0; i < boxes.size(); ++i) {
-                JsonObject element = elements.get(i).getAsJsonObject();
-                double[] actual = new double[6];
+            List<double[]> actual = new ArrayList<>();
+            for (JsonElement element : elements) {
+                double[] box = new double[6];
                 for (int k = 0; k < 3; ++k) {
-                    actual[k] = element.getAsJsonArray("from").get(k).getAsDouble();
-                    actual[k + 3] = element.getAsJsonArray("to").get(k).getAsDouble();
+                    box[k] = element.getAsJsonObject().getAsJsonArray("from").get(k).getAsDouble();
+                    box[k + 3] = element.getAsJsonObject().getAsJsonArray("to").get(k).getAsDouble();
                 }
-                assertArrayEquals(boxes.get(i), actual, EPSILON, model + " element " + i);
+                actual.add(box);
+            }
+            // Each box is an element; the rest only carry the visible part of a face partly buried in another box
+            for (double[] box : boxes) {
+                assertTrue(actual.stream().anyMatch(e -> same(e, box)), model + " has no element " + Arrays.toString(box));
+            }
+            for (double[] e : actual) {
+                assertTrue(boxes.stream().anyMatch(box -> inside(e, box)), model + " element " + Arrays.toString(e)
+                        + " lies outside the boxes");
             }
         }
         assertNull(blockstate.get("shape=nonexistent"));
         assertNotEquals(0, read(root + "models/item/carpenters_stairs.json").size());
+    }
+
+    private static boolean same(double[] a, double[] b) {
+        for (int k = 0; k < 6; ++k) {
+            if (Math.abs(a[k] - b[k]) > EPSILON) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean inside(double[] a, double[] box) {
+        for (int k = 0; k < 3; ++k) {
+            if (a[k] < box[k] - EPSILON || a[k + 3] > box[k + 3] + EPSILON) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static JsonObject read(String path) throws Exception {

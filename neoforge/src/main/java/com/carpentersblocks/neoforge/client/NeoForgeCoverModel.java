@@ -75,7 +75,7 @@ public class NeoForgeCoverModel extends BakedModelWrapper<BakedModel> {
         Slope fill = data.get(RAIL_FILL);
         if (side == null && fill != null) {
             parts = new ArrayList<>(parts);
-            parts.addAll(CoverQuads.build(railFill.mesh(fill).quads(null), null, data.get(COVERS), random,
+            parts.addAll(CoverQuads.buildFill(railFill.mesh(fill).quads(null), data.get(COVERS), random,
                     NeoForgeCoverModel::layerOf));
         }
         List<BakedQuad> quads = new ArrayList<>();
@@ -105,12 +105,15 @@ public class NeoForgeCoverModel extends BakedModelWrapper<BakedModel> {
                 layers.add(CoverQuads.PANE_LAYER);
             }
         }
-        for (Direction face : Direction.values()) {
-            if (covers == null) {
-                layers.add(CoverQuads.FRAME_LAYER);
+        if (covers == null) {
+            layers.add(CoverQuads.FRAME_LAYER);
+            return ChunkRenderTypeSet.of(layers);
+        }
+        // The base on every face, and each side cover on its plate
+        for (int slot = 0; slot < CoverData.SLOTS; ++slot) {
+            if (slot != CoverData.BASE && !covers.hasCover(slot)) {
                 continue;
             }
-            int slot = covers.slotFor(face);
             BlockState cover = covers.cover(slot);
             layers.add(cover == null ? CoverQuads.FRAME_LAYER : layerOf(cover));
             if (covers.overlay(slot) != null) {
