@@ -25,9 +25,6 @@
           "texture": "#frame",
           "cullface": "up"
         },
-        "north": {
-          "texture": "#frame"
-        },
         "south": {
           "texture": "#frame",
           "cullface": "south"
@@ -72,6 +69,23 @@
         "east": {
           "texture": "#frame",
           "cullface": "east"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        8,
+        8
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#frame"
         }
       }
     }

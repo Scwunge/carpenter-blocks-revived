@@ -1,0 +1,37 @@
+# Side covers: shading next to plain blocks, and the step side of stairs (forum reports after 0.1.1)
+cmd function cbtest:setup
+wait 40
+cmd kill @e[type=marker,tag=cbo]
+cmd execute at @s run summon marker ~ ~ ~ {Tags:["cbo"]}
+cmd gamemode spectator @s
+cmd execute at @e[tag=cbo,limit=1] run fill ~20 ~-1 ~-4 ~34 ~-1 ~8 minecraft:smooth_stone
+cmd execute at @e[tag=cbo,limit=1] run fill ~20 ~ ~-4 ~34 ~6 ~8 minecraft:air
+# Stone blocks on stone pillars: with stone side covers on every face, without, and vanilla stone
+cmd execute at @e[tag=cbo,limit=1] run fill ~22 ~ ~2 ~26 ~1 ~2 minecraft:oak_fence
+cmd execute at @e[tag=cbo,limit=1] run setblock ~22 ~2 ~2 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:stone"}},{Slot:0b,State:{Name:"minecraft:stone"}},{Slot:1b,State:{Name:"minecraft:stone"}},{Slot:2b,State:{Name:"minecraft:stone"}},{Slot:3b,State:{Name:"minecraft:stone"}},{Slot:4b,State:{Name:"minecraft:stone"}},{Slot:5b,State:{Name:"minecraft:stone"}}]}
+cmd execute at @e[tag=cbo,limit=1] run setblock ~24 ~2 ~2 carpentersblocks:carpenters_block[shape=full]{Covers:[{Slot:6b,State:{Name:"minecraft:stone"}}]}
+cmd execute at @e[tag=cbo,limit=1] run setblock ~26 ~2 ~2 minecraft:stone
+cmd execute at @e[tag=cbo,limit=1] run setblock ~23 ~2 ~2 minecraft:air
+cmd execute at @e[tag=cbo,limit=1] run setblock ~25 ~2 ~2 minecraft:air
+# Plank stairs, step to the north, with a diamond side cover on the step side; one more also on its east side
+cmd execute at @e[tag=cbo,limit=1] run setblock ~30 ~ ~2 carpentersblocks:carpenters_stairs[shape=pos_n]{Covers:[{Slot:6b,State:{Name:"minecraft:oak_planks"}},{Slot:2b,State:{Name:"minecraft:diamond_block"}}]}
+cmd execute at @e[tag=cbo,limit=1] run setblock ~32 ~ ~2 carpentersblocks:carpenters_stairs[shape=pos_n]{Covers:[{Slot:6b,State:{Name:"minecraft:oak_planks"}},{Slot:2b,State:{Name:"minecraft:diamond_block"}},{Slot:5b,State:{Name:"minecraft:diamond_block"}}]}
+wait 100
+# Blocks from the south-east, a little above
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~27.2 ~3.6 ~5.5 145 20
+wait 60
+shot sc_blocks_se
+# ... from the north-west, a little below
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~21 ~1.2 ~-1.5 -35 -12
+wait 60
+shot sc_blocks_nw_below
+# Stairs from the north-east and from the west
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~34.5 ~2 ~-1 45 25
+wait 60
+shot sc_stairs_ne
+cmd execute at @e[tag=cbo,limit=1] run tp @s ~28.3 ~1.4 ~2.5 -90 15
+wait 60
+shot sc_stairs_w
+cmd gamemode creative @s
+cmd kill @e[type=marker,tag=cbo]
+wait 20
